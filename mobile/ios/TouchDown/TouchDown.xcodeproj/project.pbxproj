@@ -1,0 +1,425 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03BC7E3904D0B35501B844A2 /* libPods-TouchDown.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F27D9848AA5EFF7FEF0F9FC1 /* libPods-TouchDown.a */; };
+		7389BCCC1DFF3627008932B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7389BCCB1DFF3627008932B7 /* main.m */; };
+		7389BCCF1DFF3627008932B7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7389BCCE1DFF3627008932B7 /* AppDelegate.m */; };
+		7389BCD21DFF3627008932B7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7389BCD11DFF3627008932B7 /* ViewController.m */; };
+		7389BCD51DFF3627008932B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7389BCD31DFF3627008932B7 /* Main.storyboard */; };
+		7389BCD71DFF3627008932B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7389BCD61DFF3627008932B7 /* Assets.xcassets */; };
+		7389BCDA1DFF3627008932B7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7389BCD81DFF3627008932B7 /* LaunchScreen.storyboard */; };
+		7389BCE51DFF3E1C008932B7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7389BCE41DFF3E1C008932B7 /* GoogleService-Info.plist */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		18D0F787812A9AA47046A2A1 /* Pods-TouchDown.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TouchDown.release.xcconfig"; path = "Pods/Target Support Files/Pods-TouchDown/Pods-TouchDown.release.xcconfig"; sourceTree = "<group>"; };
+		5DEF3F4CB5CE706DC32BB2C6 /* Pods-TouchDown.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TouchDown.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TouchDown/Pods-TouchDown.debug.xcconfig"; sourceTree = "<group>"; };
+		7389BCC71DFF3627008932B7 /* TouchDown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TouchDown.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7389BCCB1DFF3627008932B7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		7389BCCD1DFF3627008932B7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		7389BCCE1DFF3627008932B7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		7389BCD01DFF3627008932B7 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		7389BCD11DFF3627008932B7 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		7389BCD41DFF3627008932B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		7389BCD61DFF3627008932B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7389BCD91DFF3627008932B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7389BCDB1DFF3627008932B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7389BCE41DFF3E1C008932B7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F27D9848AA5EFF7FEF0F9FC1 /* libPods-TouchDown.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TouchDown.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7389BCC41DFF3626008932B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03BC7E3904D0B35501B844A2 /* libPods-TouchDown.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		45668D49859F476E2691A0F9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5DEF3F4CB5CE706DC32BB2C6 /* Pods-TouchDown.debug.xcconfig */,
+				18D0F787812A9AA47046A2A1 /* Pods-TouchDown.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		7389BCBE1DFF3626008932B7 = {
+			isa = PBXGroup;
+			children = (
+				7389BCC91DFF3627008932B7 /* TouchDown */,
+				7389BCC81DFF3627008932B7 /* Products */,
+				45668D49859F476E2691A0F9 /* Pods */,
+				AAE7A76B9795FE359CAA06C8 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		7389BCC81DFF3627008932B7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7389BCC71DFF3627008932B7 /* TouchDown.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7389BCC91DFF3627008932B7 /* TouchDown */ = {
+			isa = PBXGroup;
+			children = (
+				7389BCE31DFF3D6C008932B7 /* Views */,
+				7389BCE21DFF3D65008932B7 /* Models */,
+				7389BCE11DFF3D3A008932B7 /* Controllers */,
+				7389BCCD1DFF3627008932B7 /* AppDelegate.h */,
+				7389BCCE1DFF3627008932B7 /* AppDelegate.m */,
+				7389BCD61DFF3627008932B7 /* Assets.xcassets */,
+				7389BCD81DFF3627008932B7 /* LaunchScreen.storyboard */,
+				7389BCE41DFF3E1C008932B7 /* GoogleService-Info.plist */,
+				7389BCDB1DFF3627008932B7 /* Info.plist */,
+				7389BCCA1DFF3627008932B7 /* Supporting Files */,
+			);
+			path = TouchDown;
+			sourceTree = "<group>";
+		};
+		7389BCCA1DFF3627008932B7 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7389BCCB1DFF3627008932B7 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7389BCE11DFF3D3A008932B7 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				7389BCD01DFF3627008932B7 /* ViewController.h */,
+				7389BCD11DFF3627008932B7 /* ViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		7389BCE21DFF3D65008932B7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		7389BCE31DFF3D6C008932B7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7389BCD31DFF3627008932B7 /* Main.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		AAE7A76B9795FE359CAA06C8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F27D9848AA5EFF7FEF0F9FC1 /* libPods-TouchDown.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7389BCC61DFF3626008932B7 /* TouchDown */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7389BCDE1DFF3627008932B7 /* Build configuration list for PBXNativeTarget "TouchDown" */;
+			buildPhases = (
+				35799BDE9AE04D96AA6A6BAE /* [CP] Check Pods Manifest.lock */,
+				7389BCC31DFF3626008932B7 /* Sources */,
+				7389BCC41DFF3626008932B7 /* Frameworks */,
+				7389BCC51DFF3626008932B7 /* Resources */,
+				16E76350460D5B5D0D9D860B /* [CP] Embed Pods Frameworks */,
+				B9D4D43739AFA56DCD32F02C /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TouchDown;
+			productName = TouchDown;
+			productReference = 7389BCC71DFF3627008932B7 /* TouchDown.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7389BCBF1DFF3626008932B7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = Calcey;
+				TargetAttributes = {
+					7389BCC61DFF3626008932B7 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = AVF2YJMDSA;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 7389BCC21DFF3626008932B7 /* Build configuration list for PBXProject "TouchDown" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 7389BCBE1DFF3626008932B7;
+			productRefGroup = 7389BCC81DFF3627008932B7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7389BCC61DFF3626008932B7 /* TouchDown */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7389BCC51DFF3626008932B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7389BCDA1DFF3627008932B7 /* LaunchScreen.storyboard in Resources */,
+				7389BCE51DFF3E1C008932B7 /* GoogleService-Info.plist in Resources */,
+				7389BCD71DFF3627008932B7 /* Assets.xcassets in Resources */,
+				7389BCD51DFF3627008932B7 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		16E76350460D5B5D0D9D860B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TouchDown/Pods-TouchDown-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		35799BDE9AE04D96AA6A6BAE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		B9D4D43739AFA56DCD32F02C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TouchDown/Pods-TouchDown-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7389BCC31DFF3626008932B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7389BCD21DFF3627008932B7 /* ViewController.m in Sources */,
+				7389BCCF1DFF3627008932B7 /* AppDelegate.m in Sources */,
+				7389BCCC1DFF3627008932B7 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7389BCD31DFF3627008932B7 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7389BCD41DFF3627008932B7 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		7389BCD81DFF3627008932B7 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7389BCD91DFF3627008932B7 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7389BCDC1DFF3627008932B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		7389BCDD1DFF3627008932B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7389BCDF1DFF3627008932B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5DEF3F4CB5CE706DC32BB2C6 /* Pods-TouchDown.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = AVF2YJMDSA;
+				INFOPLIST_FILE = TouchDown/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = lk.rc07.TouchDown;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		7389BCE01DFF3627008932B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 18D0F787812A9AA47046A2A1 /* Pods-TouchDown.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = AVF2YJMDSA;
+				INFOPLIST_FILE = TouchDown/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = lk.rc07.TouchDown;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7389BCC21DFF3626008932B7 /* Build configuration list for PBXProject "TouchDown" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7389BCDC1DFF3627008932B7 /* Debug */,
+				7389BCDD1DFF3627008932B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7389BCDE1DFF3627008932B7 /* Build configuration list for PBXNativeTarget "TouchDown" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7389BCDF1DFF3627008932B7 /* Debug */,
+				7389BCE01DFF3627008932B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7389BCBF1DFF3626008932B7 /* Project object */;
+}

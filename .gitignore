@@ -7,3 +7,16 @@
 /build
 /captures
 .externalNativeBuild
+*.pbxuser
+xcuserdata/
+project.xcworkspace/
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+mobile/ios/TouchDown/*.DS_Store
+mobile/ios/TouchDown/*.xcworkspace
+mobile/ios/TouchDown/Pods/**
+mobile/ios/TouchDown/*.lock
