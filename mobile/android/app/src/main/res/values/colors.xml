@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- Live score fragment-->
+    <color name="background_blue">#042F5C</color>
+    <color name="live_back">#EB2E1B</color>
+    <color name="tab_background">#F2C311</color>
+
 </resources>

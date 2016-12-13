@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TouchDown</string>
+    <string name="live">LIVE</string>
 </resources>

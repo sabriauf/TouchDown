@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "959794019019",
+    "firebase_url": "https://touchdown-95eb9.firebaseio.com",
+    "project_id": "touchdown-95eb9",
+    "storage_bucket": "touchdown-95eb9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959794019019:android:f24d87472e1dacb2",
+        "android_client_info": {
+          "package_name": "lk.rc07.ten_years.touchdown"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959794019019-aoi66sf0t46n6va7hgfdm654p15u14qr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx_svQDRRdqGkJXnnKe7E30nxthgC0HgI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
