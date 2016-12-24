@@ -22,7 +22,10 @@ public class PageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return new LiveFragment();
+        if(position == 0)
+            return new LiveFragment();
+        else
+            return new Fragment();
     }
 
     @Override

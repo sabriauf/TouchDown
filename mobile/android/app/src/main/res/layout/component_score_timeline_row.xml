@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txt_score_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/blue_round_background"
+        android:textColor="@color/tab_background"
+        android:text="T"
+        android:textStyle="bold"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="2dp"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="2dp"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/txt_player_no_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="16'"
+        android:textSize="14sp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignBaseline="@+id/txt_score_tag"
+        android:layout_alignBottom="@+id/txt_score_tag"
+        android:layout_toLeftOf="@+id/txt_score_tag"
+        android:layout_toStartOf="@+id/txt_score_tag" />
+
+    <TextView
+        android:id="@+id/txt_player_name_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nikhila Gunawardena"
+        android:textSize="14sp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_alignBaseline="@+id/txt_player_no_left"
+        android:layout_alignBottom="@+id/txt_player_no_left"
+        android:layout_toLeftOf="@+id/txt_player_no_left"
+        android:layout_toStartOf="@+id/txt_player_no_left" />
+
+    <TextView
+        android:id="@+id/txt_player_no_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="16'"
+        android:textSize="14sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_alignBaseline="@+id/txt_score_tag"
+        android:layout_alignBottom="@+id/txt_score_tag"
+        android:layout_toRightOf="@+id/txt_score_tag"
+        android:layout_toEndOf="@+id/txt_score_tag" />
+
+    <TextView
+        android:id="@+id/txt_player_name_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nikhila Gunawardena"
+        android:textSize="14sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_alignBaseline="@+id/txt_player_no_right"
+        android:layout_alignBottom="@+id/txt_player_no_right"
+        android:layout_toRightOf="@+id/txt_player_no_right"
+        android:layout_toEndOf="@+id/txt_player_no_right" />
+</RelativeLayout>

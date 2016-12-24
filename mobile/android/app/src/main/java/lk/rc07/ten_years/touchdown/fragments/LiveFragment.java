@@ -2,16 +2,21 @@ package lk.rc07.ten_years.touchdown.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.List;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.adapters.ScoreAdapter;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.utils.AutoScaleTextView;
 import lk.rc07.ten_years.touchdown.utils.ScoreListener;
@@ -45,6 +50,11 @@ public class LiveFragment extends Fragment {
         }, LiveFragment.class.getSimpleName());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_timeline);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(false);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(mLayoutManager);
         loadScore.run();
 
         return view;
@@ -56,8 +66,22 @@ public class LiveFragment extends Fragment {
             DBManager dbManager = DBManager.initializeInstance(
                     DBHelper.getInstance(getContext()));
             dbManager.openDatabase();
-            List<Score> scores = ScoreDAO.getScores(1); //TODO - remove hardcode
+            List<Match> matches = MatchDAO.getMatchesOnStatus(Match.Status.PROGRESS);
+            List<Score> scores;
+            if (matches.size() > 0)
+                matches = MatchDAO.getMatchesOnStatus(Match.Status.DONE);
+            final Match match = matches.get(matches.size() - 1);
+            scores = ScoreDAO.getScores(match.getIdmatch());
             dbManager.closeDatabase();
+
+            final List<Score> temp_scores = scores;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.setAdapter(new ScoreAdapter(getContext(), temp_scores, match));
+                    //TODO - update other info
+                }
+            });
         }
     });
 }

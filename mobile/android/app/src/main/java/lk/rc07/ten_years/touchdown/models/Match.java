@@ -16,7 +16,7 @@ public class Match {
     private String league;
     private String round;
 
-    enum Status {
+    public enum Status {
         PENDING, PROGRESS, DONE, CALLED_OFF, CANCLED
     }
 
