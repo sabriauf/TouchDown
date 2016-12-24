@@ -6,8 +6,14 @@ import android.os.Bundle;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
+import java.util.List;
+
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.PageAdapter;
+import lk.rc07.ten_years.touchdown.data.DBHelper;
+import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
 
 public class MainActivity extends AppCompatActivity {

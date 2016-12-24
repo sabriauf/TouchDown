@@ -11,41 +11,63 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.MainActivity;
+import lk.rc07.ten_years.touchdown.models.Score;
+import lk.rc07.ten_years.touchdown.utils.ScoreListener;
 
 /**
  * Created by Sabri on 12/13/2016. handling fcm
  */
 
 public class TouchDownMessagingService extends FirebaseMessagingService {
+
+    //constants
     private static final String TAG = TouchDownMessagingService.class.getSimpleName();
+    private final String PARAM_PUSH_TITLE = "title";
+    private final String PARAM_PUSH_MESSAGE = "message";
+    private final String PARAM_PUSH_OBJECT = "object";
+    private final String PARAM_OBJECT_SCORE = "score";
 
     /**
      * Called when message is received.
      *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
-    // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // TODO(developer): Handle FCM messages here.
-        // If the application is in the foreground handle both data and notification messages here.
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("message"));
+            sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE));
+
+            String value = remoteMessage.getData().get(PARAM_PUSH_OBJECT);
+            if (value != null && !value.equals("")) {
+                try {
+                    JSONObject respond = new JSONObject(value);
+                    if (respond.has(PARAM_OBJECT_SCORE)) {
+                        Score score = new Gson().fromJson(respond.getJSONObject(PARAM_OBJECT_SCORE).toString(), Score.class);
+                        Score.notifyOnNewScore(this, score);
+                    }
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
         }
     }
-    // [END receive_message]
 
     /**
      * Create and show a simple notification containing the received FCM message.
@@ -58,7 +80,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
