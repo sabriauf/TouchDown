@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -16,13 +17,12 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.MainActivity;
+import lk.rc07.ten_years.touchdown.data.DBHelper;
+import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.models.Score;
-import lk.rc07.ten_years.touchdown.utils.ScoreListener;
 
 /**
  * Created by Sabri on 12/13/2016. handling fcm
@@ -56,7 +56,28 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                     JSONObject respond = new JSONObject(value);
                     if (respond.has(PARAM_OBJECT_SCORE)) {
                         Score score = new Gson().fromJson(respond.getJSONObject(PARAM_OBJECT_SCORE).toString(), Score.class);
-                        Score.notifyOnNewScore(this, score);
+
+
+                        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
+                        dbManager.openDatabase();
+
+                        Message msg = new Message();
+                        msg.obj = score;
+                        if(score.getAction() != null) {
+                            boolean inserted = ScoreDAO.addScore(score);
+
+                            if (inserted)
+                                msg.what = Score.WHAT_NEW_SCORE;
+                            else
+                                msg.what = Score.WHAT_UPDATE_SCORE;
+                        } else {
+                            ScoreDAO.deleteScore(score.getIdscore());
+                            msg.what = Score.WHAT_REMOVE_SCORE;
+                        }
+
+                        dbManager.closeDatabase();
+                        Score.handler.sendMessage(msg);
+
                     }
                 } catch (JSONException ex) {
                     ex.printStackTrace();

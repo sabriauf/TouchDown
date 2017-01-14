@@ -18,4 +18,8 @@
         <!-- <item name="@attr/minTextSize">10dp</item> -->
     </style>
 
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 </resources>

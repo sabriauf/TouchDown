@@ -1,6 +1,8 @@
 package lk.rc07.ten_years.touchdown.models;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,6 +17,11 @@ import lk.rc07.ten_years.touchdown.utils.ScoreListener;
  */
 
 public class Score {
+
+    //constant
+    public static final int WHAT_NEW_SCORE = 1001;
+    public static final int WHAT_UPDATE_SCORE = 1002;
+    public static final int WHAT_REMOVE_SCORE = 1003;
 
     private int idscore;
     private int matchid;
@@ -106,15 +113,46 @@ public class Score {
         scoreListeners.put(key, listener);
     }
 
-    public static void notifyOnNewScore(Context context, Score score) {
+    private static void notifyOnNewScoreUpdate(Score score) {
         for (ScoreListener listener : scoreListeners.values()) {
             if (listener != null)
                 listener.OnNewScoreUpdate(score);
         }
-
-        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
-        dbManager.openDatabase();
-        ScoreDAO.addScore(score);
-        dbManager.closeDatabase();
     }
+
+    private static void notifyOnScoreUpdate(Score score) {
+        for (ScoreListener listener : scoreListeners.values()) {
+            if (listener != null)
+                listener.OnNewScoreUpdate(score);
+        }
+    }
+
+    private static void notifyOnScoreRemove(Score score) {
+        for (ScoreListener listener : scoreListeners.values()) {
+            if (listener != null)
+                listener.OnNewScoreUpdate(score);
+        }
+    }
+
+    public static Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            Score score;
+            switch (message.what) {
+                case WHAT_NEW_SCORE:
+                    score = (Score) message.obj;
+                    notifyOnNewScoreUpdate(score);
+                    break;
+                case WHAT_UPDATE_SCORE:
+                    score = (Score) message.obj;
+                    notifyOnScoreUpdate(score);
+                    break;
+                case WHAT_REMOVE_SCORE:
+                    score = (Score) message.obj;
+                    notifyOnScoreRemove(score);
+                    break;
+            }
+            return true;
+        }
+    });
 }

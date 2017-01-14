@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager(), new PageBuilder()
                 .addPage("LIVE")
                 .addPage("FIXTURE")
-                .addPage("RESULTS")
-                .addPage("POINT TABLE")
-                .addPage("FIXTURE"));
+                .addPage("STANDINGS")
+                .addPage("TEAM")
+                .addPage("Bradby Express"));
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);

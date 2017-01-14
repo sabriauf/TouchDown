@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_blue"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp">
+
+    <ImageView
+        android:id="@+id/img_fixture_college_crest"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/image_description"
+        android:scaleType="fitCenter"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/icon_book_placeholder" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/img_fixture_college_crest"
+        android:layout_toRightOf="@id/img_fixture_college_crest"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_fixture_date"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/image_description"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/calendar_icon" />
+
+            <TextView
+                android:id="@+id/txt_fixture_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dummy_score"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_fixture_time"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/image_description"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/clock_icon" />
+
+            <TextView
+                android:id="@+id/txt_fixture_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dummy_score"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_fixture_venue"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/image_description"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/location_icon" />
+
+            <TextView
+                android:id="@+id/txt_fixture_venue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dummy_score"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_fixture_last_match"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/dummy_score"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:textColor="@color/tab_background"
+            android:textSize="18sp" />
+    </LinearLayout>
+</RelativeLayout>

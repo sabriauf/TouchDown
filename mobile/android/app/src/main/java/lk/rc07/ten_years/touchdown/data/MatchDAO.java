@@ -70,6 +70,17 @@ public class MatchDAO extends DBManager {
         return matches;
     }
 
+    public static List<Match> getAllMatches() {
+        List<Match> matches = new ArrayList<>();
+
+        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            matches.add(cursorToMatch(cursor));
+        }
+        cursor.close();
+        return matches;
+    }
+
     private static Match cursorToMatch(Cursor cursor) {
         Match match = new Match();
         match.setIdmatch(cursor.getInt(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_ID)));

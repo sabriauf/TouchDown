@@ -125,21 +125,26 @@ public class LiveFragment extends Fragment {
         Score.setScoreListener(new ScoreListener() {
             @Override
             public void OnNewScoreUpdate(Score score) {
-
-                switch (score.getAction()) {
-                    case START:
-                        matchStartTime = score.getTime();
-                        break;
-                    default:
-                        adapter.addItem(score);
-                        if (score.getTeamId() == match.getTeamOne())
-                            leftScoreTotal += score.getScore();
-                        else
-                            rightScoreTotal += score.getScore();
-                        holder.txt_score_one.setText(leftScoreTotal);
-                        holder.txt_score_two.setText(rightScoreTotal);
-                }
+                updateScore(score, match);
             }
+
+            @Override
+            public void OnScoreUpdate(Score score) {
+                adapter.updateItem(score);
+                calculateScore(match, getScores(match.getIdmatch()));
+                holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
+                holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
+            }
+
+            @Override
+            public void OnScoreRemove(Score score) {
+                adapter.removeItem(score);
+                calculateScore(match, getScores(match.getIdmatch()));
+                holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
+                holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
+            }
+
+
         }, LiveFragment.class.getSimpleName());
 
         if (match == null)
@@ -155,6 +160,31 @@ public class LiveFragment extends Fragment {
                 timer.postDelayed(this, 1000);
             }
         }, 1000);
+    }
+
+    private void updateScore(Score score, Match match) {
+        switch (score.getAction()) {
+            case START:
+                matchStartTime = score.getTime();
+                break;
+            default:
+                adapter.addItem(score);
+                if (score.getTeamId() == match.getTeamOne())
+                    leftScoreTotal += score.getScore();
+                else
+                    rightScoreTotal += score.getScore();
+                holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
+                holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
+        }
+    }
+
+    private List<Score> getScores(int matchId) {
+        DBManager dbManager = DBManager.initializeInstance(
+                DBHelper.getInstance(getContext()));
+        dbManager.openDatabase();
+        List<Score> scores = ScoreDAO.getScores(matchId);
+        dbManager.closeDatabase();
+        return scores;
     }
 
     private void setDefaultView() {

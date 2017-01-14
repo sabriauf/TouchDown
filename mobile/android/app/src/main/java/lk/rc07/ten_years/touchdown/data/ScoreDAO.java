@@ -45,12 +45,14 @@ public class ScoreDAO extends DBManager {
 
         if (!isRoomAlreadyExist) {
             values.put(DBContact.ScoreTable.COLUMN_ID, score.getIdscore());
-            return (mDatabase.insert(DBContact.ScoreTable.TABLE_NAME, null, values) != -1);
+            mDatabase.insert(DBContact.ScoreTable.TABLE_NAME, null, values);
+            return true;
 
         } else {
             String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_ID + "=?";
             String[] WHERE_ARGS = {String.valueOf(score.getIdscore())};
-            return mDatabase.update(DBContact.ScoreTable.TABLE_NAME, values, WHERE_CLAUSE, WHERE_ARGS) == 1;
+            mDatabase.update(DBContact.ScoreTable.TABLE_NAME, values, WHERE_CLAUSE, WHERE_ARGS);
+            return false;
         }
     }
 
@@ -81,6 +83,14 @@ public class ScoreDAO extends DBManager {
         }
         cursor.close();
         return scores;
+    }
+
+    public static boolean deleteScore(int id) {
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_ID + "=? ";
+        String[] WHERE_ARGS = {String.valueOf(id)};
+
+        return mDatabase.delete(DBContact.ScoreTable.TABLE_NAME, WHERE_CLAUSE, WHERE_ARGS) == 1;
     }
 
     private static Score cursorToScore(Cursor cursor) {

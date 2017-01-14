@@ -15,6 +15,7 @@ import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.PlayerDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
+import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.Position;
@@ -52,16 +53,24 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Score score = scores.get(position);
-        AdapterPlayer aPlayer = getPlayer(score.getPlayer());
+        String playerName;
+        int playerNo = 0;
+        if(score.getPlayer() != 0) {
+            AdapterPlayer aPlayer = getPlayer(score.getPlayer());
+            playerName = aPlayer.player.getName();
+            playerNo = aPlayer.position.getPosNo();
+        } else {
+            playerName = getTeamName(score.getTeamId());
+        }
 
-        holder.txt_score_type.setText(String.valueOf(score.getAction()).charAt(0));
+        holder.txt_score_type.setText(String.valueOf(String.valueOf(score.getAction()).charAt(0)));
         if(score.getTeamId() == match.getTeamOne()) {
-            holder.txt_player_no_left.setText(String.format(Locale.getDefault(), PLAYER_NO, aPlayer.position.getPosNo()));
-            holder.txt_player_name_left.setText(aPlayer.player.getName());
+            holder.txt_player_no_left.setText(String.format(Locale.getDefault(), PLAYER_NO, playerNo));
+            holder.txt_player_name_left.setText(playerName);
             setVisibility(holder, true);
         } else {
-            holder.txt_player_no_right.setText(String.format(Locale.getDefault(), PLAYER_NO, aPlayer.position.getPosNo()));
-            holder.txt_player_name_right.setText(aPlayer.player.getName());
+            holder.txt_player_no_right.setText(String.format(Locale.getDefault(), PLAYER_NO, playerNo));
+            holder.txt_player_name_right.setText(playerName);
             setVisibility(holder, false);
         }
     }
@@ -99,6 +108,14 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
         return aPlayer;
     }
 
+    private String getTeamName(int teamId) {
+        dbManager.openDatabase();
+        String team = TeamDAO.getTeam(teamId).getName();
+        dbManager.closeDatabase();
+
+        return team;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView txt_score_type;
@@ -120,6 +137,28 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
     public void addItem(Score score) {
         scores.add(score);
         notifyItemInserted(scores.size() - 1);
+    }
+
+    public void updateItem(Score score) {
+        for (int i=0; i< scores.size(); i++) {
+            Score score1 =  scores.get(i);
+            if(score1.getIdscore() == score.getIdscore()) {
+                scores.set(i, score);
+                notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    public void removeItem(Score score) {
+        for (int i=0; i< scores.size(); i++) {
+            Score score1 =  scores.get(i);
+            if(score1.getIdscore() == score.getIdscore()) {
+                scores.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
     }
 
     private class AdapterPlayer {

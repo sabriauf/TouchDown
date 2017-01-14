@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
 import lk.rc07.ten_years.touchdown.fragments.LiveFragment;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
 
@@ -22,10 +23,14 @@ public class PageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if(position == 0)
-            return new LiveFragment();
-        else
-            return new Fragment();
+        switch (position) {
+            case 0:
+                return new LiveFragment();
+            case 1:
+                return new FixtureFragment();
+            default:
+                return new Fragment();
+        }
     }
 
     @Override

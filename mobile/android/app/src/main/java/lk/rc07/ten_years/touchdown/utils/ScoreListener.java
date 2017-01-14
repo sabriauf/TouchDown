@@ -9,4 +9,8 @@ import lk.rc07.ten_years.touchdown.models.Score;
 public interface ScoreListener {
 
     void OnNewScoreUpdate(Score score);
+
+    void OnScoreUpdate(Score score);
+
+    void OnScoreRemove(Score score);
 }
