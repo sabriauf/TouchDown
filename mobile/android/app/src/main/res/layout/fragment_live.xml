@@ -43,6 +43,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/txt_live_notifier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

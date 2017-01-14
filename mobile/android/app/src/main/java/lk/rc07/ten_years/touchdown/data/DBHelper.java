@@ -90,9 +90,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_PLAYER_POSITION = "CREATE TABLE " + DBContact.PlayerPositionTable.TABLE_NAME + "("
             + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + INTEGER_TYPE + COMMA_SEP
             + DBContact.PlayerPositionTable.COLUMN_POS_ID + INTEGER_TYPE + COMMA_SEP
+            + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + INTEGER_TYPE + COMMA_SEP
             + PRIMARY_KEY  + "(" + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + COMMA_SEP
-            + DBContact.PlayerPositionTable.COLUMN_POS_ID + ")" + COMMA_SEP
-            + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + INTEGER_TYPE
+            + DBContact.PlayerPositionTable.COLUMN_POS_ID + ")"
             + ")";
 
     public DBHelper(Context context) {

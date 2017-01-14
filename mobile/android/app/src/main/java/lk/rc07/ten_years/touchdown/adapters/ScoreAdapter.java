@@ -117,6 +117,11 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
         }
     }
 
+    public void addItem(Score score) {
+        scores.add(score);
+        notifyItemInserted(scores.size() - 1);
+    }
+
     private class AdapterPlayer {
         Player player;
         Position position;

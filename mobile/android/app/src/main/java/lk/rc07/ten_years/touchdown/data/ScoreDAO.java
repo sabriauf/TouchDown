@@ -13,7 +13,7 @@ import lk.rc07.ten_years.touchdown.models.Score;
 
 public class ScoreDAO extends DBManager {
 
-    public static boolean checkIfScoreAvailable(int scoreId) {
+    private static boolean checkIfScoreAvailable(int scoreId) {
         String query = "";
         query = query.concat("SELECT * FROM ");
         query = query.concat(DBContact.ScoreTable.TABLE_NAME);
@@ -68,6 +68,21 @@ public class ScoreDAO extends DBManager {
         return scores;
     }
 
+    public static ArrayList<Score> getActionScore(int matchId, Score.Action action) {
+        ArrayList<Score> scores = new ArrayList<>();
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? and " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=?";
+        String[] WHERE_ARGS = {String.valueOf(matchId) , String.valueOf(action)};
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        while (cursor.moveToNext()) {
+            scores.add(cursorToScore(cursor));
+        }
+        cursor.close();
+        return scores;
+    }
+
     private static Score cursorToScore(Cursor cursor) {
         Score score = new Score();
         int id = cursor.getInt(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_ID));
@@ -77,7 +92,7 @@ public class ScoreDAO extends DBManager {
         score.setDetails(cursor.getString(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_DETAILS)));
         score.setMatchid(cursor.getInt(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_MATCH)));
         score.setPlayer(cursor.getInt(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_PLAYER)));
-        score.setTime(cursor.getDouble(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_TIME)));
+        score.setTime(cursor.getLong(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_TIME)));
         score.setTeamId(cursor.getInt(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_TEAM)));
         return score;
     }

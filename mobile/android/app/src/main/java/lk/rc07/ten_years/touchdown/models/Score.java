@@ -22,13 +22,13 @@ public class Score {
     private int score;
     private String details;
     private int player;
-    private double time;
+    private long time;
     private Action action;
 
     private static Map<String, ScoreListener> scoreListeners;
 
-    enum Action {
-        TRY, CONVERSION, DROP_GOAL, YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM
+    public enum Action {
+        START, HALF_TIME, FULL_TIME, TRY, CONVERSION, DROP_GOAL, YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM
     }
 
     public int getIdscore() {
@@ -71,11 +71,11 @@ public class Score {
         this.player = player;
     }
 
-    public double getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(double time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
