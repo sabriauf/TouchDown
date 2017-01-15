@@ -8,7 +8,7 @@ public class Points {
 
     private int idPoint;
     private int teamId;
-    private int player;
+    private int played;
     private int won;
     private int lost;
     private int points;
@@ -29,12 +29,12 @@ public class Points {
         this.teamId = teamId;
     }
 
-    public int getPlayer() {
-        return player;
+    public int getPlayed() {
+        return played;
     }
 
-    public void setPlayer(int player) {
-        this.player = player;
+    public void setPlayed(int played) {
+        this.played = played;
     }
 
     public int getWon() {

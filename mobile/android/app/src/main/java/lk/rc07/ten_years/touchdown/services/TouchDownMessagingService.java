@@ -48,7 +48,6 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE));
 
             String value = remoteMessage.getData().get(PARAM_PUSH_OBJECT);
             if (value != null && !value.equals("")) {
@@ -56,7 +55,6 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                     JSONObject respond = new JSONObject(value);
                     if (respond.has(PARAM_OBJECT_SCORE)) {
                         Score score = new Gson().fromJson(respond.getJSONObject(PARAM_OBJECT_SCORE).toString(), Score.class);
-
 
                         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
                         dbManager.openDatabase();
@@ -66,9 +64,10 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                         if(score.getAction() != null) {
                             boolean inserted = ScoreDAO.addScore(score);
 
-                            if (inserted)
+                            if (inserted) {
                                 msg.what = Score.WHAT_NEW_SCORE;
-                            else
+                                sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE));
+                            } else
                                 msg.what = Score.WHAT_UPDATE_SCORE;
                         } else {
                             ScoreDAO.deleteScore(score.getIdscore());

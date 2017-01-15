@@ -9,4 +9,8 @@
     <color name="live_back">#EB2E1B</color>
     <color name="tab_background">#F2C311</color>
 
+    <!-- Standings fragment-->
+    <color name="text_title">#FDC010</color>
+    <color name="text_row_royal">#FAE01A</color>
+
 </resources>

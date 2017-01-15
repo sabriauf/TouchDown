@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
 import lk.rc07.ten_years.touchdown.fragments.LiveFragment;
+import lk.rc07.ten_years.touchdown.fragments.StandingFragment;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
 
 /**
@@ -28,6 +29,8 @@ public class PageAdapter extends FragmentPagerAdapter {
                 return new LiveFragment();
             case 1:
                 return new FixtureFragment();
+            case 2:
+                return new StandingFragment();
             default:
                 return new Fragment();
         }

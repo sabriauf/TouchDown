@@ -131,7 +131,7 @@ public class LiveFragment extends Fragment {
             @Override
             public void OnScoreUpdate(Score score) {
                 adapter.updateItem(score);
-                calculateScore(match, getScores(match.getIdmatch()));
+                calculateScore(match, adapter.getScores());
                 holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
                 holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
             }
@@ -139,7 +139,7 @@ public class LiveFragment extends Fragment {
             @Override
             public void OnScoreRemove(Score score) {
                 adapter.removeItem(score);
-                calculateScore(match, getScores(match.getIdmatch()));
+                calculateScore(match, adapter.getScores());
                 holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
                 holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
             }
@@ -178,14 +178,14 @@ public class LiveFragment extends Fragment {
         }
     }
 
-    private List<Score> getScores(int matchId) {
-        DBManager dbManager = DBManager.initializeInstance(
-                DBHelper.getInstance(getContext()));
-        dbManager.openDatabase();
-        List<Score> scores = ScoreDAO.getScores(matchId);
-        dbManager.closeDatabase();
-        return scores;
-    }
+//    private List<Score> getScores(int matchId) {
+//        DBManager dbManager = DBManager.initializeInstance(
+//                DBHelper.getInstance(getContext()));
+//        dbManager.openDatabase();
+//        List<Score> scores = ScoreDAO.getScores(matchId);
+//        dbManager.closeDatabase();
+//        return scores;
+//    }
 
     private void setDefaultView() {
         holder.txt_league.setText("");
@@ -228,6 +228,8 @@ public class LiveFragment extends Fragment {
 
     private void calculateScore(Match match, List<Score> scores) {
 
+        leftScoreTotal = 0;
+        rightScoreTotal = 0;
         for (Score score : scores) {
             if (score.getTeamId() == match.getTeamOne())
                 leftScoreTotal += score.getScore();

@@ -2,6 +2,7 @@ package lk.rc07.ten_years.touchdown.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
@@ -54,6 +55,15 @@ public class AppHandler {
         } else {
             //noinspection deprecation
             return context.getResources().getDrawable(resource);
+        }
+    }
+
+    public static int getColor(Context context, int resource) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return context.getResources().getColor(resource, context.getTheme());
+        } else {
+            //noinspection deprecation
+            return context.getResources().getColor(resource);
         }
     }
 }

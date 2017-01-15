@@ -123,14 +123,14 @@ public class Score {
     private static void notifyOnScoreUpdate(Score score) {
         for (ScoreListener listener : scoreListeners.values()) {
             if (listener != null)
-                listener.OnNewScoreUpdate(score);
+                listener.OnScoreUpdate(score);
         }
     }
 
     private static void notifyOnScoreRemove(Score score) {
         for (ScoreListener listener : scoreListeners.values()) {
             if (listener != null)
-                listener.OnNewScoreUpdate(score);
+                listener.OnScoreRemove(score);
         }
     }
 

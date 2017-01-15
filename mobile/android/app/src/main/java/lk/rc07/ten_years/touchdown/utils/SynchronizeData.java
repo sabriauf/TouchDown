@@ -56,7 +56,7 @@ public class SynchronizeData extends AsyncTask<DownloadMeta, Void, String> {
 
                 JsonStatus status = new Gson().fromJson(respond.getJSONObject(JSON_STATUS_OBJECT).toString(), JsonStatus.class);
 
-                if(status.isSuccess())
+                if (status.isSuccess())
                     notifySuccess(respond.toString(), status.getCode());
                 else
                     notifyFailure(status.getDescription(), status.getCode());
@@ -73,7 +73,10 @@ public class SynchronizeData extends AsyncTask<DownloadMeta, Void, String> {
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
 
-        parseJsonString(cleanResponse(response));
+        if (response != null)
+            parseJsonString(cleanResponse(response));
+        else
+            notifyFailure("", 0);
     }
 
     private String cleanResponse(String rawString) {
@@ -83,13 +86,13 @@ public class SynchronizeData extends AsyncTask<DownloadMeta, Void, String> {
     }
 
     private void notifyFailure(String message, int code) {
-        for(String key: listeners.keySet()) {
+        for (String key : listeners.keySet()) {
             listeners.get(key).onDownloadFailed(message, meta, code);
         }
     }
 
     private void notifySuccess(String message, int code) {
-        for(String key: listeners.keySet()) {
+        for (String key : listeners.keySet()) {
             listeners.get(key).onDownloadSuccess(message, meta, code);
         }
     }

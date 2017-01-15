@@ -1,5 +1,6 @@
 package lk.rc07.ten_years.touchdown.activities;
 
+import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager(), new PageBuilder()
                 .addPage("LIVE")
                 .addPage("FIXTURE")
-                .addPage("STANDINGS")
+                .addPage("POINTS")
                 .addPage("TEAM")
                 .addPage("Bradby Express"));
 
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         syncData.setOnDownloadListener(MainActivity.class.getSimpleName(), new SynchronizeData.DownloadListener() {
             @Override
             public void onDownloadSuccess(final String response, DownloadMeta meta, int code) {
+                getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit().
+                        putLong(Constant.PREFERENCES_LAST_SYNC, System.currentTimeMillis()).apply();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

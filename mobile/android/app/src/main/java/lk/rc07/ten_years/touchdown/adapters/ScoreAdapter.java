@@ -161,6 +161,10 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
         }
     }
 
+    public List<Score> getScores() {
+        return scores;
+    }
+
     private class AdapterPlayer {
         Player player;
         Position position;
