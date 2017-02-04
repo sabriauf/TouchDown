@@ -19,6 +19,9 @@ public class Constant {
     public static final String JSON_OBJECT_MATCH = "matches";
     public static final String JSON_OBJECT_TEAMS = "teams";
     public static final String JSON_OBJECT_POSITIONS = "positions";
+    public static final String JSON_OBJECT_POINTS = "points";
+    public static final String JSON_OBJECT_PLAYERS = "players";
+    public static final String JSON_OBJECT_PLAYER_POS = "playerPosition";
 
     //Preferences params
     public static final String MY_PREFERENCES = "my_preferences";

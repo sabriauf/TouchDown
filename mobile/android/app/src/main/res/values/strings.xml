@@ -6,4 +6,7 @@
     <string name="default_live_match_time">00:00</string>
     <string name="image_description" />
     <string name="updated_on">Updated on :</string>
+    <string name="player_name_default">Player Name</string>
+    <string name="position_name_default">Position</string>
+    <string name="default_player_pos">18</string>
 </resources>

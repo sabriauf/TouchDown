@@ -28,6 +28,8 @@ class DBContact {
         static final String COLUMN_TEAM = "player_team";
         static final String COLUMN_WEIGHT = "player_weight";
         static final String COLUMN_HEIGHT = "player_height";
+        static final String COLUMN_COLORS = "player_colors";
+        static final String COLUMN_BIRTH = "player_birth";
     }
 
     static abstract class PlayerPositionTable {

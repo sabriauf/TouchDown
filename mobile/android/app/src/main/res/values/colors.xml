@@ -13,4 +13,7 @@
     <color name="text_title">#FDC010</color>
     <color name="text_row_royal">#FAE01A</color>
 
+    <!-- Players Dialog -->
+    <color name="players_info_background">#724b0c</color>
+
 </resources>

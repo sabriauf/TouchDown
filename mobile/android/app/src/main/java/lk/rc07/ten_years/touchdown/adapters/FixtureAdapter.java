@@ -45,7 +45,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<FixtureAdapter.ViewHold
         dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
 
         this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, context);
+        options = AppHandler.getImageOption(imageLoader, context, R.drawable.icon_book_placeholder);
     }
 
     @Override

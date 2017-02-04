@@ -15,10 +15,13 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 
 import java.util.HashMap;
+import java.util.List;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
+import lk.rc07.ten_years.touchdown.models.Match;
 
 /**
  * Created by Sabri on 1/13/2017. application general methods
@@ -39,8 +42,8 @@ public class AppHandler {
         return headers;
     }
 
-    public static DisplayImageOptions getImageOption(ImageLoader imageLoader, Context context) {
-        @SuppressWarnings("deprecation") DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.ARGB_8888)
+    public static DisplayImageOptions getImageOption(ImageLoader imageLoader, Context context, int resource) {
+        @SuppressWarnings("deprecation") DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(resource).cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.ARGB_8888)
                 .displayer(new SimpleBitmapDisplayer()).build();
         if (!imageLoader.isInited()) {
             ImageLoaderConfiguration imageConfig = new ImageLoaderConfiguration.Builder(context).memoryCache(new WeakMemoryCache()).threadPoolSize(10).denyCacheImageMultipleSizesInMemory().build();
@@ -64,6 +67,20 @@ public class AppHandler {
         } else {
             //noinspection deprecation
             return context.getResources().getColor(resource);
+        }
+    }
+
+    public static Match getDisplayMatch() {
+
+        List<Match> matches = MatchDAO.getMatchesOnStatus(Match.Status.PROGRESS);
+        if (matches.size() > 0)
+            return matches.get(matches.size() - 1);
+        else {
+            matches = MatchDAO.getMatchesOnStatus(Match.Status.DONE);
+            if (matches.size() > 0)
+                return matches.get(matches.size() - 1);
+            else
+                return null;
         }
     }
 }

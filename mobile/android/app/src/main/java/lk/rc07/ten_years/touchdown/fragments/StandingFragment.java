@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
@@ -87,26 +88,27 @@ public class StandingFragment extends Fragment {
 
     private TableRow addRow(Points points) {
         final TableRow tr1 = new TableRow(getContext());
+        tr1.setPadding(30, 80, 0, 0);
         Team team = TeamDAO.getTeam(points.getTeamId());
-        boolean isRoyal = (team.getIdTeam() == 1);
-        tr1.addView(addTextView(team.getName(), isRoyal));
-        tr1.addView(addTextView(String.valueOf(points.getPlayed()), isRoyal));
-        tr1.addView(addTextView(String.valueOf(points.getWon()), isRoyal));
-        tr1.addView(addTextView(String.valueOf(points.getPlayed() - (points.getWon() + points.getLost())), isRoyal));
-        tr1.addView(addTextView(String.valueOf(points.getLost()), isRoyal));
-        tr1.addView(addTextView(String.valueOf(points.getPoints()), isRoyal));
+        boolean isRoyal = (team.getIdTeam() == AppConfig.HOME_TEAM_ID);
+        tr1.addView(addTextView(team.getName(), isRoyal, Gravity.START));
+        tr1.addView(addTextView(String.valueOf(points.getPlayed()), isRoyal, Gravity.CENTER_HORIZONTAL));
+        tr1.addView(addTextView(String.valueOf(points.getWon()), isRoyal, Gravity.CENTER_HORIZONTAL));
+        tr1.addView(addTextView(String.valueOf(points.getPlayed() - (points.getWon() + points.getLost())), isRoyal, Gravity.CENTER_HORIZONTAL));
+        tr1.addView(addTextView(String.valueOf(points.getLost()), isRoyal, Gravity.CENTER_HORIZONTAL));
+        tr1.addView(addTextView(String.valueOf(points.getPoints()), isRoyal, Gravity.CENTER_HORIZONTAL));
 
         return tr1;
     }
 
-    private TextView addTextView(String data, boolean isRoyal) {
+    private TextView addTextView(String data, boolean isRoyal, int gravity) {
         TextView textview = new TextView(getContext());
         textview.setText(data);
         if (isRoyal)
             textview.setTextColor(AppHandler.getColor(getContext(), R.color.text_row_royal));
         else
             textview.setTextColor(Color.WHITE);
-        textview.setGravity(Gravity.CENTER_HORIZONTAL);
+        textview.setGravity(gravity);
         textview.setTextSize(TEXT_SIZE);
         return textview;
     }

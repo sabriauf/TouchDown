@@ -50,7 +50,7 @@ public class PositionDAO extends DBManager {
     static Position getPosition(int posId) {
         Position position = null;
 
-        String WHERE_CLAUSE = DBContact.PlayerTable.COLUMN_ID + "=?";
+        String WHERE_CLAUSE = DBContact.PositionTable.COLUMN_ID + "=?";
         String[] WHERE_ARGS = {String.valueOf(posId)};
 
         Cursor cursor = mDatabase.query(DBContact.PositionTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);

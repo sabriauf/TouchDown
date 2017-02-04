@@ -57,7 +57,7 @@ public class LiveFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_live, container, false);
 
         this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, getContext());
+        options = AppHandler.getImageOption(imageLoader, getContext(), R.drawable.icon_book_placeholder);
 
         parentView = view;
         setData(view, null, null, null);
@@ -80,7 +80,7 @@ public class LiveFragment extends Fragment {
                     DBHelper.getInstance(getContext()));
             dbManager.openDatabase();
 
-            final Match match = getDisplayMatch();
+            final Match match = AppHandler.getDisplayMatch();
             List<Score> scores = null;
             if (match != null)
                 scores = ScoreDAO.getScores(match.getIdmatch());
@@ -209,20 +209,6 @@ public class LiveFragment extends Fragment {
         } else {
             holder.txt_live.setVisibility(View.GONE);
             holder.txt_time.setText(match.getResult());
-        }
-    }
-
-    private Match getDisplayMatch() {
-
-        List<Match> matches = MatchDAO.getMatchesOnStatus(Match.Status.PROGRESS);
-        if (matches.size() > 0)
-            return matches.get(matches.size() - 1);
-        else {
-            matches = MatchDAO.getMatchesOnStatus(Match.Status.DONE);
-            if (matches.size() > 0)
-                return matches.get(matches.size() - 1);
-            else
-                return null;
         }
     }
 

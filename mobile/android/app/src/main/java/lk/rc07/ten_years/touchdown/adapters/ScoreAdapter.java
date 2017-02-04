@@ -14,11 +14,9 @@ import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.PlayerDAO;
-import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
+import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.models.Match;
-import lk.rc07.ten_years.touchdown.models.Player;
-import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Score;
 
 /**
@@ -57,8 +55,8 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
         int playerNo = 0;
         if(score.getPlayer() != 0) {
             AdapterPlayer aPlayer = getPlayer(score.getPlayer());
-            playerName = aPlayer.player.getName();
-            playerNo = aPlayer.position.getPosNo();
+            playerName = aPlayer.getPlayer().getName();
+            playerNo = aPlayer.getPosition().getPosNo();
         } else {
             playerName = getTeamName(score.getTeamId());
         }
@@ -98,11 +96,10 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
     }
 
     private AdapterPlayer getPlayer(int playerId) {
-        AdapterPlayer aPlayer = new AdapterPlayer();
+        AdapterPlayer aPlayer;
 
         dbManager.openDatabase();
-        aPlayer.player = PlayerDAO.getPlayer(playerId);
-        aPlayer.position = PlayerPositionDAO.getPosition(playerId, match.getIdmatch());
+        aPlayer = PlayerDAO.getAdapterPlayer(playerId, match.getIdmatch());
         dbManager.closeDatabase();
 
         return aPlayer;
@@ -163,10 +160,5 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ViewHolder> 
 
     public List<Score> getScores() {
         return scores;
-    }
-
-    private class AdapterPlayer {
-        Player player;
-        Position position;
     }
 }

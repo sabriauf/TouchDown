@@ -1,20 +1,24 @@
 package lk.rc07.ten_years.touchdown.activities;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,10 +29,16 @@ import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
+import lk.rc07.ten_years.touchdown.data.PointsDAO;
 import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
 import lk.rc07.ten_years.touchdown.models.Match;
+import lk.rc07.ten_years.touchdown.models.Player;
+import lk.rc07.ten_years.touchdown.models.PlayerPosition;
+import lk.rc07.ten_years.touchdown.models.Points;
 import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.DownloadManager;
@@ -44,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
 
         PageAdapter adapter = new PageAdapter(
@@ -95,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
         dbManager.openDatabase();
 
+        response = AppConfig.TEMP_SYNC_FILE;
+
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new JsonDateSerializer("yyyy-MM-dd kk:mm"));
         Gson gson = gsonBuilder.create();
@@ -109,6 +123,16 @@ public class MainActivity extends AppCompatActivity {
 
             if (jsonObject.has(Constant.JSON_OBJECT_POSITIONS))
                 savePositions(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_POSITIONS).toString());
+
+            if (jsonObject.has(Constant.JSON_OBJECT_POINTS))
+                savePoints(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_POINTS).toString());
+
+            if (jsonObject.has(Constant.JSON_OBJECT_PLAYERS))
+                savePlayers(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYERS).toString());
+
+            if (jsonObject.has(Constant.JSON_OBJECT_PLAYER_POS))
+                savePlayerPos(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYER_POS).toString());
+
 
         } catch (JSONException ex) {
             ex.printStackTrace();
@@ -145,5 +169,35 @@ public class MainActivity extends AppCompatActivity {
 
         for (Position position : positions)
             PositionDAO.addPosition(position);
+    }
+
+    private void savePoints(Gson gson, String response) {
+        Type messageType = new TypeToken<List<Points>>() {
+        }.getType();
+
+        List<Points> points = gson.fromJson(response, messageType);
+
+        for (Points point : points)
+            PointsDAO.addPoints(point);
+    }
+
+    private void savePlayers(Gson gson, String response) {
+        Type messageType = new TypeToken<List<Player>>() {
+        }.getType();
+
+        List<Player> players = gson.fromJson(response, messageType);
+
+        for (Player player : players)
+            PlayerDAO.addPlayer(player);
+    }
+
+    private void savePlayerPos(Gson gson, String response) {
+        Type messageType = new TypeToken<List<PlayerPosition>>() {
+        }.getType();
+
+        List<PlayerPosition> players = gson.fromJson(response, messageType);
+
+        for (PlayerPosition player : players)
+            PlayerPositionDAO.addPlayerPosition(player);
     }
 }
