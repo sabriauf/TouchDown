@@ -8,6 +8,7 @@
     <color name="background_blue">#042F5C</color>
     <color name="live_back">#EB2E1B</color>
     <color name="tab_background">#F2C311</color>
+    <color name="timer_clock">#08d31c</color>
 
     <!-- Standings fragment-->
     <color name="text_title">#FDC010</color>

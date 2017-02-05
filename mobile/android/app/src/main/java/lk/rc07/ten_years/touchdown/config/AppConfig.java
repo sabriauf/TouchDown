@@ -10,6 +10,7 @@ public class AppConfig {
     public static final int API_VERSION = 1;
 
     public static final String SYNCHRONIZE_URL = "http://redpixelcreations.com/touchdown/sync.php";
+    public static final String BRADBY_EXPRESS_URL = "http://www.bradbyexpress.com/";
 
     public static final String PLAYER_HEADER_LINK = "http://www.thepapare.com/wp-content/uploads/TP-331-1068x713.jpg";
 

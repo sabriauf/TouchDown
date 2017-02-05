@@ -2,6 +2,9 @@ package lk.rc07.ten_years.touchdown.utils;
 
 import android.content.Context;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 import lk.rc07.ten_years.touchdown.R;
 
 /**
@@ -27,9 +30,11 @@ public class TimeFormatter {
     public static final String DATE_FORMAT_ROUGH = "MMM yyyy";
 
     public static String millisToGameTime(Context context, Long time) {
-        if(time != 0) {
-            long difference = System.currentTimeMillis() - time;
-            return String.valueOf(difference / ONE_MINUTE) + ":" + String.valueOf(difference % ONE_MINUTE);
+        if (time != 0) {
+            long difference = Calendar.getInstance().getTimeInMillis() - time;
+            int min = (int) (difference / ONE_MINUTE);
+            int sec = (int) ((difference / ONE_SECOND) - (min * SECONDS));
+            return String.format(Locale.getDefault(), "%02d", min) + ":" + String.format(Locale.getDefault(), "%02d", sec);
         } else
             return context.getString(R.string.default_live_match_time);
     }

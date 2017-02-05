@@ -71,8 +71,8 @@
                 android:layout_weight="2"
                 android:gravity="center"
                 android:text="22:30"
-                android:textColor="@android:color/white"
-                android:textSize="28sp" />
+                android:textColor="@color/timer_clock"
+                android:textSize="42sp" />
         </LinearLayout>
 
         <include

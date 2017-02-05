@@ -17,7 +17,7 @@ public class Match {
     private String round;
 
     public enum Status {
-        PENDING, PROGRESS, DONE, CALLED_OFF, CANCLED
+        PENDING, PROGRESS, DONE, CALLED_OFF, CANCELED
     }
 
     public int getIdmatch() {

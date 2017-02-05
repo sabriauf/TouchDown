@@ -1,5 +1,6 @@
 package lk.rc07.ten_years.touchdown.fragments;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -20,7 +21,6 @@ import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.ScoreAdapter;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
-import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.Match;
@@ -37,6 +37,7 @@ import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 
 public class LiveFragment extends Fragment {
 
+    private static final String DIGITAL_CLOCK_FONT = "fonts/digital_7.ttf";
     //instances
     private ScoreAdapter adapter;
     private ImageLoader imageLoader;
@@ -152,19 +153,29 @@ public class LiveFragment extends Fragment {
         else
             setMatchView(match, tOne, tTwo);
 
+
         final Handler timer = new Handler();
         timer.postDelayed(new Runnable() {
             @Override
             public void run() {
-                holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
-                timer.postDelayed(this, 1000);
+                if (match != null && match.getStatus() == Match.Status.PROGRESS) {
+                    holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
+                    timer.postDelayed(this, 1000);
+                }
             }
         }, 1000);
+
     }
 
     private void updateScore(Score score, Match match) {
         switch (score.getAction()) {
             case START:
+                matchStartTime = score.getTime();
+                break;
+            case HALF_TIME:
+                matchStartTime = 0;
+                break;
+            case SECOND_HALF:
                 matchStartTime = score.getTime();
                 break;
             default:
@@ -239,6 +250,8 @@ public class LiveFragment extends Fragment {
             txt_round = (AutoScaleTextView) view.findViewById(R.id.txt_round_name);
             txt_live = (TextView) view.findViewById(R.id.txt_live_notifier);
             txt_time = (TextView) view.findViewById(R.id.txt_match_time);
+
+            txt_time.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), DIGITAL_CLOCK_FONT));
 
             View view_team_one = view.findViewById(R.id.layout_score_team_one);
             txt_score_one = (AutoScaleTextView) view_team_one.findViewById(R.id.txt_score);

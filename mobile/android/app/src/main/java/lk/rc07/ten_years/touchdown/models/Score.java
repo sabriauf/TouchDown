@@ -1,15 +1,11 @@
 package lk.rc07.ten_years.touchdown.models;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import lk.rc07.ten_years.touchdown.data.DBHelper;
-import lk.rc07.ten_years.touchdown.data.DBManager;
-import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.utils.ScoreListener;
 
 /**
@@ -35,7 +31,7 @@ public class Score {
     private static Map<String, ScoreListener> scoreListeners;
 
     public enum Action {
-        START, HALF_TIME, FULL_TIME, TRY, CONVERSION, DROP_GOAL, YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM
+        START, HALF_TIME, SECOND_HALF, FULL_TIME, TRY, CONVERSION, DROP_GOAL, YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM
     }
 
     public int getIdscore() {

@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import lk.rc07.ten_years.touchdown.fragments.BradbyExpressFragment;
 import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
 import lk.rc07.ten_years.touchdown.fragments.LiveFragment;
 import lk.rc07.ten_years.touchdown.fragments.PlayersFragment;
@@ -34,6 +35,8 @@ public class PageAdapter extends FragmentPagerAdapter {
                 return new StandingFragment();
             case 3:
                 return new PlayersFragment();
+            case 4:
+                return new BradbyExpressFragment();
             default:
                 return new Fragment();
         }
