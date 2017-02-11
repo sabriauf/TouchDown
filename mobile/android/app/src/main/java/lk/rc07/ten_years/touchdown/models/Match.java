@@ -1,5 +1,7 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Sabri on 12/15/2016. data model of Match
  */
@@ -10,14 +12,18 @@ public class Match {
     private int teamOne;
     private int teamTwo;
     private String venue;
+    @SerializedName("date")
     private long matchDate;
     private Status status;
     private String result;
     private String league;
     private String round;
+    private double longitude;
+    private double latitude;
+    private String lastMatch;
 
     public enum Status {
-        PENDING, PROGRESS, DONE, CALLED_OFF, CANCELED
+        PENDING, PROGRESS, DONE, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF
     }
 
     public int getIdmatch() {
@@ -90,5 +96,29 @@ public class Match {
 
     public void setRound(String round) {
         this.round = round;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLastMatch() {
+        return lastMatch;
+    }
+
+    public void setLastMatch(String lastMatch) {
+        this.lastMatch = lastMatch;
     }
 }

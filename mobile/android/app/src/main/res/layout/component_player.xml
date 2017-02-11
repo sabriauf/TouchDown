@@ -15,47 +15,46 @@
         android:scaleType="centerCrop"
         android:src="@drawable/default_profile_pic" />
 
-    <TextView
-        android:id="@+id/txt_player_id"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
-        android:background="@drawable/blue_round_background"
-        android:gravity="center"
-        android:text="@string/default_player_pos"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    <!--<TextView-->
+        <!--android:id="@+id/txt_player_id"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@drawable/player_position_ball"-->
+        <!--android:gravity="center"-->
+        <!--android:text="@string/default_player_pos"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textSize="18sp"-->
+        <!--android:textStyle="bold" />-->
 
-    <LinearLayout
-        android:id="@+id/layout_player_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/img_player_pic"
-        android:orientation="vertical"
-        android:background="#99FFFFFF"
-        android:padding="20dp">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/layout_player_info"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@id/img_player_pic"-->
+        <!--android:orientation="vertical"-->
+        <!--android:padding="20dp">-->
 
-        <TextView
-            android:id="@+id/txt_player_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/player_name_default"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+        <!--<TextView-->
+            <!--android:id="@+id/txt_player_name"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/player_name_default"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textStyle="bold" />-->
 
-        <TextView
-            android:id="@+id/txt_player_position"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/position_name_default"
-            android:textColor="@color/tab_background"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        <!--<TextView-->
+            <!--android:id="@+id/txt_player_position"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:text="@string/position_name_default"-->
+            <!--android:textColor="@color/tab_background"-->
+            <!--android:textSize="14sp"-->
+            <!--android:textStyle="bold" />-->
+    <!--</LinearLayout>-->
 
 </RelativeLayout>

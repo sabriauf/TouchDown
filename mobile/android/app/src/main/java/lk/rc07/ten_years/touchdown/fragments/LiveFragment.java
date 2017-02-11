@@ -21,6 +21,7 @@ import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.ScoreAdapter;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.Match;
@@ -43,6 +44,7 @@ public class LiveFragment extends Fragment {
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private ViewHolder holder;
+    private Handler timer;
 
     //primary data
     private long matchStartTime = 0;
@@ -81,7 +83,7 @@ public class LiveFragment extends Fragment {
                     DBHelper.getInstance(getContext()));
             dbManager.openDatabase();
 
-            final Match match = AppHandler.getDisplayMatch();
+            final Match match = MatchDAO.getDisplayMatch();
             List<Score> scores = null;
             if (match != null)
                 scores = ScoreDAO.getScores(match.getIdmatch());
@@ -91,9 +93,7 @@ public class LiveFragment extends Fragment {
 
             //set matchStart time
             if (match != null) {
-                List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.START);
-                if (startScores.size() > 0)
-                    matchStartTime = startScores.get(0).getTime();
+                getMatchStartTime(match);
                 calculateScore(match, scores);
 
                 tOne = TeamDAO.getTeam(match.getTeamOne());
@@ -120,6 +120,18 @@ public class LiveFragment extends Fragment {
         }
     });
 
+    private void getMatchStartTime(Match match) {
+        List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.SECOND_HALF);
+        if (startScores.size() > 0)
+            matchStartTime = startScores.get(0).getTime();
+        else {
+            startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.START);
+            if (startScores.size() > 0)
+                matchStartTime = startScores.get(0).getTime();
+        }
+    }
+
+
     private void setData(View view, final Match match, Team tOne, Team tTwo) {
         holder = new ViewHolder(view);
 
@@ -131,6 +143,8 @@ public class LiveFragment extends Fragment {
 
             @Override
             public void OnScoreUpdate(Score score) {
+                if (score.getAction() == Score.Action.START)
+                    setTimer(match);
                 adapter.updateItem(score);
                 calculateScore(match, adapter.getScores());
                 holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
@@ -153,24 +167,29 @@ public class LiveFragment extends Fragment {
         else
             setMatchView(match, tOne, tTwo);
 
+        setTimer(match);
+    }
 
-        final Handler timer = new Handler();
+    private void setTimer(final Match match) {
+        timer = new Handler();
         timer.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (match != null && match.getStatus() == Match.Status.PROGRESS) {
+                if (match != null && (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF)) {
                     holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
                     timer.postDelayed(this, 1000);
                 }
             }
         }, 1000);
-
     }
 
     private void updateScore(Score score, Match match) {
         switch (score.getAction()) {
             case START:
                 matchStartTime = score.getTime();
+                holder.txt_live.setVisibility(View.VISIBLE);
+                setTimerFont(true);
+                setTimer(match);
                 break;
             case HALF_TIME:
                 matchStartTime = 0;
@@ -189,21 +208,13 @@ public class LiveFragment extends Fragment {
         }
     }
 
-//    private List<Score> getScores(int matchId) {
-//        DBManager dbManager = DBManager.initializeInstance(
-//                DBHelper.getInstance(getContext()));
-//        dbManager.openDatabase();
-//        List<Score> scores = ScoreDAO.getScores(matchId);
-//        dbManager.closeDatabase();
-//        return scores;
-//    }
-
     private void setDefaultView() {
         holder.txt_league.setText("");
         holder.txt_round.setText("");
         holder.txt_score_two.setText("0");
         holder.txt_score_one.setText("0");
         holder.txt_live.setVisibility(View.GONE);
+        setTimerFont(true);
         holder.txt_time.setText(R.string.default_live_match_time);
     }
 
@@ -214,12 +225,26 @@ public class LiveFragment extends Fragment {
         holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
         imageLoader.displayImage(tOne.getLogo_url(), holder.img_team_one_logo, options);
         imageLoader.displayImage(tTwo.getLogo_url(), holder.img_team_two_logo, options);
-        if (match.getStatus() == Match.Status.PROGRESS) {
+        if (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF) {
             holder.txt_live.setVisibility(View.VISIBLE);
+            setTimerFont(true);
             holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
         } else {
             holder.txt_live.setVisibility(View.GONE);
+            setTimerFont(false);
             holder.txt_time.setText(match.getResult());
+        }
+    }
+
+    private void setTimerFont(boolean isTimer) {
+        if(isTimer) {
+            holder.txt_time.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), DIGITAL_CLOCK_FONT));
+            holder.txt_time.setTextSize(42);
+            holder.txt_time.setTextColor(AppHandler.getColor(getActivity(), R.color.timer_clock));
+        } else {
+            holder.txt_time.setTypeface(Typeface.SANS_SERIF);
+            holder.txt_time.setTextSize(22);
+            holder.txt_time.setTextColor(AppHandler.getColor(getActivity(), R.color.text_title));
         }
     }
 
@@ -250,8 +275,6 @@ public class LiveFragment extends Fragment {
             txt_round = (AutoScaleTextView) view.findViewById(R.id.txt_round_name);
             txt_live = (TextView) view.findViewById(R.id.txt_live_notifier);
             txt_time = (TextView) view.findViewById(R.id.txt_match_time);
-
-            txt_time.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), DIGITAL_CLOCK_FONT));
 
             View view_team_one = view.findViewById(R.id.layout_score_team_one);
             txt_score_one = (AutoScaleTextView) view_team_one.findViewById(R.id.txt_score);

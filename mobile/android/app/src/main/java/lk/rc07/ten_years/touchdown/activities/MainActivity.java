@@ -13,13 +13,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import lk.rc07.ten_years.touchdown.R;
@@ -51,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     //constants
     private final String SERVER_ERROR_MESSAGE = "Server error: Code - %d : Message - %s";
 
+    //instances
+    private PageAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,20 @@ public class MainActivity extends AppCompatActivity {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
 
-        PageAdapter adapter = new PageAdapter(
+        ViewPager viewPager = setTabView();
+
+        //on Push notification go to request tab
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constant.EXTRA_FRAGMENT_ID)) {
+            int fragmentId = getIntent().getExtras().getInt(Constant.EXTRA_FRAGMENT_ID);
+            if (adapter.getCount() > fragmentId)
+                viewPager.setCurrentItem(fragmentId, true);
+        }
+
+        syncData();
+    }
+
+    private ViewPager setTabView() {
+        adapter = new PageAdapter(
                 getSupportFragmentManager(), new PageBuilder()
                 .addPage("LIVE")
                 .addPage("FIXTURE")
@@ -72,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpager_tab);
         viewPagerTab.setViewPager(viewPager);
 
-        syncData();
+        return viewPager;
     }
 
     private void syncData() {
@@ -96,9 +111,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        HashMap<String, String> urlParams = new HashMap<>();
+//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
+//                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP))); //TODO
+        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
+
         DownloadMeta meta = new DownloadMeta();
         meta.setUrl(AppConfig.SYNCHRONIZE_URL);
         meta.setRequestMethod(DownloadManager.GET_REQUEST);
+        meta.setUrlParams(urlParams);
 
         syncData.execute(meta);
     }
@@ -138,6 +159,13 @@ public class MainActivity extends AppCompatActivity {
             ex.printStackTrace();
         } finally {
             dbManager.closeDatabase();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 

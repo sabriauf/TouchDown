@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,7 +39,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         this.players = players;
 
         this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, activity, R.drawable.default_profile_pic);
+        options = AppHandler.getImageOption(imageLoader, activity.getApplicationContext(), R.drawable.default_profile_pic);
     }
 
     @Override
@@ -53,15 +52,10 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     public void onBindViewHolder(PlayerAdapter.ViewHolder holder, int position) {
 
         final int pos = holder.getAdapterPosition();
-        holder.txt_name.setText(players.get(pos).getPlayer().getName());
-        holder.txt_pos_no.setText(String.valueOf(players.get(pos).getPosition().getIdPosition()));
-        holder.txt_position.setText(players.get(pos).getPosition().getPosName());
 
         imageLoader.displayImage(players.get(pos).getPlayer().getImg_url(), holder.img_profile_pic, options);
+//        imageLoader.displayImage("http://redpixelcreations.com/touchdown/players/player.png", holder.img_profile_pic, options);
 
-        final View txt_name = holder.txt_name;
-        final View txt_pos = holder.txt_position;
-        final View txt_pos_id = holder.txt_pos_no;
         final View img_prof_pic = holder.img_profile_pic;
         holder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,10 +67,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
-                            Pair.create(txt_name, "profile_pic"),
-                            Pair.create(txt_pos, "profile_name"),
-                            Pair.create(img_prof_pic, "profile_position"),
-                            Pair.create(txt_pos_id, "profile_position_id"));
+                            Pair.create(img_prof_pic, "profile_pic"));
                     activity.startActivity(intent, options.toBundle());
                 } else {
                     activity.startActivity(intent);
@@ -96,17 +87,11 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout parentView;
-        TextView txt_name;
-        TextView txt_position;
-        TextView txt_pos_no;
         ImageView img_profile_pic;
 
         ViewHolder(View itemView) {
             super(itemView);
             parentView = (RelativeLayout) itemView.findViewById(R.id.layout_player_parent);
-            txt_name = (TextView) itemView.findViewById(R.id.txt_player_name);
-            txt_position = (TextView) itemView.findViewById(R.id.txt_player_position);
-            txt_pos_no = (TextView) itemView.findViewById(R.id.txt_player_id);
             img_profile_pic = (ImageView) itemView.findViewById(R.id.img_player_pic);
         }
     }

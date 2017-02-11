@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.MainActivity;
+import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
@@ -32,10 +33,11 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
     //constants
     private static final String TAG = TouchDownMessagingService.class.getSimpleName();
-    private final String PARAM_PUSH_TITLE = "title";
-    private final String PARAM_PUSH_MESSAGE = "message";
-    private final String PARAM_PUSH_OBJECT = "object";
-    private final String PARAM_OBJECT_SCORE = "score";
+    private static final String PARAM_PUSH_TITLE = "title";
+    private static final String PARAM_PUSH_MESSAGE = "message";
+    private static final String PARAM_PUSH_FRAGMENT = "fragment";
+    private static final String PARAM_PUSH_OBJECT = "object";
+    private static final String PARAM_OBJECT_SCORE = "score";
 
     /**
      * Called when message is received.
@@ -49,6 +51,10 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
+            int fragmentId = 0;
+            if (remoteMessage.getData().containsKey(PARAM_PUSH_FRAGMENT))
+                fragmentId = Integer.parseInt(remoteMessage.getData().get(PARAM_PUSH_FRAGMENT));
+
             String value = remoteMessage.getData().get(PARAM_PUSH_OBJECT);
             if (value != null && !value.equals("")) {
                 try {
@@ -61,12 +67,13 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
                         Message msg = new Message();
                         msg.obj = score;
-                        if(score.getAction() != null) {
+                        if (score.getAction() != null) {
                             boolean inserted = ScoreDAO.addScore(score);
 
                             if (inserted) {
                                 msg.what = Score.WHAT_NEW_SCORE;
-                                sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE));
+                                sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE),
+                                        fragmentId);
                             } else
                                 msg.what = Score.WHAT_UPDATE_SCORE;
                         } else {
@@ -81,11 +88,13 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 } catch (JSONException ex) {
                     ex.printStackTrace();
                 }
+            } else {
+                sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE), fragmentId);
             }
         }
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), 0);
         }
     }
 
@@ -94,10 +103,11 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title, String messageBody) {
+    private void sendNotification(String title, String messageBody, int fragmentId) {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(Constant.EXTRA_FRAGMENT_ID, fragmentId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

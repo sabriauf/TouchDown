@@ -18,6 +18,9 @@ public class Score {
     public static final int WHAT_NEW_SCORE = 1001;
     public static final int WHAT_UPDATE_SCORE = 1002;
     public static final int WHAT_REMOVE_SCORE = 1003;
+    public static final int WHAT_ACTION_SCORE = 1;
+    public static final int WHAT_ACTION_EVENT = 2;
+    public static final int WHAT_ACTION_TIME = 3;
 
     private int idscore;
     private int matchid;
@@ -31,7 +34,7 @@ public class Score {
     private static Map<String, ScoreListener> scoreListeners;
 
     public enum Action {
-        START, HALF_TIME, SECOND_HALF, FULL_TIME, TRY, CONVERSION, DROP_GOAL, YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM
+        START, HALF_TIME, SECOND_HALF, FULL_TIME, TRY, CONVERSION, DROP_GOAL, YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM;
     }
 
     public int getIdscore() {
@@ -84,6 +87,53 @@ public class Score {
 
     public Action getAction() {
         return action;
+    }
+
+    public String getActionString() {
+        switch (action) {
+            case FULL_TIME:
+                return "Full Time";
+            case HALF_TIME:
+                return "Half Time";
+            case START:
+                return "Start";
+            case SECOND_HALF:
+                return "Second Half";
+            case KNOCK_ON:
+            case PENALTY:
+            case RED_CARD:
+            case SCRUM:
+            case YELLOW_CARD:
+                return details;
+            case TRY:
+                return "Try";
+            case CONVERSION:
+                return "Conversion";
+            case DROP_GOAL:
+                return "Drop Goal";
+        }
+        return "";
+    }
+
+    public int getActionType() {
+        switch (action) {
+            case FULL_TIME:
+            case HALF_TIME:
+            case START:
+            case SECOND_HALF:
+                return WHAT_ACTION_TIME;
+            case KNOCK_ON:
+            case PENALTY:
+            case RED_CARD:
+            case SCRUM:
+            case YELLOW_CARD:
+                return WHAT_ACTION_EVENT;
+            case TRY:
+            case CONVERSION:
+            case DROP_GOAL:
+                return WHAT_ACTION_SCORE;
+        }
+        return WHAT_ACTION_SCORE;
     }
 
     public void setAction(Action action) {

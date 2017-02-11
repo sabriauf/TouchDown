@@ -41,6 +41,7 @@ public class SynchronizeData extends AsyncTask<DownloadMeta, Void, String> {
         String url = meta.getUrl();
         return new DownloadManager.DownloadBuilder()
                 .init(context, url, meta.getRequestMethod())
+                .setUrlParams(meta.getUrlParams())
                 .setHeaders(AppHandler.getHeaders(context))
                 .startDownload();
     }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import java.util.ArrayList;
 
+import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 
 /**
@@ -43,6 +44,9 @@ public class ScoreDAO extends DBManager {
         values.put(DBContact.ScoreTable.COLUMN_TEAM, score.getTeamId());
         values.put(DBContact.ScoreTable.COLUMN_TIME, score.getTime());
 
+        if (score.getActionType() == Score.WHAT_ACTION_TIME)
+            updateMatchTime(score);
+
         if (!isRoomAlreadyExist) {
             values.put(DBContact.ScoreTable.COLUMN_ID, score.getIdscore());
             mDatabase.insert(DBContact.ScoreTable.TABLE_NAME, null, values);
@@ -56,13 +60,25 @@ public class ScoreDAO extends DBManager {
         }
     }
 
+    private static void updateMatchTime(Score score) {
+        if (score.getAction() == Score.Action.START)
+            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.FIRST_HALF);
+        else if(score.getAction() == Score.Action.SECOND_HALF)
+            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.SECOND_HALF);
+        else if (score.getAction() == Score.Action.HALF_TIME)
+            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.HALF_TIME);
+        else
+            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.DONE);
+    }
+
     public static ArrayList<Score> getScores(int matchId) {
         ArrayList<Score> scores = new ArrayList<>();
 
         String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=?";
         String[] WHERE_ARGS = {String.valueOf(matchId)};
+        String orderBy = DBContact.ScoreTable.COLUMN_TIME + " ASC";
 
-        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, orderBy);
         while (cursor.moveToNext()) {
             scores.add(cursorToScore(cursor));
         }
@@ -75,7 +91,7 @@ public class ScoreDAO extends DBManager {
 
         String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? and " +
                 DBContact.ScoreTable.COLUMN_ACTION + "=?";
-        String[] WHERE_ARGS = {String.valueOf(matchId) , String.valueOf(action)};
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(action)};
 
         Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
         while (cursor.moveToNext()) {

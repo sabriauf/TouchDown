@@ -17,6 +17,9 @@ class DBContact {
         static final String COLUMN_RESULT = "match_result";
         static final String COLUMN_LEAGUE = "match_league";
         static final String COLUMN_ROUND = "match_round";
+        static final String COLUMN_LAST = "match_last";
+        static final String COLUMN_LONGITUDE = "match_longitude";
+        static final String COLUMN_LATITUDE = "match_latitude";
     }
 
 

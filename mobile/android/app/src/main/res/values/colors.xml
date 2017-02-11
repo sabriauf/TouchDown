@@ -15,6 +15,6 @@
     <color name="text_row_royal">#FAE01A</color>
 
     <!-- Players Dialog -->
-    <color name="players_info_background">#724b0c</color>
+    <color name="players_info_background">#FFFFFF</color>
 
 </resources>

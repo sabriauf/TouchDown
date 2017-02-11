@@ -2,6 +2,7 @@
     <string name="app_name">TouchDown</string>
     <string name="actionbar_name">TOUCHDOWN - ROYAL RUGBY</string>
     <string name="live">LIVE</string>
+    <string name="topic">HALF TIME</string>
     <string name="dummy_score">28</string>
     <string name="default_live_match_time">00:00</string>
     <string name="image_description" />
@@ -9,4 +10,7 @@
     <string name="player_name_default">Player Name</string>
     <string name="position_name_default">Position</string>
     <string name="default_player_pos">18</string>
+
+    <string name="google_calendar_api_key">959794019019-cnga03kchd5e95iln7d6mfebtmlqk907.apps.googleusercontent.com</string>
+
 </resources>

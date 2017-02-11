@@ -69,18 +69,4 @@ public class AppHandler {
             return context.getResources().getColor(resource);
         }
     }
-
-    public static Match getDisplayMatch() {
-
-        List<Match> matches = MatchDAO.getMatchesOnStatus(Match.Status.PROGRESS);
-        if (matches.size() > 0)
-            return matches.get(matches.size() - 1);
-        else {
-            matches = MatchDAO.getMatchesOnStatus(Match.Status.DONE);
-            if (matches.size() > 0)
-                return matches.get(matches.size() - 1);
-            else
-                return null;
-        }
-    }
 }

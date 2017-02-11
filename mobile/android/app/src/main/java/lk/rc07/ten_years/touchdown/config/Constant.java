@@ -12,6 +12,9 @@ public class Constant {
     public static final String PARAM_AUTH_DEVICE = "deviceid";
     public static final String PARAM_AUTH_PACKAGE = "pkg";
     public static final String PARAM_API_VERSION = "api_ver";
+    public static final String PARAM_API_LAST_UPDATE = "last_updated";
+
+    public static final String EXTRA_FRAGMENT_ID = "fragment_id";
 
     public static final int PLATFORM_ANDROID = 1;
 

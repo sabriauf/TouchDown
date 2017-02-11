@@ -47,8 +47,9 @@ public class StandingFragment extends Fragment {
         TextView txt_update = (TextView) view.findViewById(R.id.txt_last_update);
 
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        String dateString = dateFormat.format(getContext().getSharedPreferences(Constant.MY_PREFERENCES,
-                Context.MODE_PRIVATE).getLong(Constant.PREFERENCES_LAST_SYNC, 0));
+        Long dateLong = getContext().getSharedPreferences(Constant.MY_PREFERENCES,
+                Context.MODE_PRIVATE).getLong(Constant.PREFERENCES_LAST_SYNC, 0);
+        String dateString = dateFormat.format(dateLong);
         txt_update.setText(String.format(UPDATE_STRING, dateString));
 
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import lk.rc07.ten_years.touchdown.models.Match;
@@ -44,6 +45,9 @@ public class MatchDAO extends DBManager {
         values.put(DBContact.MatchTable.COLUMN_STATUS, String.valueOf(match.getStatus()));
         values.put(DBContact.MatchTable.COLUMN_DATE, match.getMatchDate());
         values.put(DBContact.MatchTable.COLUMN_RESULT, match.getResult());
+        values.put(DBContact.MatchTable.COLUMN_LAST, match.getLastMatch());
+        values.put(DBContact.MatchTable.COLUMN_LATITUDE, match.getLatitude());
+        values.put(DBContact.MatchTable.COLUMN_LONGITUDE, match.getLongitude());
 
         if (!isMatchAlreadyExist) {
             values.put(DBContact.MatchTable.COLUMN_ID, match.getIdmatch());
@@ -70,6 +74,46 @@ public class MatchDAO extends DBManager {
         return matches;
     }
 
+    public static Match getDisplayMatch() {
+
+        Calendar from = Calendar.getInstance();
+        from.add(Calendar.DAY_OF_MONTH, -4);
+
+        Calendar to = Calendar.getInstance();
+        to.add(Calendar.DAY_OF_MONTH, 2);
+
+        String query = "";
+        query = query.concat("SELECT * FROM ");
+        query = query.concat(DBContact.MatchTable.TABLE_NAME);
+        query = query.concat(" WHERE ");
+        query = query.concat(DBContact.MatchTable.COLUMN_DATE);
+        query = query.concat(">'");
+        query = query.concat(String.valueOf(from.getTimeInMillis()));
+        query = query.concat("' and ");
+        query = query.concat(DBContact.MatchTable.COLUMN_DATE);
+        query = query.concat("<'");
+        query = query.concat(String.valueOf(to.getTimeInMillis()));
+        query = query.concat("'");
+
+        Match match = null;
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            match = cursorToMatch(cursor);
+        }
+        cursor.close();
+        return match;
+    }
+
+//    public static List<Match> getDisplayMatch() {
+//        List<Match> matches = getMatchesOnStatus(Match.Status.FIRST_HALF);
+//        if(matches.size() > 0)
+//            return matches;
+//        else {
+//            matches = getMatchesOnStatus(Match.Status.SECOND_HALF);
+//            return matches;
+//        }
+//    }
+
     public static List<Match> getAllMatches() {
         List<Match> matches = new ArrayList<>();
 
@@ -81,17 +125,31 @@ public class MatchDAO extends DBManager {
         return matches;
     }
 
+    static boolean updateMatchStatus(int matchId, Match.Status status) {
+
+        ContentValues values = new ContentValues();
+
+        values.put(DBContact.MatchTable.COLUMN_STATUS, String.valueOf(status));
+
+        String WHERE_CLAUSE = DBContact.MatchTable.COLUMN_ID + "=?";
+        String[] WHERE_ARGS = {String.valueOf(matchId)};
+        return mDatabase.update(DBContact.MatchTable.TABLE_NAME, values, WHERE_CLAUSE, WHERE_ARGS) == 1;
+    }
+
     private static Match cursorToMatch(Cursor cursor) {
         Match match = new Match();
         match.setIdmatch(cursor.getInt(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_ID)));
         match.setTeamOne(cursor.getInt(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_TEAM_ONE)));
         match.setTeamTwo(cursor.getInt(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_TEAM_TWO)));
         match.setVenue(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_VENUE)));
-        match.setMatchDate(cursor.getInt(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_DATE)));
+        match.setMatchDate(cursor.getLong(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_DATE)));
         match.setLeague(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LEAGUE)));
         match.setRound(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_ROUND)));
         match.setStatus(Match.Status.valueOf(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_STATUS))));
         match.setResult(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_RESULT)));
+        match.setLastMatch(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LAST)));
+        match.setLongitude(cursor.getDouble(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LONGITUDE)));
+        match.setLatitude(cursor.getDouble(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LATITUDE)));
         return match;
     }
 }

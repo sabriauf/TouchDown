@@ -30,7 +30,6 @@ public class BradbyExpressFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
-
         return view;
     }
 }

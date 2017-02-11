@@ -23,10 +23,12 @@ public class PlayerPositionDAO extends DBManager {
         query = query.concat(DBContact.PlayerPositionTable.COLUMN_PLAYER_ID);
         query = query.concat("='");
         query = query.concat(String.valueOf(playerId));
-        query = query.concat("' and ");
-        query = query.concat(DBContact.PlayerPositionTable.COLUMN_MATCH_ID);
-        query = query.concat("='");
-        query = query.concat(String.valueOf(matchId));
+        if(matchId != 0) {
+            query = query.concat("' and ");
+            query = query.concat(DBContact.PlayerPositionTable.COLUMN_MATCH_ID);
+            query = query.concat("='");
+            query = query.concat(String.valueOf(matchId));
+        }
         query = query.concat("'");
 
         Cursor cursor = mDatabase.rawQuery(query, null);
@@ -53,7 +55,11 @@ public class PlayerPositionDAO extends DBManager {
         return false;
     }
 
-    public static Position getPosition(int playerId, int matchId) {
-        return PositionDAO.getPosition(getPlayerPosId(playerId, matchId));
+    static Position getPosition(int playerId, int matchId) {
+        int posId = getPlayerPosId(playerId, matchId);
+        if(posId == -1)
+            posId = getPlayerPosId(playerId, 0);
+
+        return PositionDAO.getPosition(posId);
     }
 }

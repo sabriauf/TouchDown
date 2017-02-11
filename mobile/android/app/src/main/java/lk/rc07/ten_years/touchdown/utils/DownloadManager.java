@@ -29,7 +29,8 @@ public class DownloadManager {
     private static final String APPEND_PARAM = "&";
     private static final String EQUAL = "=";
 
-    private static String getJsonResponse(String strUrl, String params, String requestMethod, int timeout, String type, HashMap<String, String> headers) {
+    private static String getJsonResponse(String strUrl, String params, String requestMethod,
+                                          int timeout, String type, HashMap<String, String> headers) {
 
         HttpURLConnection urlConnection = null;
         String jsonStr = null;
@@ -186,6 +187,20 @@ public class DownloadManager {
                 try {
                     this.params = getParamDataString(params);
                     return this;
+                } catch (UnsupportedEncodingException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return this;
+        }
+
+        public DownloadBuilder setUrlParams(HashMap<String, String> params) {
+            if (params != null) {
+                if (params.containsValue(null)) {
+                    return this;
+                }
+                try {
+                    this.url = url + "?" + getParamDataString(params);
                 } catch (UnsupportedEncodingException ex) {
                     ex.printStackTrace();
                 }

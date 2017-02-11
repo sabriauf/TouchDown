@@ -15,11 +15,10 @@ import lk.rc07.ten_years.touchdown.adapters.PlayerAdapter;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerDAO;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.models.Match;
-import lk.rc07.ten_years.touchdown.utils.AppHandler;
-import lk.rc07.ten_years.touchdown.utils.SimpleDividerItemDecoration;
 
 /**
  * Created by Sabri on 2/4/2017. Fragment to show Player profiles
@@ -27,7 +26,7 @@ import lk.rc07.ten_years.touchdown.utils.SimpleDividerItemDecoration;
 
 public class PlayersFragment extends Fragment {
 
-    private static final int PLAYER_COLUMNS = 2;
+    private static final int PLAYER_COLUMNS = 3;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class PlayersFragment extends Fragment {
         dbManager.openDatabase();
 
         int matchId = 0;
-        Match match = AppHandler.getDisplayMatch();
+        Match match = MatchDAO.getDisplayMatch();
         if (match != null)
             matchId = match.getIdmatch();
         PlayerDAO.getAllPlayer();

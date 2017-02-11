@@ -12,7 +12,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //configs
     public static final String DATABASE_NAME = "touchdown_database.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     //constants
     private static final String TEXT_TYPE = " TEXT";
@@ -44,6 +44,9 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.MatchTable.COLUMN_RESULT + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_STATUS + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_VENUE + TEXT_TYPE + COMMA_SEP
+            + DBContact.MatchTable.COLUMN_LAST + TEXT_TYPE + COMMA_SEP
+            + DBContact.MatchTable.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP
+            + DBContact.MatchTable.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_ROUND + TEXT_TYPE
             + ")";
 

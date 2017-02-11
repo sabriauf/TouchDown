@@ -1,14 +1,21 @@
 package lk.rc07.ten_years.touchdown.activities;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -40,18 +47,19 @@ public class PlayerDialogActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_player_dialog);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+        }
+        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         ImageLoader imageLoader = ImageLoader.getInstance();
-        DisplayImageOptions options = AppHandler.getImageOption(imageLoader, this, R.drawable.default_profile_pic);
+        DisplayImageOptions options = AppHandler.getImageOption(imageLoader, getApplicationContext(), R.drawable.default_profile_pic);
 
         Player player = getIntent().getExtras().getParcelable(EXTRA_PLAYER_OBJECT);
         String player_pos = getIntent().getExtras().getString(EXTRA_PLAYER_POSITION);
-        int posId =  getIntent().getExtras().getInt(EXTRA_PLAYER_POSITION_ID);
 
         if (player != null) {
-            ((TextView) findViewById(R.id.txt_player_name)).setText(player.getName());
-            ((TextView) findViewById(R.id.txt_player_position)).setText(player_pos);
-            ((TextView) findViewById(R.id.txt_player_id)).setText(String.valueOf(posId));
+            ((TextView) findViewById(R.id.txt_player_pos)).setText(player_pos);
             ((TextView) findViewById(R.id.txt_player_age)).setText(String.format(Locale.getDefault(),
                     PLAYER_AGE_VALUE, calculateAge(player.getBirthDay())));
             ((TextView) findViewById(R.id.txt_player_colors)).setText(getOrdinalString(player.getColors()));
@@ -59,9 +67,44 @@ public class PlayerDialogActivity extends AppCompatActivity {
                     PLAYER_WEIGHT_VALUE, (int) player.getWeight()));
             ((TextView) findViewById(R.id.txt_player_height)).setText(getHeightString(player.getHeight()));
 
-            imageLoader.displayImage(player.getImg_url(), ((ImageView) findViewById(R.id.img_player_pic)), options);
+            imageLoader.displayImage(player.getImg_url(), ((ImageView) findViewById(R.id.img_player_pic)), options, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    scheduleStartPostponedTransition(view, PlayerDialogActivity.this);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    scheduleStartPostponedTransition(view, PlayerDialogActivity.this);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
+
         }
 
+    }
+
+    public static void scheduleStartPostponedTransition(final View sharedElement, final Activity mActivity) {
+        sharedElement.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            mActivity.startPostponedEnterTransition();
+                        }
+                        return true;
+                    }
+                });
     }
 
     private String getOrdinalString(int years) {
