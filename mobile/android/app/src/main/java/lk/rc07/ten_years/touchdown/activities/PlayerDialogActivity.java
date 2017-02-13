@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
@@ -67,7 +68,8 @@ public class PlayerDialogActivity extends AppCompatActivity {
                     PLAYER_WEIGHT_VALUE, (int) player.getWeight()));
             ((TextView) findViewById(R.id.txt_player_height)).setText(getHeightString(player.getHeight()));
 
-            imageLoader.displayImage(player.getImg_url(), ((ImageView) findViewById(R.id.img_player_pic)), options, new ImageLoadingListener() {
+            imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url(),
+                    ((ImageView) findViewById(R.id.img_player_pic)), options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
 

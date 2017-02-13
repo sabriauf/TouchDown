@@ -22,7 +22,9 @@ import lk.rc07.ten_years.touchdown.activities.MainActivity;
 import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 
 /**
@@ -77,8 +79,14 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                             } else
                                 msg.what = Score.WHAT_UPDATE_SCORE;
                         } else {
-                            ScoreDAO.deleteScore(score.getIdscore());
-                            msg.what = Score.WHAT_REMOVE_SCORE;
+                            if (score.getIdscore() == 0) {
+                                ScoreDAO.deleteAllScores(score.getMatchid());
+                                MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.PENDING);
+                            } else {
+                                ScoreDAO.deleteScore(score.getIdscore());
+                                msg.what = Score.WHAT_REMOVE_SCORE;
+                            }
+
                         }
 
                         dbManager.closeDatabase();
@@ -88,7 +96,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 } catch (JSONException ex) {
                     ex.printStackTrace();
                 }
-            } else {
+            } else if (!remoteMessage.getData().get(PARAM_PUSH_TITLE).equals("")) {
                 sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE), fragmentId);
             }
         }

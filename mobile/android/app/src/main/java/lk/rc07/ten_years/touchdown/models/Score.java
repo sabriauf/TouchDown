@@ -34,7 +34,9 @@ public class Score {
     private static Map<String, ScoreListener> scoreListeners;
 
     public enum Action {
-        START, HALF_TIME, SECOND_HALF, FULL_TIME, TRY, CONVERSION, DROP_GOAL, YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM;
+        START, HALF_TIME, SECOND_HALF, FULL_TIME,
+        TRY, CONVERSION, DROP_GOAL, PENALTY_KICK,
+        YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM, MESSAGE;
     }
 
     public int getIdscore() {
@@ -104,6 +106,7 @@ public class Score {
             case RED_CARD:
             case SCRUM:
             case YELLOW_CARD:
+            case MESSAGE:
                 return details;
             case TRY:
                 return "Try";
@@ -111,6 +114,8 @@ public class Score {
                 return "Conversion";
             case DROP_GOAL:
                 return "Drop Goal";
+            case PENALTY_KICK:
+                return "Penalty Kick";
         }
         return "";
     }
@@ -127,10 +132,12 @@ public class Score {
             case RED_CARD:
             case SCRUM:
             case YELLOW_CARD:
+            case MESSAGE:
                 return WHAT_ACTION_EVENT;
             case TRY:
             case CONVERSION:
             case DROP_GOAL:
+            case PENALTY_KICK:
                 return WHAT_ACTION_SCORE;
         }
         return WHAT_ACTION_SCORE;

@@ -12,6 +12,7 @@ public class Points {
     private int won;
     private int lost;
     private int points;
+    private int group;
 
     public int getIdPoint() {
         return idPoint;
@@ -59,5 +60,13 @@ public class Points {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public int getGroup() {
+        return group;
+    }
+
+    public void setGroup(int group) {
+        this.group = group;
     }
 }

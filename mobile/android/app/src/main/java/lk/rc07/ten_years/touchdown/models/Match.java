@@ -16,14 +16,13 @@ public class Match {
     private long matchDate;
     private Status status;
     private String result;
-    private String league;
-    private String round;
     private double longitude;
     private double latitude;
     private String lastMatch;
+    private int group;
 
     public enum Status {
-        PENDING, PROGRESS, DONE, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF
+        PENDING, DONE, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF
     }
 
     public int getIdmatch() {
@@ -82,20 +81,12 @@ public class Match {
         this.result = result;
     }
 
-    public String getLeague() {
-        return league;
+    public int getGroup() {
+        return group;
     }
 
-    public void setLeague(String league) {
-        this.league = league;
-    }
-
-    public String getRound() {
-        return round;
-    }
-
-    public void setRound(String round) {
-        this.round = round;
+    public void setGroup(int group) {
+        this.group = group;
     }
 
     public double getLongitude() {

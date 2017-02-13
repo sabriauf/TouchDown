@@ -1,6 +1,7 @@
 package lk.rc07.ten_years.touchdown.activities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
@@ -34,6 +36,7 @@ import lk.rc07.ten_years.touchdown.data.PointsDAO;
 import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
+import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.PlayerPosition;
@@ -112,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         HashMap<String, String> urlParams = new HashMap<>();
-//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
-//                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP))); //TODO
-        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
+        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
+                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP)));
+//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
 
         DownloadMeta meta = new DownloadMeta();
         meta.setUrl(AppConfig.SYNCHRONIZE_URL);
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
         dbManager.openDatabase();
 
-        response = AppConfig.TEMP_SYNC_FILE;
+//        response = AppConfig.TEMP_SYNC_FILE;
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new JsonDateSerializer("yyyy-MM-dd kk:mm"));
@@ -136,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject.has(Constant.JSON_OBJECT_GROUPS))
+                saveGroups(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_GROUPS).toString());
+
             if (jsonObject.has(Constant.JSON_OBJECT_MATCH))
                 saveMatches(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_MATCH).toString());
 
@@ -154,6 +160,16 @@ public class MainActivity extends AppCompatActivity {
             if (jsonObject.has(Constant.JSON_OBJECT_PLAYER_POS))
                 savePlayerPos(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYER_POS).toString());
 
+            if (jsonObject.has(Constant.JSON_OBJECT_EXPRESS)) {
+                SharedPreferences.Editor editor = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
+
+                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_EXPRESS);
+                editor.putString(Constant.PREFERENCES_EXPRESS_IMAGE, object.getString(Constant.JSON_OBJECT_EXPRESS_IMAGE));
+                editor.putString(Constant.PREFERENCES_EXPRESS_LINK, object.getString(Constant.JSON_OBJECT_EXPRESS_REDIRECT));
+
+                editor.apply();
+            }
+
 
         } catch (JSONException ex) {
             ex.printStackTrace();
@@ -167,6 +183,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void saveGroups(Gson gson, String response) {
+        Type messageType = new TypeToken<List<Group>>() {
+        }.getType();
+
+        List<Group> groups = gson.fromJson(response, messageType);
+
+        for (Group group : groups)
+            GroupDAO.addGroup(group);
     }
 
     private void saveMatches(Gson gson, String response) {

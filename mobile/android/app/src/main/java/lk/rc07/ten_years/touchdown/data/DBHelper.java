@@ -11,8 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     //configs
-    public static final String DATABASE_NAME = "touchdown_database.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final String DATABASE_NAME = "touchdown_database.db";
+    private static final int DATABASE_VERSION = 4;
 
     //constants
     private static final String TEXT_TYPE = " TEXT";
@@ -23,7 +23,15 @@ public class DBHelper extends SQLiteOpenHelper {
 //    private static final String AUTO_INCREMENT = " AUTOINCREMENT";
 
     //instants
-    public static DBHelper dbHelper;
+    private static DBHelper dbHelper;
+
+    //Group db create statement
+    private static final String CREATE_TABLE_GROUP = "CREATE TABLE " + DBContact.GroupTable.TABLE_NAME + "("
+            + DBContact.GroupTable.COLUMN_ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
+            + DBContact.GroupTable.COLUMN_NAME + TEXT_TYPE + COMMA_SEP
+            + DBContact.GroupTable.COLUMN_LEAGUE + TEXT_TYPE + COMMA_SEP
+            + DBContact.GroupTable.COLUMN_ROUND + INTEGER_TYPE
+            + ")";
 
     //Team db create statement
     private static final String CREATE_TABLE_TEAM = "CREATE TABLE " + DBContact.TeamTable.TABLE_NAME + "("
@@ -40,14 +48,13 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.MatchTable.COLUMN_TEAM_ONE + INTEGER_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_TEAM_TWO + INTEGER_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_DATE + DOUBLE_TYPE + COMMA_SEP
-            + DBContact.MatchTable.COLUMN_LEAGUE + TEXT_TYPE + COMMA_SEP
+            + DBContact.MatchTable.COLUMN_GROUP + INTEGER_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_RESULT + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_STATUS + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_VENUE + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_LAST + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP
-            + DBContact.MatchTable.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP
-            + DBContact.MatchTable.COLUMN_ROUND + TEXT_TYPE
+            + DBContact.MatchTable.COLUMN_LONGITUDE + DOUBLE_TYPE
             + ")";
 
     //Player db create statement
@@ -69,6 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.PointsTable.COLUMN_TEAM + INTEGER_TYPE + COMMA_SEP
             + DBContact.PointsTable.COLUMN_WON + INTEGER_TYPE + COMMA_SEP
             + DBContact.PointsTable.COLUMN_LOST + INTEGER_TYPE + COMMA_SEP
+            + DBContact.PointsTable.COLUMN_GROUP + INTEGER_TYPE + COMMA_SEP
             + DBContact.PointsTable.COLUMN_POINTS + INTEGER_TYPE
             + ")";
 
@@ -113,6 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL(CREATE_TABLE_GROUP);
         sqLiteDatabase.execSQL(CREATE_TABLE_MATCH);
         sqLiteDatabase.execSQL(CREATE_TABLE_TEAM);
         sqLiteDatabase.execSQL(CREATE_TABLE_PLAYER);
@@ -131,6 +140,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.ScoreTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.TeamTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.MatchTable.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.GroupTable.TABLE_NAME);
 
         onCreate(sqLiteDatabase);
     }

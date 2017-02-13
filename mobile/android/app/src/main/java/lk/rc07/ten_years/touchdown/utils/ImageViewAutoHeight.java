@@ -28,12 +28,25 @@ public class ImageViewAutoHeight extends ImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         if (getDrawable() != null) {
-            int width = View.MeasureSpec.getSize(widthMeasureSpec);
             Drawable drawable = getDrawable();
-            int height = (int) Math.ceil(width * drawable.getIntrinsicHeight() * 1.0f / drawable.getIntrinsicWidth());
-            setMeasuredDimension(width, height);
+            if (drawable.getIntrinsicHeight() > drawable.getIntrinsicWidth())
+                setFullHeight(drawable, heightMeasureSpec);
+            else
+                setFullWidth(drawable, widthMeasureSpec);
         } else {
             setMeasuredDimension(0, 0);
         }
+    }
+
+    private void setFullWidth(Drawable drawable, int measureSpec) {
+        int width = View.MeasureSpec.getSize(measureSpec);
+        int height = (int) Math.ceil(width * drawable.getIntrinsicHeight() * 1.0f / drawable.getIntrinsicWidth());
+        setMeasuredDimension(width, height);
+    }
+
+    private void setFullHeight(Drawable drawable, int measureSpec) {
+        int height = View.MeasureSpec.getSize(measureSpec);
+        int width = (int) Math.ceil(height * drawable.getIntrinsicWidth() * 1.0f / drawable.getIntrinsicHeight());
+        setMeasuredDimension(width, height);
     }
 }

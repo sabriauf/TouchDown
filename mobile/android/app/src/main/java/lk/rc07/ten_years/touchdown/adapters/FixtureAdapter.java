@@ -3,17 +3,14 @@ package lk.rc07.ten_years.touchdown.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.ContactsContract;
+import android.os.Build;
+import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -27,7 +24,9 @@ import java.util.Locale;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
+import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
@@ -89,46 +88,49 @@ public class FixtureAdapter extends RecyclerView.Adapter<FixtureAdapter.ViewHold
         holder.txt_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                createEvent(match);
             }
         });
 
         imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), holder.img_crest, options);
     }
 
-    private void createEvent(Match match) { //TODO
-//        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
-//        dbManager.openDatabase();
-//
-//        Team tOne = TeamDAO.getTeam(match.getTeamOne());
-//        Team tTwo = TeamDAO.getTeam(match.getTeamTwo());
-//
-//        dbManager.closeDatabase();
-//
-//        Event event = new Event()
-//                .setSummary(tOne.getName() + " vs " + tTwo.getName())
-//                .setLocation(match.getVenue())
-//                .setDescription(match.getLeague() + " " + match.getRound());
-//
-//        Calendar matchDate = Calendar.getInstance();
-//        matchDate.setTime(new Date(match.getMatchDate()));
-//        matchDate.set(Calendar.HOUR, 15);
-//
-//        DateTime startDateTime = new DateTime("2015-05-28T09:00:00-07:00");
-//        EventDateTime start = new EventDateTime()
-//                .setDateTime(startDateTime);
-////                        .setTimeZone("Sri Lanka/Colombo");
-//        event.setStart(start);
-//
-//        DateTime endDateTime = new DateTime("2015-05-28T17:00:00-07:00");
-//        EventDateTime end = new EventDateTime()
-//                .setDateTime(endDateTime);
-////                        .setTimeZone("America/Los_Angeles");
-//        event.setEnd(end);
-//
-//        String calendarId = "primary";
-//        com.google.api.services.calendar.Calendar service = new com.google.api.services.calendar.Calendar();
-//        event = service.events().insert(calendarId, event).execute();
+    private void createEvent(Match match) {
+        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
+        dbManager.openDatabase();
+
+        Team tOne = TeamDAO.getTeam(match.getTeamOne());
+        Team tTwo = TeamDAO.getTeam(match.getTeamTwo());
+        Group group = GroupDAO.getGroupForId(match.getGroup());
+
+        dbManager.closeDatabase();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Calendar matchDate = Calendar.getInstance();
+            matchDate.setTime(new Date(match.getMatchDate()));
+            matchDate.set(Calendar.HOUR, 15);
+
+            Intent intent = new Intent(Intent.ACTION_INSERT);
+            intent.setType("vnd.android.cursor.item/event");
+            intent.putExtra(CalendarContract.Events.TITLE, tOne.getName() + " vs " + tTwo.getName());
+            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, match.getVenue());
+            intent.putExtra(CalendarContract.Events.DESCRIPTION, group.getLeagueName() + " - " + group.getRoundName()
+                    + " - " + group.getGroupName());
+
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                    matchDate.getTimeInMillis());
+
+            matchDate.set(Calendar.HOUR, 19);
+
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
+                    matchDate.getTimeInMillis());
+
+            intent.putExtra(CalendarContract.Events.ACCESS_LEVEL, CalendarContract.Events.ACCESS_PRIVATE);
+            intent.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+            context.startActivity(intent);
+        }
+
+
     }
 
     private String getOpponentCrest(int id) {

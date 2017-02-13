@@ -22,13 +22,33 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/white" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:background="@android:color/white">
+
+            <include
+                android:id="@+id/spn_league"
+                layout="@layout/component_fixture_spinner" />
+
+            <include
+                android:id="@+id/spn_rounds"
+                layout="@layout/component_fixture_spinner" />
+
+            <include
+                android:id="@+id/spn_group"
+                layout="@layout/component_fixture_spinner" />
+        </LinearLayout>
+
         <TableLayout
             android:id="@+id/tableLayout1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
             android:paddingTop="20dp"
-            android:stretchColumns="*"/>
+            android:stretchColumns="*" />
     </LinearLayout>
 </ScrollView>
 

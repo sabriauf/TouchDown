@@ -39,8 +39,7 @@ public class MatchDAO extends DBManager {
 
         values.put(DBContact.MatchTable.COLUMN_TEAM_ONE, match.getTeamOne());
         values.put(DBContact.MatchTable.COLUMN_TEAM_TWO, match.getTeamTwo());
-        values.put(DBContact.MatchTable.COLUMN_LEAGUE, match.getLeague());
-        values.put(DBContact.MatchTable.COLUMN_ROUND, match.getRound());
+        values.put(DBContact.MatchTable.COLUMN_GROUP, match.getGroup());
         values.put(DBContact.MatchTable.COLUMN_VENUE, match.getVenue());
         values.put(DBContact.MatchTable.COLUMN_STATUS, String.valueOf(match.getStatus()));
         values.put(DBContact.MatchTable.COLUMN_DATE, match.getMatchDate());
@@ -58,6 +57,20 @@ public class MatchDAO extends DBManager {
             String[] WHERE_ARGS = {String.valueOf(match.getIdmatch())};
             return mDatabase.update(DBContact.MatchTable.TABLE_NAME, values, WHERE_CLAUSE, WHERE_ARGS) == 1;
         }
+    }
+
+    public static Match getMatchForId(int id) {
+        Match match = null;
+
+        String WHERE_CLAUSE = DBContact.MatchTable.COLUMN_ID + "=?";
+        String[] WHERE_ARGS = {String.valueOf(id)};
+
+        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        while (cursor.moveToNext()) {
+            match = cursorToMatch(cursor);
+        }
+        cursor.close();
+        return match;
     }
 
     public static List<Match> getMatchesOnStatus(Match.Status status) {
@@ -125,7 +138,7 @@ public class MatchDAO extends DBManager {
         return matches;
     }
 
-    static boolean updateMatchStatus(int matchId, Match.Status status) {
+    public static boolean updateMatchStatus(int matchId, Match.Status status) {
 
         ContentValues values = new ContentValues();
 
@@ -143,8 +156,7 @@ public class MatchDAO extends DBManager {
         match.setTeamTwo(cursor.getInt(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_TEAM_TWO)));
         match.setVenue(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_VENUE)));
         match.setMatchDate(cursor.getLong(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_DATE)));
-        match.setLeague(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LEAGUE)));
-        match.setRound(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_ROUND)));
+        match.setGroup(cursor.getInt(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_GROUP)));
         match.setStatus(Match.Status.valueOf(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_STATUS))));
         match.setResult(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_RESULT)));
         match.setLastMatch(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LAST)));

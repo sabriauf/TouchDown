@@ -109,6 +109,14 @@ public class ScoreDAO extends DBManager {
         return mDatabase.delete(DBContact.ScoreTable.TABLE_NAME, WHERE_CLAUSE, WHERE_ARGS) == 1;
     }
 
+    public static boolean deleteAllScores(int id) {
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? ";
+        String[] WHERE_ARGS = {String.valueOf(id)};
+
+        return mDatabase.delete(DBContact.ScoreTable.TABLE_NAME, WHERE_CLAUSE, WHERE_ARGS) == 1;
+    }
+
     private static Score cursorToScore(Cursor cursor) {
         Score score = new Score();
         int id = cursor.getInt(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_ID));

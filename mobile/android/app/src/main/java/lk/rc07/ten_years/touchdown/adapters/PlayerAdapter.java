@@ -19,6 +19,7 @@ import java.util.List;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.PlayerDialogActivity;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
@@ -53,8 +54,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
         final int pos = holder.getAdapterPosition();
 
-        imageLoader.displayImage(players.get(pos).getPlayer().getImg_url(), holder.img_profile_pic, options);
-//        imageLoader.displayImage("http://redpixelcreations.com/touchdown/players/player.png", holder.img_profile_pic, options);
+        imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + players.get(pos).getPlayer().getImg_url(), holder.img_profile_pic, options);
 
         final View img_prof_pic = holder.img_profile_pic;
         holder.parentView.setOnClickListener(new View.OnClickListener() {
@@ -62,8 +62,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
             public void onClick(View view) {
                 Intent intent = new Intent(activity, PlayerDialogActivity.class);
                 intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_OBJECT, players.get(pos).getPlayer());
-                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION_ID, players.get(pos).getPosition().getPosNo());
-                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION ,players.get(pos).getPosition().getPosName());
+                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION, players.get(pos).getPosition().getPosName());
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,

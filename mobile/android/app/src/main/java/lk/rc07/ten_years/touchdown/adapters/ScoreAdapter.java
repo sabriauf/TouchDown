@@ -29,6 +29,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 //    private static final String PLAYER_NO = "%s'";
     private static final int SCORE_VIEW_SCORE = 1;
     private static final int SCORE_VIEW_TOPIC = 2;
+    private static final int SCORE_VIEW_MESSAGE = 3;
     //instances
     private Context context;
     private List<Score> scores;
@@ -57,6 +58,9 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case SCORE_VIEW_TOPIC:
                 view = LayoutInflater.from(context).inflate(R.layout.component_score_topic_row, parent, false);
                 return new ScoreAdapter.TitleViewHolder(view);
+            case SCORE_VIEW_MESSAGE:
+                view = LayoutInflater.from(context).inflate(R.layout.component_score_message, parent, false);
+                return new ScoreAdapter.MessageViewHolder(view);
         }
         return null;
     }
@@ -68,12 +72,14 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (score.getAction() == Score.Action.START)
             startTime = score.getTime();
 
-        String playerName;
+        String playerName = "";
         if (score.getPlayer() != 0) {
             AdapterPlayer aPlayer = getPlayer(score.getPlayer());
             playerName = aPlayer.getPlayer().getName();
         } else {
-            playerName = getTeamName(score.getTeamId());
+            if(score.getTeamId() != 0) {
+                playerName = getTeamName(score.getTeamId());
+            }
         }
         String time = TimeFormatter.millisToGameTime(context, startTime, score.getTime());
 
@@ -89,9 +95,12 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 scoreHolder.txt_player_name_right.setText(playerName);
                 setVisibility(scoreHolder, false);
             }
-        } else {
+        } else if(holder instanceof TitleViewHolder){
             TitleViewHolder titleViewHolder = (TitleViewHolder) holder;
             titleViewHolder.txt_title.setText(score.getActionString());
+        } else {
+            MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
+            messageViewHolder.txt_title.setText(time + " - " + score.getActionString());
         }
     }
 
@@ -111,14 +120,16 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         switch (score.getAction()) {
             case FULL_TIME:
             case HALF_TIME:
+            case START:
+            case SECOND_HALF:
+                return SCORE_VIEW_TOPIC;
             case KNOCK_ON:
             case PENALTY:
             case RED_CARD:
             case SCRUM:
             case YELLOW_CARD:
-            case START:
-            case SECOND_HALF:
-                return SCORE_VIEW_TOPIC;
+            case MESSAGE:
+                return SCORE_VIEW_MESSAGE;
         }
         return SCORE_VIEW_SCORE;
     }
@@ -177,6 +188,15 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView txt_title;
 
         TitleViewHolder(View itemView) {
+            super(itemView);
+            txt_title = (TextView) itemView.findViewById(R.id.txt_score_tag);
+        }
+    }
+
+    private class MessageViewHolder extends RecyclerView.ViewHolder {
+        TextView txt_title;
+
+        MessageViewHolder(View itemView) {
             super(itemView);
             txt_title = (TextView) itemView.findViewById(R.id.txt_score_tag);
         }

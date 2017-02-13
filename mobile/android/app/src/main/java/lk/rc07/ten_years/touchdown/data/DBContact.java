@@ -4,7 +4,7 @@ package lk.rc07.ten_years.touchdown.data;
  * Created by Sabri on 12/24/2016. database definition
  */
 
-class DBContact {
+public class DBContact {
 
     static abstract class MatchTable {
         static final String TABLE_NAME = "match_table";
@@ -15,11 +15,10 @@ class DBContact {
         static final String COLUMN_DATE = "match_date";
         static final String COLUMN_STATUS = "match_status";
         static final String COLUMN_RESULT = "match_result";
-        static final String COLUMN_LEAGUE = "match_league";
-        static final String COLUMN_ROUND = "match_round";
         static final String COLUMN_LAST = "match_last";
         static final String COLUMN_LONGITUDE = "match_longitude";
         static final String COLUMN_LATITUDE = "match_latitude";
+        static final String COLUMN_GROUP = "match_group";
     }
 
 
@@ -50,6 +49,7 @@ class DBContact {
         static final String COLUMN_WON = "points_won";
         static final String COLUMN_LOST = "points_lost";
         static final String COLUMN_POINTS = "points_points";
+        static final String COLUMN_GROUP = "points_group";
     }
 
     static abstract class PositionTable {
@@ -78,5 +78,13 @@ class DBContact {
         static final String COLUMN_FLAG = "team_flag";
         static final String COLUMN_LOGO = "team_logo";
         static final String COLUMN_YEAR = "team_year";
+    }
+
+    public static abstract class GroupTable {
+        static final String TABLE_NAME = "group_table";
+        static final String COLUMN_ID = "group_id";
+        public static final String COLUMN_NAME = "group_name";
+        public static final String COLUMN_LEAGUE = "group_league";
+        public static final String COLUMN_ROUND = "group_round";
     }
 }
