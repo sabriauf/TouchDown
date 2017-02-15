@@ -41,7 +41,7 @@ public class MatchDAO extends DBManager {
         values.put(DBContact.MatchTable.COLUMN_TEAM_TWO, match.getTeamTwo());
         values.put(DBContact.MatchTable.COLUMN_GROUP, match.getGroup());
         values.put(DBContact.MatchTable.COLUMN_VENUE, match.getVenue());
-        values.put(DBContact.MatchTable.COLUMN_STATUS, String.valueOf(match.getStatus()));
+        values.put(DBContact.MatchTable.COLUMN_STATUS, match.getStatus().toString());
         values.put(DBContact.MatchTable.COLUMN_DATE, match.getMatchDate());
         values.put(DBContact.MatchTable.COLUMN_RESULT, match.getResult());
         values.put(DBContact.MatchTable.COLUMN_LAST, match.getLastMatch());
@@ -143,6 +143,17 @@ public class MatchDAO extends DBManager {
         ContentValues values = new ContentValues();
 
         values.put(DBContact.MatchTable.COLUMN_STATUS, String.valueOf(status));
+
+        String WHERE_CLAUSE = DBContact.MatchTable.COLUMN_ID + "=?";
+        String[] WHERE_ARGS = {String.valueOf(matchId)};
+        return mDatabase.update(DBContact.MatchTable.TABLE_NAME, values, WHERE_CLAUSE, WHERE_ARGS) == 1;
+    }
+
+    static boolean updateMatchResult(int matchId, String result) {
+
+        ContentValues values = new ContentValues();
+
+        values.put(DBContact.MatchTable.COLUMN_RESULT, result);
 
         String WHERE_CLAUSE = DBContact.MatchTable.COLUMN_ID + "=?";
         String[] WHERE_ARGS = {String.valueOf(matchId)};

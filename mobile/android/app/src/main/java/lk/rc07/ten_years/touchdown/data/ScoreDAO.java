@@ -63,12 +63,14 @@ public class ScoreDAO extends DBManager {
     private static void updateMatchTime(Score score) {
         if (score.getAction() == Score.Action.START)
             MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.FIRST_HALF);
-        else if(score.getAction() == Score.Action.SECOND_HALF)
+        else if (score.getAction() == Score.Action.SECOND_HALF)
             MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.SECOND_HALF);
         else if (score.getAction() == Score.Action.HALF_TIME)
             MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.HALF_TIME);
-        else
-            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.DONE);
+        else {
+            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.FULL_TIME);
+            MatchDAO.updateMatchResult(score.getMatchid(), score.getDetails());
+        }
     }
 
     public static ArrayList<Score> getScores(int matchId) {
@@ -84,6 +86,21 @@ public class ScoreDAO extends DBManager {
         }
         cursor.close();
         return scores;
+    }
+
+    public static int getTotalScore(int matchId, int teamId) {
+        int totalScore = 0;
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? and " + DBContact.ScoreTable.COLUMN_TEAM + " =?";
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(teamId)};
+        String orderBy = DBContact.ScoreTable.COLUMN_TIME + " ASC";
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, orderBy);
+        while (cursor.moveToNext()) {
+            totalScore += cursor.getInt(cursor.getColumnIndex(DBContact.ScoreTable.COLUMN_SCORE));
+        }
+        cursor.close();
+        return totalScore;
     }
 
     public static ArrayList<Score> getActionScore(int matchId, Score.Action action) {

@@ -102,12 +102,15 @@ public class Score {
             case SECOND_HALF:
                 return "Second Half";
             case KNOCK_ON:
-            case PENALTY:
+                return "Knock on";
             case RED_CARD:
-            case SCRUM:
+                return "Red Card";
             case YELLOW_CARD:
+                return "Yellow Card";
+            case PENALTY:
+            case SCRUM:
             case MESSAGE:
-                return details;
+                return action.toString();
             case TRY:
                 return "Try";
             case CONVERSION:

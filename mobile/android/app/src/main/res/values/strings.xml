@@ -12,5 +12,10 @@
     <string name="default_player_pos">18</string>
 
     <string name="google_calendar_api_key">959794019019-cnga03kchd5e95iln7d6mfebtmlqk907.apps.googleusercontent.com</string>
+    <string name="score">Score</string>
+    <string name="time_12_05">Time - 12:05</string>
+    <string name="score_details">Score details</string>
+    <string name="player_name">Player Name</string>
+    <string name="team_name">Team Name</string>
 
 </resources>

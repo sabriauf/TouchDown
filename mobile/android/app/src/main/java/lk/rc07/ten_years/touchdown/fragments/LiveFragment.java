@@ -123,6 +123,8 @@ public class LiveFragment extends Fragment {
                         adapter = new ScoreAdapter(getContext(), temp_scores, match);
                         recyclerView.setAdapter(adapter);
                         setData(parentView, match, finalGroup, teamOne, teamTwo);
+                        if (temp_scores.size() > 0)
+                            recyclerView.smoothScrollToPosition(temp_scores.size() - 1);
                     } else {
                         setData(parentView, null, null, null, null);
                     }

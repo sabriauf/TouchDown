@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -63,7 +64,8 @@ public class AppHandler {
 
     public static int getColor(Context context, int resource) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return context.getResources().getColor(resource, context.getTheme());
+//            return context.getResources().getColor(resource, context.getTheme());
+            return ContextCompat.getColor(context, resource);
         } else {
             //noinspection deprecation
             return context.getResources().getColor(resource);

@@ -57,7 +57,7 @@ public class PlayerDAO extends DBManager {
         }
     }
 
-    private static Player getPlayer(int playerId) {
+    public static Player getPlayer(int playerId) {
         Player player = null;
 
         String WHERE_CLAUSE = DBContact.PlayerTable.COLUMN_ID + "=?";

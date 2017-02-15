@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -22,9 +23,11 @@ import java.util.List;
 import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.GroupDAO;
+import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
@@ -35,7 +38,13 @@ import lk.rc07.ten_years.touchdown.utils.AppHandler;
  * Created by Sabri on 1/14/2017. Adapter to fixture view
  */
 
-public class FixtureAdapter extends RecyclerView.Adapter<FixtureAdapter.ViewHolder> {
+public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    //constants
+    private static final int VIEW_PENDING = 1;
+    private static final int VIEW_RESULT = 2;
+    private static final String LAST_RESULT = "Last match : %s";
+    private static final String NEW_RESULT = "RC %d : %d %s";
 
     //instances
     private Context context;
@@ -55,48 +64,103 @@ public class FixtureAdapter extends RecyclerView.Adapter<FixtureAdapter.ViewHold
     }
 
     @Override
-    public FixtureAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.component_fixture_row, parent, false);
-        return new FixtureAdapter.ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        if (viewType == VIEW_PENDING) {
+            view = LayoutInflater.from(context).inflate(R.layout.component_fixture_row, parent, false);
+            return new FixtureAdapter.PendingViewHolder(view);
+        } else {
+            view = LayoutInflater.from(context).inflate(R.layout.component_fixture_result_row, parent, false);
+            return new FixtureAdapter.ResultViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(FixtureAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final Match match = matches.get(position);
 
         Date date = new Date(match.getMatchDate());
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        holder.txt_date.setText(dateFormat.format(date));
 
-        dateFormat =  new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        holder.txt_time.setText(dateFormat.format(date));
-        holder.txt_venue.setText(match.getVenue());
-        holder.txt_last.setText(match.getLastMatch());
+        ImageView img_crest;
+        if (viewHolder instanceof PendingViewHolder) {
+            PendingViewHolder holder = (PendingViewHolder) viewHolder;
 
-        holder.txt_venue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", match.getLatitude(), match.getLongitude(),
-                        match.getLatitude(), match.getLongitude(), match.getVenue());
-                Uri gmmIntentUri = Uri.parse(uri);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                context.startActivity(mapIntent);
+            holder.txt_date.setText(dateFormat.format(date));
+
+            dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            holder.txt_time.setText(dateFormat.format(date));
+            holder.txt_venue.setText(match.getVenue());
+            holder.txt_last.setText(String.format(LAST_RESULT, match.getLastMatch()));
+
+            holder.txt_venue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", match.getLatitude(), match.getLongitude(),
+                            match.getLatitude(), match.getLongitude(), match.getVenue());
+                    Uri gmmIntentUri = Uri.parse(uri);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    context.startActivity(mapIntent);
+                }
+            });
+
+            holder.txt_date.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    createEvent(match);
+                }
+            });
+
+            img_crest = holder.img_crest;
+        } else {
+            ResultViewHolder holder = (ResultViewHolder) viewHolder;
+
+            dbManager.openDatabase();
+
+            holder.txt_date.setText(dateFormat.format(date));
+            holder.txt_time.setText(match.getStatus().toStringValue());
+            if (match.getResult() != null)
+                holder.txt_final.setText(match.getResult());
+            else
+                holder.txt_final.setText("");
+
+            int homeTotal;
+            int opponentTotal;
+            String opponentTeam;
+            if (match.getTeamOne() == AppConfig.HOME_TEAM_ID) {
+                homeTotal = getTeamTotal(match.getIdmatch(), match.getTeamOne());
+                opponentTotal = getTeamTotal(match.getIdmatch(), match.getTeamTwo());
+                opponentTeam = getTeamShortName(match.getTeamTwo());
+            } else {
+                homeTotal = getTeamTotal(match.getIdmatch(), match.getTeamTwo());
+                opponentTotal = getTeamTotal(match.getIdmatch(), match.getTeamOne());
+                opponentTeam = getTeamShortName(match.getTeamOne());
             }
-        });
+            holder.txt_result.setText(String.format(Locale.getDefault(), NEW_RESULT, homeTotal, opponentTotal, opponentTeam));
 
-        holder.txt_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createEvent(match);
-            }
-        });
+            dbManager.closeDatabase();
 
-        imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), holder.img_crest, options);
+            img_crest = holder.img_crest;
+        }
+
+        imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), img_crest, options);
+    }
+
+    private int getTeamTotal(int matchId, int teamId) {
+        return ScoreDAO.getTotalScore(matchId, teamId);
+    }
+
+    private String getTeamShortName(int teamId) {
+        String shortName = "";
+        String name = TeamDAO.getTeam(teamId).getName();
+        for (String part : name.split(" ")) {
+            shortName += part.charAt(0);
+        }
+        return shortName;
     }
 
     private void createEvent(Match match) {
-        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
         dbManager.openDatabase();
 
         Team tOne = TeamDAO.getTeam(match.getTeamOne());
@@ -151,7 +215,15 @@ public class FixtureAdapter extends RecyclerView.Adapter<FixtureAdapter.ViewHold
             return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemViewType(int position) {
+        if (matches.get(position).getStatus() != Match.Status.PENDING)
+            return VIEW_RESULT;
+        else
+            return VIEW_PENDING;
+    }
+
+    private class PendingViewHolder extends RecyclerView.ViewHolder {
 
         TextView txt_date;
         TextView txt_time;
@@ -160,12 +232,32 @@ public class FixtureAdapter extends RecyclerView.Adapter<FixtureAdapter.ViewHold
 
         ImageView img_crest;
 
-        ViewHolder(View itemView) {
+        PendingViewHolder(View itemView) {
             super(itemView);
             txt_date = (TextView) itemView.findViewById(R.id.txt_fixture_date);
             txt_time = (TextView) itemView.findViewById(R.id.txt_fixture_time);
             txt_venue = (TextView) itemView.findViewById(R.id.txt_fixture_venue);
             txt_last = (TextView) itemView.findViewById(R.id.txt_fixture_last_match);
+
+            img_crest = (ImageView) itemView.findViewById(R.id.img_fixture_college_crest);
+        }
+    }
+
+    private class ResultViewHolder extends RecyclerView.ViewHolder {
+
+        TextView txt_result;
+        TextView txt_time;
+        TextView txt_date;
+        TextView txt_final;
+
+        ImageView img_crest;
+
+        ResultViewHolder(View itemView) {
+            super(itemView);
+            txt_result = (TextView) itemView.findViewById(R.id.txt_fixture_result);
+            txt_time = (TextView) itemView.findViewById(R.id.txt_fixture_time);
+            txt_date = (TextView) itemView.findViewById(R.id.txt_fixture_date);
+            txt_final = (TextView) itemView.findViewById(R.id.txt_fixture_final);
 
             img_crest = (ImageView) itemView.findViewById(R.id.img_fixture_college_crest);
         }

@@ -22,7 +22,27 @@ public class Match {
     private int group;
 
     public enum Status {
-        PENDING, DONE, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF
+        PENDING, DONE, FULL_TIME, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF;
+
+        public String toStringValue() {
+            switch (this) {
+                case PENDING:
+                case CANCELED:
+                    return this.name();
+                case DONE:
+                case FULL_TIME:
+                    return "Full Time";
+                case CALLED_OFF:
+                    return "Called Off";
+                case HALF_TIME:
+                    return "Half Time";
+                case FIRST_HALF:
+                    return "First Half";
+                case SECOND_HALF:
+                    return "Second Half";
+            }
+            return "";
+        }
     }
 
     public int getIdmatch() {
