@@ -87,16 +87,16 @@ public class PlayerDAO extends DBManager {
         return players;
     }
 
-    public static List<Player> getAllPlayer() {
-        List<Player> players = new ArrayList<>();
-
-        Cursor cursor = mDatabase.query(DBContact.PlayerTable.TABLE_NAME, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            players.add(cursorToPlayer(cursor));
-        }
-        cursor.close();
-        return players;
-    }
+//    public static List<Player> getAllPlayer() {
+//        List<Player> players = new ArrayList<>();
+//
+//        Cursor cursor = mDatabase.query(DBContact.PlayerTable.TABLE_NAME, null, null, null, null, null, null);
+//        while (cursor.moveToNext()) {
+//            players.add(cursorToPlayer(cursor));
+//        }
+//        cursor.close();
+//        return players;
+//    }
 
     public static AdapterPlayer getAdapterPlayer(int playerId, int matchId) {
         AdapterPlayer aPlayer = new AdapterPlayer();

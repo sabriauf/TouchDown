@@ -31,7 +31,7 @@ public class PlayerDialogActivity extends AppCompatActivity {
     //constants
     public static final String EXTRA_PLAYER_OBJECT = "player_extra";
     public static final String EXTRA_PLAYER_POSITION = "player_pos_extra";
-    public static final String EXTRA_PLAYER_POSITION_ID = "player_pos_id_extra";
+    //    public static final String EXTRA_PLAYER_POSITION_ID = "player_pos_id_extra";
     //values
     private static final String PLAYER_AGE_VALUE = "%d years old";
     private static final String PLAYER_COLORS_VALUE = "%d%s year";
@@ -40,6 +40,9 @@ public class PlayerDialogActivity extends AppCompatActivity {
 
     //instances
     private String[] ORDINAL_INDICATOR = new String[]{"st", "nd", "rd", "th"};
+
+    //views
+    private ImageView profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +70,23 @@ public class PlayerDialogActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.txt_player_weight)).setText(String.format(Locale.getDefault(),
                     PLAYER_WEIGHT_VALUE, (int) player.getWeight()));
             ((TextView) findViewById(R.id.txt_player_height)).setText(getHeightString(player.getHeight()));
+            profilePic = (ImageView) findViewById(R.id.img_player_pic);
 
-            imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url(),
-                    ((ImageView) findViewById(R.id.img_player_pic)), options, new ImageLoadingListener() {
+            String img_link = AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url();
+            imageLoader.displayImage(img_link, profilePic, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
-
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    profilePic.setImageDrawable(AppHandler.getDrawable(PlayerDialogActivity.this, R.drawable.default_profile_pic));
                     scheduleStartPostponedTransition(view, PlayerDialogActivity.this);
                 }
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    profilePic.setImageBitmap(loadedImage);
                     scheduleStartPostponedTransition(view, PlayerDialogActivity.this);
                 }
 

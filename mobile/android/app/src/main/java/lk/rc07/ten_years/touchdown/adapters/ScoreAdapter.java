@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.PlayerDAO;
@@ -27,7 +29,6 @@ import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
-import lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight;
 import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 
 /**
@@ -278,7 +279,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_alert_score_details);
 
-        ImageViewAutoHeight img_profile = (ImageViewAutoHeight) dialog.findViewById(R.id.img_alert_score_player);
+        ImageView img_profile = (ImageView) dialog.findViewById(R.id.img_alert_score_player);
         TextView txt_score = (TextView) dialog.findViewById(R.id.txt_alert_score_title);
         TextView txt_time = (TextView) dialog.findViewById(R.id.txt_alert_score_time);
         TextView txt_team = (TextView) dialog.findViewById(R.id.txt_alert_score_team);
@@ -291,10 +292,10 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         dbManager.closeDatabase();
 
         if(player != null && !player.getImg_url().equals("")) {
-            imageLoader.displayImage(player.getImg_url(), img_profile, options);
+            imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url(), img_profile, options);
             txt_player.setText(player.getName());
         } else {
-            imageLoader.displayImage(team.getLogo_url(), img_profile, options);
+            imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + team.getLogo_url(), img_profile, options);
             txt_player.setVisibility(View.GONE);
         }
 

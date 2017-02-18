@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,6 +35,7 @@ import lk.rc07.ten_years.touchdown.data.PlayerDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
 import lk.rc07.ten_years.touchdown.data.PointsDAO;
 import lk.rc07.ten_years.touchdown.data.PositionDAO;
+import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
 import lk.rc07.ten_years.touchdown.models.Group;
@@ -42,6 +44,7 @@ import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.PlayerPosition;
 import lk.rc07.ten_years.touchdown.models.Points;
 import lk.rc07.ten_years.touchdown.models.Position;
+import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.DownloadManager;
 import lk.rc07.ten_years.touchdown.utils.JsonDateSerializer;
@@ -52,9 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
     //constants
     private final String SERVER_ERROR_MESSAGE = "Server error: Code - %d : Message - %s";
+    private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "Bradby Express"};
 
     //instances
     private PageAdapter adapter;
+
+    //views
+    private TextView txt_tab_title = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
+
+        setTitle(TAB_TITLES[0]);
 
         ViewPager viewPager = setTabView();
 
@@ -75,20 +84,42 @@ public class MainActivity extends AppCompatActivity {
         syncData();
     }
 
+    private void setTitle(String title) {
+        if (txt_tab_title == null)
+            txt_tab_title = (TextView) findViewById(R.id.txt_tab_title);
+        txt_tab_title.setText(title);
+    }
+
     private ViewPager setTabView() {
+        PageBuilder pageBuilder = new PageBuilder();
+        for (String title : TAB_TITLES) {
+            pageBuilder.addPage(title);
+        }
         adapter = new PageAdapter(
-                getSupportFragmentManager(), new PageBuilder()
-                .addPage("LIVE")
-                .addPage("FIXTURE")
-                .addPage("POINTS")
-                .addPage("TEAM")
-                .addPage("Bradby Express"));
+                getSupportFragmentManager(), pageBuilder);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
 
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpager_tab);
         viewPagerTab.setViewPager(viewPager);
+
+        viewPagerTab.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setTitle(TAB_TITLES[position]);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         return viewPager;
     }
@@ -131,8 +162,6 @@ public class MainActivity extends AppCompatActivity {
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
         dbManager.openDatabase();
 
-//        response = AppConfig.TEMP_SYNC_FILE;
-
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new JsonDateSerializer("yyyy-MM-dd kk:mm"));
         Gson gson = gsonBuilder.create();
@@ -159,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
 
             if (jsonObject.has(Constant.JSON_OBJECT_PLAYER_POS))
                 savePlayerPos(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYER_POS).toString());
+
+            if(jsonObject.has(Constant.JSON_OBJECT_SCORES))
+                saveScores(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_SCORES).toString());
 
             if (jsonObject.has(Constant.JSON_OBJECT_EXPRESS)) {
                 SharedPreferences.Editor editor = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
@@ -253,5 +285,15 @@ public class MainActivity extends AppCompatActivity {
 
         for (PlayerPosition player : players)
             PlayerPositionDAO.addPlayerPosition(player);
+    }
+
+    private void saveScores(Gson gson, String response) {
+        Type messageType = new TypeToken<List<Score>>() {
+        }.getType();
+
+        List<Score> scores = gson.fromJson(response, messageType);
+
+        for (Score score : scores)
+            ScoreDAO.addScore(score);
     }
 }

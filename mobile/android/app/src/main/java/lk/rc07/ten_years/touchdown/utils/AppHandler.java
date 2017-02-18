@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
+import android.text.Spanned;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -44,10 +46,12 @@ public class AppHandler {
     }
 
     public static DisplayImageOptions getImageOption(ImageLoader imageLoader, Context context, int resource) {
-        @SuppressWarnings("deprecation") DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(resource).cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.ARGB_8888)
+        @SuppressWarnings("deprecation") DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(resource)
+                .cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.ARGB_8888)
                 .displayer(new SimpleBitmapDisplayer()).build();
         if (!imageLoader.isInited()) {
-            ImageLoaderConfiguration imageConfig = new ImageLoaderConfiguration.Builder(context).memoryCache(new WeakMemoryCache()).threadPoolSize(10).denyCacheImageMultipleSizesInMemory().build();
+            ImageLoaderConfiguration imageConfig = new ImageLoaderConfiguration.Builder(context)
+                    .memoryCache(new WeakMemoryCache()).threadPoolSize(10).denyCacheImageMultipleSizesInMemory().build();
             imageLoader.init(imageConfig);
         }
         return options;
@@ -70,5 +74,17 @@ public class AppHandler {
             //noinspection deprecation
             return context.getResources().getColor(resource);
         }
+    }
+
+    public static Spanned getHtmlString(String source) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY);
+        else
+            //noinspection deprecation
+            return Html.fromHtml(source);
+    }
+
+    public static Spanned getLinkText(String source) {
+        return getHtmlString("<span style=\"color:#1155cc\"> <u>" + source + " </u></span>");
     }
 }

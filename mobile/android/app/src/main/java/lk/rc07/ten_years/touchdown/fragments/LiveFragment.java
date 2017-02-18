@@ -152,25 +152,32 @@ public class LiveFragment extends Fragment {
         Score.setScoreListener(new ScoreListener() {
             @Override
             public void OnNewScoreUpdate(Score score) {
-                updateScore(score, getUpdatedMatch(score, match));
+                if (score.getMatchid() != match.getIdmatch())
+                    loadScore.run();
+                else
+                    updateScore(score, getUpdatedMatch(score, match));
             }
 
             @Override
             public void OnScoreUpdate(Score score) {
-                if (score.getAction() == Score.Action.START)
-                    setTimer(getUpdatedMatch(score, match));
-                adapter.updateItem(score);
-                calculateScore(match, adapter.getScores());
-                holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
-                holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
+                if (score.getMatchid() == match.getIdmatch()) {
+                    if (score.getAction() == Score.Action.START)
+                        setTimer(getUpdatedMatch(score, match));
+                    adapter.updateItem(score);
+                    calculateScore(match, adapter.getScores());
+                    holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
+                    holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
+                }
             }
 
             @Override
             public void OnScoreRemove(Score score) {
-                adapter.removeItem(score);
-                calculateScore(match, adapter.getScores());
-                holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
-                holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
+                if (score.getMatchid() == match.getIdmatch()) {
+                    adapter.removeItem(score);
+                    calculateScore(match, adapter.getScores());
+                    holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
+                    holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
+                }
             }
 
 

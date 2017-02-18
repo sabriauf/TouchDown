@@ -16,7 +16,7 @@
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
         <TextView
-            android:id="@+id/txt_fixture_date"
+            android:id="@+id/txt_tab_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/actionbar_name"

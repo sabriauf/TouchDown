@@ -23,17 +23,18 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize" />
+        <activity
+            android:name=".activities.PlayerDialogActivity"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
+            android:theme="@style/MyAlertDialogStyle" />
+        <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.PlayerDialogActivity"
-            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
-            android:theme="@style/MyAlertDialogStyle" />
     </application>
 
 </manifest>

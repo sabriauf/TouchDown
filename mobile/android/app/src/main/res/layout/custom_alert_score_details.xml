@@ -67,11 +67,12 @@
             android:layout_weight="1"
             android:paddingBottom="40dp">
 
-            <lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight
+            <ImageView
                 android:id="@+id/img_alert_score_player"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/default_profile_pic" />
+                android:src="@drawable/default_profile_pic"
+                android:scaleType="centerInside"/>
         </LinearLayout>
 
     </LinearLayout>

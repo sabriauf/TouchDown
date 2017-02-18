@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -73,11 +74,16 @@ public class MatchDAO extends DBManager {
         return match;
     }
 
-    public static List<Match> getMatchesOnStatus(Match.Status status) {
+    private static List<Match> getMatchesOnStatus(Match.Status[] status) {
         List<Match> matches = new ArrayList<>();
 
-        String WHERE_CLAUSE = DBContact.MatchTable.COLUMN_STATUS + "=?";
-        String[] WHERE_ARGS = {String.valueOf(status)};
+        String WHERE_CLAUSE = "";
+        for (int i = 0; i < status.length; i++) {
+            WHERE_CLAUSE += DBContact.MatchTable.COLUMN_STATUS + "=?";
+            if (i != status.length - 1)
+                WHERE_CLAUSE += " or ";
+        }
+        String[] WHERE_ARGS = Arrays.toString(status).split("[\\[\\]]")[1].split(", ");
 
         Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
         while (cursor.moveToNext()) {
@@ -87,13 +93,13 @@ public class MatchDAO extends DBManager {
         return matches;
     }
 
-    public static Match getDisplayMatch() {
+    private static Match getCalendarMatch() {
 
         Calendar from = Calendar.getInstance();
         from.add(Calendar.DAY_OF_MONTH, -4);
 
         Calendar to = Calendar.getInstance();
-        to.add(Calendar.DAY_OF_MONTH, 2);
+        to.add(Calendar.DAY_OF_MONTH, 3);
 
         String query = "";
         query = query.concat("SELECT * FROM ");
@@ -117,15 +123,14 @@ public class MatchDAO extends DBManager {
         return match;
     }
 
-//    public static List<Match> getDisplayMatch() {
-//        List<Match> matches = getMatchesOnStatus(Match.Status.FIRST_HALF);
-//        if(matches.size() > 0)
-//            return matches;
-//        else {
-//            matches = getMatchesOnStatus(Match.Status.SECOND_HALF);
-//            return matches;
-//        }
-//    }
+    public static Match getDisplayMatch() {
+        Match.Status[] currentMatchStatus = new Match.Status[]{Match.Status.FIRST_HALF, Match.Status.SECOND_HALF, Match.Status.HALF_TIME};
+        List<Match> matches = getMatchesOnStatus(currentMatchStatus);
+        if (matches.size() > 0)
+            return matches.get(0);
+        else
+            return getCalendarMatch();
+    }
 
     public static List<Match> getAllMatches() {
         List<Match> matches = new ArrayList<>();

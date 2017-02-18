@@ -13,6 +13,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +42,9 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
     private static final String PARAM_PUSH_OBJECT = "object";
     private static final String PARAM_OBJECT_SCORE = "score";
 
+    //instances
+    private Gson gson = null;
+
     /**
      * Called when message is received.
      *
@@ -62,36 +66,41 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 try {
                     JSONObject respond = new JSONObject(value);
                     if (respond.has(PARAM_OBJECT_SCORE)) {
-                        Score score = new Gson().fromJson(respond.getJSONObject(PARAM_OBJECT_SCORE).toString(), Score.class);
+                        try {
+                            if (gson == null)
+                                gson = new GsonBuilder().create();
+                            Score score = gson.fromJson(respond.getJSONObject(PARAM_OBJECT_SCORE).toString(), Score.class);
 
-                        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
-                        dbManager.openDatabase();
+                            DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
+                            dbManager.openDatabase();
 
-                        Message msg = new Message();
-                        msg.obj = score;
-                        if (score.getAction() != null) {
-                            boolean inserted = ScoreDAO.addScore(score);
+                            Message msg = new Message();
+                            msg.obj = score;
+                            if (score.getAction() != null) {
+                                boolean inserted = ScoreDAO.addScore(score);
 
-                            if (inserted) {
-                                msg.what = Score.WHAT_NEW_SCORE;
-                                sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE),
-                                        fragmentId);
-                            } else
-                                msg.what = Score.WHAT_UPDATE_SCORE;
-                        } else {
-                            if (score.getIdscore() == 0) {
-                                ScoreDAO.deleteAllScores(score.getMatchid());
-                                MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.PENDING);
+                                if (inserted) {
+                                    msg.what = Score.WHAT_NEW_SCORE;
+                                    sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE),
+                                            fragmentId);
+                                } else
+                                    msg.what = Score.WHAT_UPDATE_SCORE;
                             } else {
-                                ScoreDAO.deleteScore(score.getIdscore());
-                                msg.what = Score.WHAT_REMOVE_SCORE;
+                                if (score.getIdscore() == 0) {
+                                    ScoreDAO.deleteAllScores(score.getMatchid());
+                                    MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.PENDING);
+                                } else {
+                                    ScoreDAO.deleteScore(score.getIdscore());
+                                    msg.what = Score.WHAT_REMOVE_SCORE;
+                                }
+
                             }
 
+                            dbManager.closeDatabase();
+                            Score.handler.sendMessage(msg);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-
-                        dbManager.closeDatabase();
-                        Score.handler.sendMessage(msg);
-
                     }
                 } catch (JSONException ex) {
                     ex.printStackTrace();

@@ -40,7 +40,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         this.players = players;
 
         this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, activity.getApplicationContext(), R.drawable.default_profile_pic);
+        options = AppHandler.getImageOption(imageLoader, activity, R.drawable.default_profile_pic);
     }
 
     @Override
@@ -54,12 +54,17 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
         final int pos = holder.getAdapterPosition();
 
-        imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + players.get(pos).getPlayer().getImg_url(), holder.img_profile_pic, options);
+        String img_link = AppConfig.TOUCHDOWN_BASE_URL + players.get(pos).getPlayer().getImg_url();
+        imageLoader.displayImage(img_link, holder.img_profile_pic, options);
 
         final View img_prof_pic = holder.img_profile_pic;
         holder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    img_prof_pic.setTransitionName("profile_pic");
+
                 Intent intent = new Intent(activity, PlayerDialogActivity.class);
                 intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_OBJECT, players.get(pos).getPlayer());
                 intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION, players.get(pos).getPosition().getPosName());

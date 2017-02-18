@@ -39,7 +39,6 @@ public class PlayersFragment extends Fragment {
         Match match = MatchDAO.getDisplayMatch();
         if (match != null)
             matchId = match.getIdmatch();
-        PlayerDAO.getAllPlayer();
         List<AdapterPlayer> players = PlayerDAO.getPlayerOfTeam(AppConfig.HOME_TEAM_ID, matchId);
         dbManager.closeDatabase();
 
