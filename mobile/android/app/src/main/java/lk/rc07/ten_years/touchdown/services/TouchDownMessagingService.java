@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Message;
@@ -41,6 +42,8 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
     private static final String PARAM_PUSH_FRAGMENT = "fragment";
     private static final String PARAM_PUSH_OBJECT = "object";
     private static final String PARAM_OBJECT_SCORE = "score";
+    private static final String PARAM_OBJECT_LIVE = "live";
+    private static final String PARAM_LIVE_LINK = "link";
 
     //instances
     private Gson gson = null;
@@ -89,6 +92,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                                 if (score.getIdscore() == 0) {
                                     ScoreDAO.deleteAllScores(score.getMatchid());
                                     MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.PENDING);
+                                    msg.what = Score.WHAT_REMOVE_MATCH;
                                 } else {
                                     ScoreDAO.deleteScore(score.getIdscore());
                                     msg.what = Score.WHAT_REMOVE_SCORE;
@@ -101,6 +105,16 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
+                    } else if(respond.has(PARAM_OBJECT_LIVE)) {
+                        SharedPreferences.Editor editor = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
+
+                        JSONObject object = respond.getJSONObject(PARAM_OBJECT_LIVE);
+                        String link = object.getString(PARAM_LIVE_LINK);
+                        if(!link.equals(""))
+                            link = link.split("=")[1];
+                        editor.putString(Constant.PREFERENCES_LIVE_LINK, link);
+
+                        editor.apply();
                     }
                 } catch (JSONException ex) {
                     ex.printStackTrace();

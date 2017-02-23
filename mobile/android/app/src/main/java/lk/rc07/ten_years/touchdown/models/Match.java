@@ -19,6 +19,7 @@ public class Match {
     private double longitude;
     private double latitude;
     private String lastMatch;
+    @SerializedName("idgroup")
     private int group;
 
     public enum Status {

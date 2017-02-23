@@ -75,8 +75,9 @@ public class GroupDAO extends DBManager {
 
     public static List<String> getAllFromColumn(String column, String where) {
         List<String> values = new ArrayList<>();
+        String orderBy =  column + " ASC";
 
-        Cursor cursor = mDatabase.query(true, DBContact.GroupTable.TABLE_NAME, new String[]{column}, where, null, null, null, null, null);
+        Cursor cursor = mDatabase.query(true, DBContact.GroupTable.TABLE_NAME, new String[]{column}, where, null, null, null, orderBy, null);
         while (cursor.moveToNext()) {
             values.add(cursor.getString(cursor.getColumnIndex(column)));
         }

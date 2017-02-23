@@ -17,5 +17,19 @@
     <string name="score_details">Score details</string>
     <string name="player_name">Player Name</string>
     <string name="team_name">Team Name</string>
+    <string name="menu_title">Menu</string>
+    <string name="menu_live_title">LIVE</string>
+    <string name="about_us">About Us</string>
+    <string name="close">Close</string>
+    <string name="app_support">App Support</string>
+    <string name="more_apps">More Apps</string>
+    <string name="rate">Rate this App</string>
+    <string name="copyrights">© 2017 Royal College Group of 2007</string>
+    <string name="app_version">TouchDown</string>
+    <string name="about_us_desc">TouchDown application is for all Royalists who follows Royal Rugby to get latest update from Rugby ground.
+    This is a project of Group of 2007 Royal College. </string>
+    <string name="live_update_from">Live Score Update</string>
+    <string name="x">X</string>
+    <string name="ovin_askey">Ovin</string>
 
 </resources>

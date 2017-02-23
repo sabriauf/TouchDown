@@ -4,13 +4,16 @@
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="lk.rc07.ten_years.touchdown.activities.SplashActivity"
-    android:background="@color/background_blue">
+    android:background="@color/background_blue"
+    tools:context="lk.rc07.ten_years.touchdown.activities.SplashActivity">
 
     <lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight
+        android:id="@+id/img_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@drawable/splash_logo"/>
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
+        android:src="@drawable/touchdown_tag" />
 
 </RelativeLayout>

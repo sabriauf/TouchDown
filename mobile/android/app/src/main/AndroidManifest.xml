@@ -35,6 +35,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.PlayerActivity"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale" />
+        <activity
+            android:name=".activities.AboutUsActivity"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
+            android:theme="@style/MyAlertDialogStyle" />
+        <activity
+            android:name=".activities.AdvertisementActivity"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
+            android:theme="@style/MyAlertDialogStyle" />
     </application>
 
 </manifest>

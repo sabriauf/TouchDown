@@ -27,8 +27,10 @@ public class Constant {
     public static final String JSON_OBJECT_PLAYERS = "players";
     public static final String JSON_OBJECT_PLAYER_POS = "playerPosition";
     public static final String JSON_OBJECT_EXPRESS = "bradby_express";
+    public static final String JSON_OBJECT_ADVERTISEMENT = "advertisement";
     public static final String JSON_OBJECT_SCORES = "scores";
     public static final String JSON_OBJECT_EXPRESS_IMAGE = "img_url";
+    public static final String JSON_OBJECT_ADVERTISEMENT_IMAGE = "img_url";
     public static final String JSON_OBJECT_EXPRESS_REDIRECT = "redirect_url";
 
     //Preferences params
@@ -36,4 +38,5 @@ public class Constant {
     public static final String PREFERENCES_LAST_SYNC = "preferences_last_sync";
     public static final String PREFERENCES_EXPRESS_IMAGE = "pref_express_image";
     public static final String PREFERENCES_EXPRESS_LINK = "pref_express_link";
+    public static final String PREFERENCES_LIVE_LINK = "pref_live_link";
 }

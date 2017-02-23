@@ -10,6 +10,7 @@ public class AppConfig {
     public static final int API_VERSION = 1;
 
     public static final long DEFAULT_TIME_STAMP = 1486307570;
+    public static final String DEVELOPER_KEY = "AIzaSyDx_svQDRRdqGkJXnnKe7E30nxthgC0HgI";
 
     public static final String TOUCHDOWN_BASE_URL = "http://redpixelcreations.com/touchdown";
     public static final String SYNCHRONIZE_URL = TOUCHDOWN_BASE_URL + "/sync.php";

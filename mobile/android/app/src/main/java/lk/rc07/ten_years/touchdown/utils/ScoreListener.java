@@ -13,4 +13,6 @@ public interface ScoreListener {
     void OnScoreUpdate(Score score);
 
     void OnScoreRemove(Score score);
+
+    void OnMatchRemoved();
 }

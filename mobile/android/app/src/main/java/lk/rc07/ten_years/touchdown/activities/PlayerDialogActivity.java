@@ -33,10 +33,10 @@ public class PlayerDialogActivity extends AppCompatActivity {
     public static final String EXTRA_PLAYER_POSITION = "player_pos_extra";
     //    public static final String EXTRA_PLAYER_POSITION_ID = "player_pos_id_extra";
     //values
-    private static final String PLAYER_AGE_VALUE = "%d years old";
+    private static final String PLAYER_AGE_VALUE = "Age : %d Years";
     private static final String PLAYER_COLORS_VALUE = "%d%s year";
-    private static final String PLAYER_WEIGHT_VALUE = "Weight %d kg";
-    private static final String PLAYER_HEIGHT_VALUE = "Height %s";
+    private static final String PLAYER_WEIGHT_VALUE = "Weight : %d kg";
+    private static final String PLAYER_HEIGHT_VALUE = "Height : %s";
 
     //instances
     private String[] ORDINAL_INDICATOR = new String[]{"st", "nd", "rd", "th"};
@@ -60,10 +60,11 @@ public class PlayerDialogActivity extends AppCompatActivity {
         DisplayImageOptions options = AppHandler.getImageOption(imageLoader, getApplicationContext(), R.drawable.default_profile_pic);
 
         Player player = getIntent().getExtras().getParcelable(EXTRA_PLAYER_OBJECT);
-        String player_pos = getIntent().getExtras().getString(EXTRA_PLAYER_POSITION);
+        String player_pos = String.format(Locale.getDefault(), "%02d", getIntent().getExtras().getInt(EXTRA_PLAYER_POSITION));
 
         if (player != null) {
-            ((TextView) findViewById(R.id.txt_player_pos)).setText(player_pos);
+            ((TextView) findViewById(R.id.txt_player_name)).setText(player.getName());
+            ((TextView) findViewById(R.id.txt_player_no)).setText(player_pos);
             ((TextView) findViewById(R.id.txt_player_age)).setText(String.format(Locale.getDefault(),
                     PLAYER_AGE_VALUE, calculateAge(player.getBirthDay())));
             ((TextView) findViewById(R.id.txt_player_colors)).setText(getOrdinalString(player.getColors()));

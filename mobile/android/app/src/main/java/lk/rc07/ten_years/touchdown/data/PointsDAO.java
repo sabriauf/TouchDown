@@ -41,7 +41,7 @@ public class PointsDAO extends DBManager {
         values.put(DBContact.PointsTable.COLUMN_POINTS, points.getPoints());
         values.put(DBContact.PointsTable.COLUMN_TEAM, points.getTeamId());
         values.put(DBContact.PointsTable.COLUMN_WON, points.getWon());
-        values.put(DBContact.PointsTable.COLUMN_GROUP, points.getGroup());
+        values.put(DBContact.PointsTable.COLUMN_GROUP, points.getIdGroup());
 
         if (!isPointsAlreadyExist) {
             values.put(DBContact.PointsTable.COLUMN_ID, points.getIdPoint());
@@ -54,16 +54,16 @@ public class PointsDAO extends DBManager {
         }
     }
 
-    public static List<Points> getAllPointTable() {
-        List<Points> points = new ArrayList<>();
-
-        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            points.add(cursorToPoints(cursor));
-        }
-        cursor.close();
-        return points;
-    }
+//    public static List<Points> getAllPointTable() {
+//        List<Points> points = new ArrayList<>();
+//
+//        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, null, null, null, null, null, null);
+//        while (cursor.moveToNext()) {
+//            points.add(cursorToPoints(cursor));
+//        }
+//        cursor.close();
+//        return points;
+//    }
 
     public static List<Points> getPointTable(int groupId) {
         List<Points> points = new ArrayList<>();
@@ -87,7 +87,7 @@ public class PointsDAO extends DBManager {
         points.setPoints(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_POINTS)));
         points.setTeamId(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_TEAM)));
         points.setWon(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_WON)));
-        points.setGroup(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_GROUP)));
+        points.setIdGroup(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_GROUP)));
         return points;
     }
 }

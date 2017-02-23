@@ -152,7 +152,7 @@ public class LiveFragment extends Fragment {
         Score.setScoreListener(new ScoreListener() {
             @Override
             public void OnNewScoreUpdate(Score score) {
-                if (score.getMatchid() != match.getIdmatch())
+                if (match == null || score.getMatchid() != match.getIdmatch())
                     loadScore.run();
                 else
                     updateScore(score, getUpdatedMatch(score, match));
@@ -178,6 +178,12 @@ public class LiveFragment extends Fragment {
                     holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
                     holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
                 }
+            }
+
+            @Override
+            public void OnMatchRemoved() {
+                matchStartTime = 0;
+                loadScore.run();
             }
 
 

@@ -1,12 +1,16 @@
 package lk.rc07.ten_years.touchdown.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -15,7 +19,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -69,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("");
 
         setTitle(TAB_TITLES[0]);
 
@@ -146,9 +154,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         HashMap<String, String> urlParams = new HashMap<>();
-        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
-                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP)));
-//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
+//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
+//                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP)));
+        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
 
         DownloadMeta meta = new DownloadMeta();
         meta.setUrl(AppConfig.SYNCHRONIZE_URL);
@@ -163,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         dbManager.openDatabase();
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Date.class, new JsonDateSerializer("yyyy-MM-dd kk:mm"));
+        gsonBuilder.registerTypeAdapter(Date.class, new JsonDateSerializer("MM/dd/yyyy kk:mm"));
         Gson gson = gsonBuilder.create();
 
         try {
@@ -189,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             if (jsonObject.has(Constant.JSON_OBJECT_PLAYER_POS))
                 savePlayerPos(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYER_POS).toString());
 
-            if(jsonObject.has(Constant.JSON_OBJECT_SCORES))
+            if (jsonObject.has(Constant.JSON_OBJECT_SCORES))
                 saveScores(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_SCORES).toString());
 
             if (jsonObject.has(Constant.JSON_OBJECT_EXPRESS)) {
@@ -202,8 +210,18 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
             }
 
+            if (jsonObject.has(Constant.JSON_OBJECT_ADVERTISEMENT)) {
+                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_ADVERTISEMENT);
+                String img_url =  object.getString(Constant.JSON_OBJECT_ADVERTISEMENT_IMAGE);
 
-        } catch (JSONException ex) {
+                Intent intent = new Intent(this, AdvertisementActivity.class);
+                intent.putExtra(AdvertisementActivity.EXTRAS_IMAGE_LINK, img_url);
+
+                startActivity(intent);
+            }
+
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             dbManager.closeDatabase();
@@ -295,5 +313,38 @@ public class MainActivity extends AppCompatActivity {
 
         for (Score score : scores)
             ScoreDAO.addScore(score);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
+        menu.findItem(R.id.menu_live).setVisible(!link.equals(""));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.menu_live:
+                String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
+
+                Intent i = new Intent(getApplicationContext(), PlayerActivity.class);
+                i.putExtra(PlayerActivity.EXTRAS_VIDEO_ID, link);
+                startActivity(i);
+                break;
+
+            case R.id.menu_about:
+                Intent i2 = new Intent(getApplicationContext(), AboutUsActivity.class);
+                startActivity(i2);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 }

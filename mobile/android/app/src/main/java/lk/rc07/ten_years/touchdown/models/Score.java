@@ -18,6 +18,7 @@ public class Score {
     public static final int WHAT_NEW_SCORE = 1001;
     public static final int WHAT_UPDATE_SCORE = 1002;
     public static final int WHAT_REMOVE_SCORE = 1003;
+    public static final int WHAT_REMOVE_MATCH = 1004;
     public static final int WHAT_ACTION_SCORE = 1;
     public static final int WHAT_ACTION_EVENT = 2;
     public static final int WHAT_ACTION_TIME = 3;
@@ -190,6 +191,13 @@ public class Score {
         }
     }
 
+    private static void notifyOnMatchRemove() {
+        for (ScoreListener listener : scoreListeners.values()) {
+            if (listener != null)
+                listener.OnMatchRemoved();
+        }
+    }
+
     public static Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -207,6 +215,8 @@ public class Score {
                     score = (Score) message.obj;
                     notifyOnScoreRemove(score);
                     break;
+                case WHAT_REMOVE_MATCH:
+                    notifyOnMatchRemove();
             }
             return true;
         }

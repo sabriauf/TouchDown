@@ -45,7 +45,7 @@ public class StandingFragment extends Fragment {
     private static final String SPINNER_TITLE_GROUP = "GROUP";
     private final float TEXT_SIZE = 18f;
     private static final String UPDATE_STRING = "Updated On : %s";
-    private final String[] titles = new String[]{"TEAM", "Played", "Won", "Draw", "Lost", "Points"};
+    private final String[] titles = new String[]{"TEAM", "P", "W", "D", "L", "P"};
 
     //views
     private TableLayout table;
@@ -92,13 +92,18 @@ public class StandingFragment extends Fragment {
         final List<String> leagues = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_LEAGUE);
         loadSpinner(leagues, spn_leagues);
         if (leagues.size() > 1)
-            spn_leagues.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            spn_leagues.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
                     dbManager.openDatabase();
                     setRoundSpinner(leagues.get(i));
                     dbManager.closeDatabase();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
                 }
             });
         else if (leagues.size() == 1) {
@@ -111,13 +116,18 @@ public class StandingFragment extends Fragment {
         final List<String> rounds = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_ROUND, where);
         loadSpinner(rounds, spn_rounds);
         if (rounds.size() > 1)
-            spn_rounds.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            spn_rounds.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
                     dbManager.openDatabase();
                     setGroupSpinner(league, rounds.get(i));
                     dbManager.closeDatabase();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
                 }
             });
         else if (rounds.size() == 1)
@@ -129,16 +139,21 @@ public class StandingFragment extends Fragment {
                 + "' and " +
                 DBContact.GroupTable.COLUMN_ROUND + " = '" + round + "'";
         final List<String> groups = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_NAME, where);
+//        final List<String> groups = GroupDAO.getGroupNames(league, round);
         loadSpinner(groups, spn_groups);
         if (groups.size() > 1)
-            spn_groups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            spn_groups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
                     dbManager.openDatabase();
                     int id = GroupDAO.getGroupIdForInfo(league, round, groups.get(i));
                     loadTable(table, PointsDAO.getPointTable(id));
                     dbManager.closeDatabase();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
                 }
             });
         else if (groups.size() == 1) {
@@ -158,6 +173,7 @@ public class StandingFragment extends Fragment {
     }
 
     private void loadTable(TableLayout table, List<Points> points) {
+        table.removeAllViews();
         table.addView(addTitles());
         table.addView(addDivider());
         for (Points point : points) {
@@ -170,6 +186,7 @@ public class StandingFragment extends Fragment {
         tr1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         tr1.setPadding(0, 0, 0, 40);
+        tr1.setGravity(Gravity.CENTER_HORIZONTAL);
         for (String title : titles) {
             tr1.addView(addTitleTextView(title));
         }

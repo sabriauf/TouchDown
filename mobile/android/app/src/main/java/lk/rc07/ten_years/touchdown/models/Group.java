@@ -1,11 +1,14 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Sabri on 2/12/2017. Group Model
  */
 
 public class Group {
 
+    @SerializedName("idgroup")
     private int groupId;
     private String groupName;
     private String leagueName;

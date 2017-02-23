@@ -1,5 +1,7 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Sabri on 12/15/2016. data model for Points
  */
@@ -12,7 +14,8 @@ public class Points {
     private int won;
     private int lost;
     private int points;
-    private int group;
+    @SerializedName("idgroup")
+    private int idGroup;
 
     public int getIdPoint() {
         return idPoint;
@@ -62,11 +65,11 @@ public class Points {
         this.points = points;
     }
 
-    public int getGroup() {
-        return group;
+    public int getIdGroup() {
+        return idGroup;
     }
 
-    public void setGroup(int group) {
-        this.group = group;
+    public void setIdGroup(int idGroup) {
+        this.idGroup = idGroup;
     }
 }

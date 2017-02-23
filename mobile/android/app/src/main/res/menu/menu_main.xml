@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_live"
+        android:title="@string/menu_live_title"
+        android:orderInCategory="10"
+        android:icon="@drawable/murc_logo"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_about"
+        android:title="@string/about_us"
+        android:orderInCategory="10"
+        app:showAsAction="collapseActionView" />
+
+</menu>

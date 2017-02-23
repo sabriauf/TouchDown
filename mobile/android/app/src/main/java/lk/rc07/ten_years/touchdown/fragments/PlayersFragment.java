@@ -26,7 +26,7 @@ import lk.rc07.ten_years.touchdown.models.Match;
 
 public class PlayersFragment extends Fragment {
 
-    private static final int PLAYER_COLUMNS = 3;
+    private static final int PLAYER_COLUMNS = 4;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
