@@ -6,6 +6,7 @@ import android.os.Message;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import lk.rc07.ten_years.touchdown.activities.MainActivity;
 import lk.rc07.ten_years.touchdown.utils.ScoreListener;
 
 /**
@@ -217,6 +218,7 @@ public class Score {
                     break;
                 case WHAT_REMOVE_MATCH:
                     notifyOnMatchRemove();
+                    break;
             }
             return true;
         }

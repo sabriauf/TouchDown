@@ -135,7 +135,8 @@ public class MatchDAO extends DBManager {
     public static List<Match> getAllMatches() {
         List<Match> matches = new ArrayList<>();
 
-        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, null, null, null, null, null);
+        String orderBy = DBContact.MatchTable.COLUMN_DATE + " ASC";
+        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, null, null, null, null, orderBy);
         while (cursor.moveToNext()) {
             matches.add(cursorToMatch(cursor));
         }

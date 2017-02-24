@@ -47,11 +47,12 @@ public class AppHandler {
 
     public static DisplayImageOptions getImageOption(ImageLoader imageLoader, Context context, int resource) {
         @SuppressWarnings("deprecation") DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(resource)
-                .cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.ARGB_8888)
+                .cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.RGB_565)
                 .displayer(new SimpleBitmapDisplayer()).build();
         if (!imageLoader.isInited()) {
             ImageLoaderConfiguration imageConfig = new ImageLoaderConfiguration.Builder(context)
-                    .memoryCache(new WeakMemoryCache()).threadPoolSize(10).denyCacheImageMultipleSizesInMemory().build();
+                    .memoryCache(new WeakMemoryCache()).diskCacheExtraOptions(480, 320, null).threadPoolSize(5)
+                    .denyCacheImageMultipleSizesInMemory().build();
             imageLoader.init(imageConfig);
         }
         return options;

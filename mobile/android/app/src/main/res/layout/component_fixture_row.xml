@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background_blue"
+    android:layout_marginBottom="10dp"
     android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp">
+    android:background="@color/background_blue"
+    android:orientation="horizontal">
 
-    <ImageView
+    <lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight
         android:id="@+id/img_fixture_college_crest"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/image_description"
-        android:scaleType="fitCenter"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/image_description"
+        android:scaleType="centerCrop"
         android:src="@drawable/icon_book_placeholder" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toEndOf="@id/img_fixture_college_crest"
-        android:layout_toRightOf="@id/img_fixture_college_crest"
+        android:id="@+id/layout_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
+        android:layout_weight="2"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_fixture_team_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,10 +57,10 @@
                 android:id="@+id/txt_fixture_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/dummy_score"
-                android:textColor="@android:color/white"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
+                android:text="@string/dummy_score"
+                android:textColor="@android:color/white"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -72,9 +83,9 @@
                 android:id="@+id/txt_fixture_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/dummy_score"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
+                android:text="@string/dummy_score"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -97,9 +108,9 @@
                 android:id="@+id/txt_fixture_venue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/dummy_score"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
+                android:text="@string/dummy_score"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -108,11 +119,11 @@
             android:id="@+id/txt_fixture_last_match"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/dummy_score"
             android:layout_marginLeft="30dp"
             android:layout_marginStart="30dp"
+            android:text="@string/dummy_score"
             android:textColor="@color/tab_background"
-            android:textSize="18sp" />
+            android:textSize="14sp"
+            android:textStyle="italic" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

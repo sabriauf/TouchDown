@@ -44,15 +44,18 @@ public class PlayerPositionDAO extends DBManager {
 
         int playerPosId = getPlayerPosId(playerPos.getIdPlayer(), playerPos.getIdMatch());
 
-        values.put(DBContact.PlayerPositionTable.COLUMN_MATCH_ID, playerPos.getIdMatch());
-
         if (playerPosId == -1) {
+            values.put(DBContact.PlayerPositionTable.COLUMN_MATCH_ID, playerPos.getIdMatch());
             values.put(DBContact.PlayerPositionTable.COLUMN_PLAYER_ID, playerPos.getIdPlayer());
             values.put(DBContact.PlayerPositionTable.COLUMN_POS_ID, playerPos.getIdPosition());
             return (mDatabase.insert(DBContact.PlayerPositionTable.TABLE_NAME, null, values) != -1);
-
+        } else {
+            values.put(DBContact.PlayerPositionTable.COLUMN_POS_ID, playerPos.getIdPosition());
+            String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + "=? and "
+                    + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + " =?";
+            String[] WHERE_ARGS = {String.valueOf(playerPos.getIdPlayer()), String.valueOf(playerPos.getIdMatch())};
+            return mDatabase.update(DBContact.PlayerPositionTable.TABLE_NAME, values, WHERE_CLAUSE, WHERE_ARGS) == 1;
         }
-        return false;
     }
 
     static Position getPosition(int playerId, int matchId) {

@@ -28,6 +28,7 @@ public class Constant {
     public static final String JSON_OBJECT_PLAYER_POS = "playerPosition";
     public static final String JSON_OBJECT_EXPRESS = "bradby_express";
     public static final String JSON_OBJECT_ADVERTISEMENT = "advertisement";
+    public static final String JSON_OBJECT_VERSION = "version";
     public static final String JSON_OBJECT_SCORES = "scores";
     public static final String JSON_OBJECT_EXPRESS_IMAGE = "img_url";
     public static final String JSON_OBJECT_ADVERTISEMENT_IMAGE = "img_url";

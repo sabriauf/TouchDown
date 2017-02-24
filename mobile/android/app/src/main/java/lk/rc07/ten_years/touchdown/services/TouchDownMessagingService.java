@@ -16,7 +16,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import lk.rc07.ten_years.touchdown.R;
@@ -105,18 +104,25 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                    } else if(respond.has(PARAM_OBJECT_LIVE)) {
+                    } else if (respond.has(PARAM_OBJECT_LIVE)) {
                         SharedPreferences.Editor editor = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
 
                         JSONObject object = respond.getJSONObject(PARAM_OBJECT_LIVE);
                         String link = object.getString(PARAM_LIVE_LINK);
-                        if(!link.equals(""))
+                        Message msg = new Message();
+                        if (!link.equals("") && link.contains("=")) {
                             link = link.split("=")[1];
+                            msg.obj = true;
+                            //TODO - add notification saying its live streaming now
+                        } else
+                            msg.obj = false;
                         editor.putString(Constant.PREFERENCES_LIVE_LINK, link);
 
                         editor.apply();
+                        msg.what = MainActivity.LIVE_STREAMING;
+                        MainActivity.mHandler.sendMessage(msg);
                     }
-                } catch (JSONException ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (!remoteMessage.getData().get(PARAM_PUSH_TITLE).equals("")) {

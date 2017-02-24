@@ -2,8 +2,9 @@ package lk.rc07.ten_years.touchdown.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,47 +12,23 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.PageAdapter;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
-import lk.rc07.ten_years.touchdown.data.DBHelper;
-import lk.rc07.ten_years.touchdown.data.DBManager;
-import lk.rc07.ten_years.touchdown.data.GroupDAO;
-import lk.rc07.ten_years.touchdown.data.MatchDAO;
-import lk.rc07.ten_years.touchdown.data.PlayerDAO;
-import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
-import lk.rc07.ten_years.touchdown.data.PointsDAO;
-import lk.rc07.ten_years.touchdown.data.PositionDAO;
-import lk.rc07.ten_years.touchdown.data.ScoreDAO;
-import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
-import lk.rc07.ten_years.touchdown.models.Group;
-import lk.rc07.ten_years.touchdown.models.Match;
-import lk.rc07.ten_years.touchdown.models.Player;
-import lk.rc07.ten_years.touchdown.models.PlayerPosition;
-import lk.rc07.ten_years.touchdown.models.Points;
-import lk.rc07.ten_years.touchdown.models.Position;
-import lk.rc07.ten_years.touchdown.models.Score;
-import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.DownloadManager;
-import lk.rc07.ten_years.touchdown.utils.JsonDateSerializer;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
+import lk.rc07.ten_years.touchdown.utils.ReadSyncJson;
 import lk.rc07.ten_years.touchdown.utils.SynchronizeData;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,12 +36,16 @@ public class MainActivity extends AppCompatActivity {
     //constants
     private final String SERVER_ERROR_MESSAGE = "Server error: Code - %d : Message - %s";
     private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "Bradby Express"};
+    public static final int REFRESH_TABS = 1001;
+    public static final int LIVE_STREAMING = 1002;
 
     //instances
     private PageAdapter adapter;
+    public static Handler mHandler;
 
     //views
     private TextView txt_tab_title = null;
+    private ImageView img_live;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +69,38 @@ public class MainActivity extends AppCompatActivity {
             if (adapter.getCount() > fragmentId)
                 viewPager.setCurrentItem(fragmentId, true);
         }
+
+        mHandler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message message) {
+                if (message.what == REFRESH_TABS) {
+                    adapter.notifyDataSetChanged();
+                } else if (message.what == LIVE_STREAMING) {
+                    if (!(boolean) message.obj)
+                        img_live.setVisibility(View.GONE);
+                    else
+                        img_live.setVisibility(View.VISIBLE);
+                }
+                return false;
+            }
+        });
+
+        String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
+        img_live = (ImageView) findViewById(R.id.live_icon);
+        img_live.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
+
+                Intent i = new Intent(getApplicationContext(), PlayerActivity.class);
+                i.putExtra(PlayerActivity.EXTRAS_VIDEO_ID, link);
+                startActivity(i);
+            }
+        });
+        if (link.equals(""))
+            img_live.setVisibility(View.GONE);
+        else
+            img_live.setVisibility(View.VISIBLE);
 
         syncData();
     }
@@ -133,18 +146,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void syncData() {
+        final long time = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
+                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP);
+
         SynchronizeData syncData = new SynchronizeData(this);
         syncData.setOnDownloadListener(MainActivity.class.getSimpleName(), new SynchronizeData.DownloadListener() {
             @Override
             public void onDownloadSuccess(final String response, DownloadMeta meta, int code) {
                 getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit().
                         putLong(Constant.PREFERENCES_LAST_SYNC, System.currentTimeMillis()).apply();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        saveData(response);
-                    }
-                }).start();
+                new ReadSyncJson(MainActivity.this, response, time);
             }
 
             @Override
@@ -154,9 +165,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         HashMap<String, String> urlParams = new HashMap<>();
-//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
-//                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP)));
-        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
+        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(time));
+//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
 
         DownloadMeta meta = new DownloadMeta();
         meta.setUrl(AppConfig.SYNCHRONIZE_URL);
@@ -166,162 +176,11 @@ public class MainActivity extends AppCompatActivity {
         syncData.execute(meta);
     }
 
-    private void saveData(String response) {
-        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
-        dbManager.openDatabase();
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Date.class, new JsonDateSerializer("MM/dd/yyyy kk:mm"));
-        Gson gson = gsonBuilder.create();
-
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            if (jsonObject.has(Constant.JSON_OBJECT_GROUPS))
-                saveGroups(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_GROUPS).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_MATCH))
-                saveMatches(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_MATCH).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_TEAMS))
-                saveTeams(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_TEAMS).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_POSITIONS))
-                savePositions(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_POSITIONS).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_POINTS))
-                savePoints(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_POINTS).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_PLAYERS))
-                savePlayers(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYERS).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_PLAYER_POS))
-                savePlayerPos(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYER_POS).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_SCORES))
-                saveScores(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_SCORES).toString());
-
-            if (jsonObject.has(Constant.JSON_OBJECT_EXPRESS)) {
-                SharedPreferences.Editor editor = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
-
-                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_EXPRESS);
-                editor.putString(Constant.PREFERENCES_EXPRESS_IMAGE, object.getString(Constant.JSON_OBJECT_EXPRESS_IMAGE));
-                editor.putString(Constant.PREFERENCES_EXPRESS_LINK, object.getString(Constant.JSON_OBJECT_EXPRESS_REDIRECT));
-
-                editor.apply();
-            }
-
-            if (jsonObject.has(Constant.JSON_OBJECT_ADVERTISEMENT)) {
-                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_ADVERTISEMENT);
-                String img_url =  object.getString(Constant.JSON_OBJECT_ADVERTISEMENT_IMAGE);
-
-                Intent intent = new Intent(this, AdvertisementActivity.class);
-                intent.putExtra(AdvertisementActivity.EXTRAS_IMAGE_LINK, img_url);
-
-                startActivity(intent);
-            }
-
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            dbManager.closeDatabase();
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
-                }
-            });
-        }
-    }
-
-    private void saveGroups(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Group>>() {
-        }.getType();
-
-        List<Group> groups = gson.fromJson(response, messageType);
-
-        for (Group group : groups)
-            GroupDAO.addGroup(group);
-    }
-
-    private void saveMatches(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Match>>() {
-        }.getType();
-
-        List<Match> matches = gson.fromJson(response, messageType);
-
-        for (Match match : matches)
-            MatchDAO.addMatch(match);
-    }
-
-    private void saveTeams(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Team>>() {
-        }.getType();
-
-        List<Team> teams = gson.fromJson(response, messageType);
-
-        for (Team team : teams)
-            TeamDAO.addTeam(team);
-    }
-
-    private void savePositions(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Position>>() {
-        }.getType();
-
-        List<Position> positions = gson.fromJson(response, messageType);
-
-        for (Position position : positions)
-            PositionDAO.addPosition(position);
-    }
-
-    private void savePoints(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Points>>() {
-        }.getType();
-
-        List<Points> points = gson.fromJson(response, messageType);
-
-        for (Points point : points)
-            PointsDAO.addPoints(point);
-    }
-
-    private void savePlayers(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Player>>() {
-        }.getType();
-
-        List<Player> players = gson.fromJson(response, messageType);
-
-        for (Player player : players)
-            PlayerDAO.addPlayer(player);
-    }
-
-    private void savePlayerPos(Gson gson, String response) {
-        Type messageType = new TypeToken<List<PlayerPosition>>() {
-        }.getType();
-
-        List<PlayerPosition> players = gson.fromJson(response, messageType);
-
-        for (PlayerPosition player : players)
-            PlayerPositionDAO.addPlayerPosition(player);
-    }
-
-    private void saveScores(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Score>>() {
-        }.getType();
-
-        List<Score> scores = gson.fromJson(response, messageType);
-
-        for (Score score : scores)
-            ScoreDAO.addScore(score);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
-        menu.findItem(R.id.menu_live).setVisible(!link.equals(""));
         return true;
     }
 
@@ -329,15 +188,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
-            case R.id.menu_live:
-                String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
-
-                Intent i = new Intent(getApplicationContext(), PlayerActivity.class);
-                i.putExtra(PlayerActivity.EXTRAS_VIDEO_ID, link);
-                startActivity(i);
-                break;
-
             case R.id.menu_about:
                 Intent i2 = new Intent(getApplicationContext(), AboutUsActivity.class);
                 startActivity(i2);

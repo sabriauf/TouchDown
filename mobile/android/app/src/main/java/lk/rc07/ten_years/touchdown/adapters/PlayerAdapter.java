@@ -70,8 +70,12 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
             no = String.format(Locale.getDefault(), "%02d", players.get(pos).getPosition().getPosNo());
         holder.txt_player_no.setText(no);
 
-        String img_link = AppConfig.TOUCHDOWN_BASE_URL + players.get(pos).getPlayer().getImg_url();
-        imageLoader.displayImage(img_link, holder.img_profile_pic, options);
+        try {
+            String img_link = AppConfig.TOUCHDOWN_BASE_URL + players.get(pos).getPlayer().getImg_url();
+            imageLoader.displayImage(img_link, holder.img_profile_pic, options);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         final View img_prof_pic = holder.img_profile_pic;
 //        final View txt_name = holder.txt_player_name;

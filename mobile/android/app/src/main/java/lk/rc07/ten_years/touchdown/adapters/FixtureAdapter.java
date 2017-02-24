@@ -87,6 +87,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewHolder instanceof PendingViewHolder) {
             PendingViewHolder holder = (PendingViewHolder) viewHolder;
 
+            holder.txt_team.setText(getTeamName(match));
             holder.txt_date.setText(AppHandler.getLinkText(dateFormat.format(date)));
 
             dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -137,6 +138,20 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), img_crest, options);
     }
 
+    private String getTeamName(Match match) {
+        int teamId;
+        if (match.getTeamOne() == AppConfig.HOME_TEAM_ID)
+            teamId = match.getTeamTwo();
+        else
+            teamId = match.getTeamOne();
+
+        dbManager.openDatabase();
+        Team team = TeamDAO.getTeam(teamId);
+        dbManager.closeDatabase();
+
+        return team.getName();
+    }
+
     private Spanned getResultString(Match match) {
         int homeTotal;
         int opponentTotal;
@@ -150,7 +165,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             opponentTotal = getTeamTotal(match.getIdmatch(), match.getTeamOne());
             opponentTeam = getTeamShortName(match.getTeamOne());
         }
-        return  AppHandler.getHtmlString(String.format(Locale.getDefault(), NEW_RESULT, homeTotal, opponentTotal, opponentTeam));
+        return AppHandler.getHtmlString(String.format(Locale.getDefault(), NEW_RESULT, homeTotal, opponentTotal, opponentTeam));
     }
 
     private int getTeamTotal(int matchId, int teamId) {
@@ -231,6 +246,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private class PendingViewHolder extends RecyclerView.ViewHolder {
 
+        TextView txt_team;
         TextView txt_date;
         TextView txt_time;
         TextView txt_venue;
@@ -240,6 +256,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         PendingViewHolder(View itemView) {
             super(itemView);
+            txt_team = (TextView) itemView.findViewById(R.id.txt_fixture_team_name);
             txt_date = (TextView) itemView.findViewById(R.id.txt_fixture_date);
             txt_time = (TextView) itemView.findViewById(R.id.txt_fixture_time);
             txt_venue = (TextView) itemView.findViewById(R.id.txt_fixture_venue);

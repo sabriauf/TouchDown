@@ -28,23 +28,25 @@
             <LinearLayout
                 android:id="@+id/layout_no"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/player_details"
                 android:background="@color/background_blue">
 
                 <TextView
                     android:id="@+id/txt_player_no"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:text="@string/dummy_score"
                     android:textColor="@color/tab_background"
                     android:textSize="70sp"
-                    android:textStyle="bold"
-                    android:transitionName="no" />
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/player_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/layout_no">

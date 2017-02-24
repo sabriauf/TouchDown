@@ -33,10 +33,10 @@ public class PlayerDialogActivity extends AppCompatActivity {
     public static final String EXTRA_PLAYER_POSITION = "player_pos_extra";
     //    public static final String EXTRA_PLAYER_POSITION_ID = "player_pos_id_extra";
     //values
-    private static final String PLAYER_AGE_VALUE = "Age : %d Years";
+    private static final String PLAYER_AGE_VALUE = "Age : %d";
     private static final String PLAYER_COLORS_VALUE = "%d%s year";
-    private static final String PLAYER_WEIGHT_VALUE = "Weight : %d kg";
-    private static final String PLAYER_HEIGHT_VALUE = "Height : %s";
+    private static final String PLAYER_WEIGHT_VALUE = "W : %d kg";
+    private static final String PLAYER_HEIGHT_VALUE = "H : %s";
 
     //instances
     private String[] ORDINAL_INDICATOR = new String[]{"st", "nd", "rd", "th"};

@@ -98,7 +98,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Score score = scores.get(position);
 
-        if(startTime == 0)
+        if (startTime == 0)
             setStartTime();
 
         String playerName = "";
@@ -137,7 +137,12 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             titleViewHolder.txt_title.setText(score.getActionString());
         } else {
             MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
-            messageViewHolder.txt_title.setText(time + " - " + score.getActionString() + " - " + playerName);
+            String message;
+            if (score.getAction() == Score.Action.MESSAGE)
+                message = time + " - " + score.getActionString() + " - " + score.getDetails();
+            else
+                message = time + " - " + score.getActionString() + " - " + playerName;
+            messageViewHolder.txt_title.setText(message);
         }
     }
 
@@ -291,7 +296,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Player player = PlayerDAO.getPlayer(score.getPlayer());
         dbManager.closeDatabase();
 
-        if(player != null && !player.getImg_url().equals("")) {
+        if (player != null && !player.getImg_url().equals("")) {
             imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url(), img_profile, options);
             txt_player.setText(player.getName());
         } else {

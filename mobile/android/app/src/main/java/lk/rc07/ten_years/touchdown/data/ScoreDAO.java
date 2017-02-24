@@ -126,6 +126,14 @@ public class ScoreDAO extends DBManager {
         return mDatabase.delete(DBContact.ScoreTable.TABLE_NAME, WHERE_CLAUSE, WHERE_ARGS) == 1;
     }
 
+    public static boolean deleteScore(long time) {
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_TIME + "> ? ";
+        String[] WHERE_ARGS = {String.valueOf(time)};
+
+        return mDatabase.delete(DBContact.ScoreTable.TABLE_NAME, WHERE_CLAUSE, WHERE_ARGS) == 1;
+    }
+
     public static boolean deleteAllScores(int id) {
 
         String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? ";
