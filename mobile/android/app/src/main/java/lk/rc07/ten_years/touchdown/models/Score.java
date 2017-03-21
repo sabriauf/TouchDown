@@ -1,14 +1,5 @@
 package lk.rc07.ten_years.touchdown.models;
 
-import android.os.Handler;
-import android.os.Message;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import lk.rc07.ten_years.touchdown.activities.MainActivity;
-import lk.rc07.ten_years.touchdown.utils.ScoreListener;
-
 /**
  * Created by Sabri on 12/13/2016. data model for Score
  */
@@ -16,10 +7,6 @@ import lk.rc07.ten_years.touchdown.utils.ScoreListener;
 public class Score {
 
     //constant
-    public static final int WHAT_NEW_SCORE = 1001;
-    public static final int WHAT_UPDATE_SCORE = 1002;
-    public static final int WHAT_REMOVE_SCORE = 1003;
-    public static final int WHAT_REMOVE_MATCH = 1004;
     public static final int WHAT_ACTION_SCORE = 1;
     public static final int WHAT_ACTION_EVENT = 2;
     public static final int WHAT_ACTION_TIME = 3;
@@ -33,11 +20,9 @@ public class Score {
     private long time;
     private Action action;
 
-    private static Map<String, ScoreListener> scoreListeners;
-
     public enum Action {
         START, HALF_TIME, SECOND_HALF, FULL_TIME,
-        TRY, CONVERSION, DROP_GOAL, PENALTY_KICK,
+        TRY, CONVERSION, DROP_GOAL, PENALTY_KICK, LINE_OUT,
         YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM, MESSAGE;
     }
 
@@ -121,6 +106,8 @@ public class Score {
                 return "Drop Goal";
             case PENALTY_KICK:
                 return "Penalty Kick";
+            case LINE_OUT:
+                return "Line-out";
         }
         return "";
     }
@@ -137,6 +124,7 @@ public class Score {
             case RED_CARD:
             case SCRUM:
             case YELLOW_CARD:
+            case LINE_OUT:
             case MESSAGE:
                 return WHAT_ACTION_EVENT;
             case TRY:
@@ -163,64 +151,4 @@ public class Score {
     public void setTeamId(int teamId) {
         this.teamId = teamId;
     }
-
-    public static void setScoreListener(ScoreListener listener, String key) {
-        if (scoreListeners == null)
-            scoreListeners = new LinkedHashMap<>();
-
-        scoreListeners.put(key, listener);
-    }
-
-    private static void notifyOnNewScoreUpdate(Score score) {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnNewScoreUpdate(score);
-        }
-    }
-
-    private static void notifyOnScoreUpdate(Score score) {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnScoreUpdate(score);
-        }
-    }
-
-    private static void notifyOnScoreRemove(Score score) {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnScoreRemove(score);
-        }
-    }
-
-    private static void notifyOnMatchRemove() {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnMatchRemoved();
-        }
-    }
-
-    public static Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            Score score;
-            switch (message.what) {
-                case WHAT_NEW_SCORE:
-                    score = (Score) message.obj;
-                    notifyOnNewScoreUpdate(score);
-                    break;
-                case WHAT_UPDATE_SCORE:
-                    score = (Score) message.obj;
-                    notifyOnScoreUpdate(score);
-                    break;
-                case WHAT_REMOVE_SCORE:
-                    score = (Score) message.obj;
-                    notifyOnScoreRemove(score);
-                    break;
-                case WHAT_REMOVE_MATCH:
-                    notifyOnMatchRemove();
-                    break;
-            }
-            return true;
-        }
-    });
 }

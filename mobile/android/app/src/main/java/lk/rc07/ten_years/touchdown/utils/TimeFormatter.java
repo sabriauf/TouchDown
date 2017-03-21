@@ -35,24 +35,21 @@ public class TimeFormatter {
     public static final String DATE_TIME_FORMAT_ISO8601 = "yyyy-MM-dd'T'HH:mm'Z'";
 
     public static String millisToGameTime(Context context, Long time) {
-//        if (time != 0) {
-//            long difference = Calendar.getInstance().getTimeInMillis() - time;
-//            int min = (int) (difference / ONE_MINUTE);
-//            int sec = (int) ((difference / ONE_SECOND) - (min * SECONDS));
-//            return String.format(Locale.getDefault(), "%02d", min) + ":" + String.format(Locale.getDefault(), "%02d", sec);
-//        } else
-//            return context.getString(R.string.default_live_match_time);
         return millisToGameTime(context, time, Calendar.getInstance().getTimeInMillis());
     }
 
     public static String millisToGameTime(Context context, Long startTime, Long scoreTime) {
         if (startTime != 0) {
             long difference = scoreTime - startTime;
-            int min = (int) (difference / ONE_MINUTE);
-            int sec = (int) ((difference / ONE_SECOND) - (min * SECONDS));
-            return String.format(Locale.getDefault(), "%02d", min) + ":" + String.format(Locale.getDefault(), "%02d", sec);
+            return getGameTimeString(difference);
         } else
             return context.getString(R.string.default_live_match_time);
+    }
+
+    public static String getGameTimeString(long difference){
+        int min = (int) (difference / ONE_MINUTE);
+        int sec = (int) ((difference / ONE_SECOND) - (min * SECONDS));
+        return String.format(Locale.getDefault(), "%02d", min) + ":" + String.format(Locale.getDefault(), "%02d", sec);
     }
 
     public static String millisecondsToString(long milliseconds, String format) {

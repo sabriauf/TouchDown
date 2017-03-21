@@ -3,6 +3,10 @@ package lk.rc07.ten_years.touchdown.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.models.PlayerPosition;
 import lk.rc07.ten_years.touchdown.models.Position;
 
@@ -16,23 +20,14 @@ public class PlayerPositionDAO extends DBManager {
 
         int playerPosId = -1;
 
-        String query = "";
-        query = query.concat("SELECT * FROM ");
-        query = query.concat(DBContact.PlayerPositionTable.TABLE_NAME);
-        query = query.concat(" WHERE ");
-        query = query.concat(DBContact.PlayerPositionTable.COLUMN_PLAYER_ID);
-        query = query.concat("='");
-        query = query.concat(String.valueOf(playerId));
-        if(matchId != 0) {
-            query = query.concat("' and ");
-            query = query.concat(DBContact.PlayerPositionTable.COLUMN_MATCH_ID);
-            query = query.concat("='");
-            query = query.concat(String.valueOf(matchId));
-        }
-        query = query.concat("'");
+        String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + " =? AND "
+                + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + " =?";
 
-        Cursor cursor = mDatabase.rawQuery(query, null);
-        if(cursor.moveToFirst())
+        String[] WHERE_ARGS = new String[] {String.valueOf(playerId), String.valueOf(matchId)};
+
+        Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME, null, WHERE_CLAUSE
+                , WHERE_ARGS, null, null, null);
+        if (cursor.moveToFirst())
             playerPosId = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_POS_ID));
         cursor.close();
         return playerPosId;
@@ -58,11 +53,104 @@ public class PlayerPositionDAO extends DBManager {
         }
     }
 
-    static Position getPosition(int playerId, int matchId) {
-        int posId = getPlayerPosId(playerId, matchId);
-        if(posId == -1)
-            posId = getPlayerPosId(playerId, 0);
+    public static List<AdapterPlayer> getPlayersForMatch(int teamId) {
+        List<AdapterPlayer> players = new ArrayList<>();
 
-        return PositionDAO.getPosition(posId);
+        int matchId = getAvailableLastMatch();
+
+        String WHERE_CLAUSE = " O." + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + " = P."
+                + DBContact.PlayerTable.COLUMN_ID + " AND O."
+                + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + "=? AND P."
+                + DBContact.PlayerTable.COLUMN_TEAM + " =?";
+
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(teamId)};
+
+        String TABLES = DBContact.PlayerPositionTable.TABLE_NAME + " O INNER JOIN "
+                + DBContact.PlayerTable.TABLE_NAME + " P ";
+        String ORDER_BY = DBContact.PlayerPositionTable.COLUMN_POS_ID + " ASC";
+
+        String rawQuery = "SELECT * FROM " + TABLES + " WHERE " + WHERE_CLAUSE + " ORDER BY " + ORDER_BY;
+
+        Cursor cursor = mDatabase.rawQuery(rawQuery, WHERE_ARGS);
+        while (cursor.moveToNext()) {
+            int posId = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_POS_ID));
+            AdapterPlayer player = new AdapterPlayer();
+            player.setPlayer(PlayerDAO.cursorToPlayer(cursor));
+            player.setPosition(PositionDAO.getPosition(posId));
+            players.add(player);
+        }
+        cursor.close();
+
+        return players;
+    }
+
+    private static int getAvailableLastMatch() {
+
+        int matchId = 0;
+
+        Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME,
+                new String[]{"MAX(" + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + ")"}, null, null, null, null, null);
+
+        if(cursor.moveToFirst()) {
+            matchId = cursor.getInt(0);
+        }
+        cursor.close();
+
+        return matchId;
+    }
+
+    private static Position getPlayerPosition(int playerId, int matchId) {
+        Position position = new Position();
+
+        String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_MATCH_ID + "=? AND " +
+                DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + " =?";
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(playerId)};
+
+        Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME, null, WHERE_CLAUSE
+                , WHERE_ARGS, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            int posId = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_POS_ID));
+            position = PositionDAO.getPosition(posId);
+        }
+        cursor.close();
+
+        return position;
+    }
+
+//    public static List<Position> getPlayerPosition(int matchId) {
+//        List<Position> position = new ArrayList<>();
+//
+//        String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_MATCH_ID + "=?";
+//        String[] WHERE_ARGS = {String.valueOf(matchId)};
+//
+//        Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME, null, WHERE_CLAUSE
+//                , WHERE_ARGS, null, null, null);
+//
+//        while (cursor.moveToNext()) {
+//            int posId = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_POS_ID));
+//            position.add(PositionDAO.getPosition(posId));
+//        }
+//        cursor.close();
+//
+//        return position;
+//    }
+
+    public static AdapterPlayer getAdapterPlayer(int playerId, int matchId) {
+        AdapterPlayer adapterPlayer = new AdapterPlayer();
+
+        String WHERE_CLAUSE = DBContact.PlayerTable.COLUMN_ID + " =?";
+        String[] WHERE_ARGS = {String.valueOf(playerId)};
+
+        Cursor cursor = mDatabase.query(DBContact.PlayerTable.TABLE_NAME, null, WHERE_CLAUSE
+                , WHERE_ARGS, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            adapterPlayer.setPlayer(PlayerDAO.cursorToPlayer(cursor));
+            adapterPlayer.setPosition(PlayerPositionDAO.getPlayerPosition(playerId, matchId));
+        }
+        cursor.close();
+
+        return adapterPlayer;
     }
 }

@@ -14,6 +14,9 @@ import lk.rc07.ten_years.touchdown.models.Group;
 
 public class GroupDAO extends DBManager {
 
+    public static final String ORDER_ASC = " ASC";
+    public static final String ORDER_DESC = " DESC";
+
     private static boolean checkIfGroupAvailable(int groupId) {
         String query = "";
         query = query.concat("SELECT * FROM ");
@@ -64,6 +67,7 @@ public class GroupDAO extends DBManager {
 
     public static List<String> getAllFromColumn(String column) {
         List<String> values = new ArrayList<>();
+        String orderBy =  column + ORDER_DESC;
 
         Cursor cursor = mDatabase.query(true, DBContact.GroupTable.TABLE_NAME, new String[]{column}, null, null, null, null, null, null);
         while (cursor.moveToNext()) {
@@ -73,9 +77,9 @@ public class GroupDAO extends DBManager {
         return values;
     }
 
-    public static List<String> getAllFromColumn(String column, String where) {
+    public static List<String> getAllFromColumn(String column, String where, String order) {
         List<String> values = new ArrayList<>();
-        String orderBy =  column + " ASC";
+        String orderBy =  column + order;
 
         Cursor cursor = mDatabase.query(true, DBContact.GroupTable.TABLE_NAME, new String[]{column}, where, null, null, null, orderBy, null);
         while (cursor.moveToNext()) {

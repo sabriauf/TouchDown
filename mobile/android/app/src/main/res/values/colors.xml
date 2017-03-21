@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#F2C311</color>
 
     <!-- Live score fragment-->
     <color name="background_blue">#042F5C</color>
@@ -16,5 +16,6 @@
 
     <!-- Players Dialog -->
     <color name="players_info_background">#FFFFFF</color>
+    <color name="timeline_message_background">#EAEDED</color>
 
 </resources>

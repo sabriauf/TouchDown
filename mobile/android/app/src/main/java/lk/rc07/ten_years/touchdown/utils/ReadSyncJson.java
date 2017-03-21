@@ -98,38 +98,16 @@ public class ReadSyncJson {
             if (jsonObject.has(Constant.JSON_OBJECT_SCORES))
                 saveScores(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_SCORES).toString());
 
-            if (jsonObject.has(Constant.JSON_OBJECT_EXPRESS)) {
-                SharedPreferences.Editor editor = context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
-
-                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_EXPRESS);
-                editor.putString(Constant.PREFERENCES_EXPRESS_IMAGE, object.getString(Constant.JSON_OBJECT_EXPRESS_IMAGE));
-                editor.putString(Constant.PREFERENCES_EXPRESS_LINK, object.getString(Constant.JSON_OBJECT_EXPRESS_REDIRECT));
-
-                editor.apply();
+            if (jsonObject.has(Constant.JSON_OBJECT_META)) {
+                readMetaData(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_META).toString());
             }
 
-            if (jsonObject.has(Constant.JSON_OBJECT_ADVERTISEMENT)) {
-                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_ADVERTISEMENT);
-                String img_url = object.getString(Constant.JSON_OBJECT_ADVERTISEMENT_IMAGE);
-
-                Intent intent = new Intent(context, AdvertisementActivity.class);
-                intent.putExtra(AdvertisementActivity.EXTRAS_IMAGE_LINK, img_url);
-
-                context.startActivity(intent);
-            }
-
-            if (jsonObject.has(Constant.JSON_OBJECT_VERSION)) {
-                try {
-                    JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_VERSION);
-                    int version = Integer.parseInt(object.getString(Constant.JSON_OBJECT_VERSION));
-
-                    if (version > getAppVersion()) {
-                        showUpdateAlert();
-                    }
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
-                }
-            }
+//            if (jsonObject.has(Constant.JSON_OBJECT_ADVERTISEMENT)) {
+//                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_ADVERTISEMENT);
+//                String img_url = object.getString(Constant.JSON_OBJECT_ADVERTISEMENT_IMAGE);
+//
+//
+//            }
 
 
         } catch (Exception ex) {
@@ -233,6 +211,66 @@ public class ReadSyncJson {
             ScoreDAO.addScore(score);
     }
 
+    private void readMetaData(Gson gson, String response) {
+        Type messageType = new TypeToken<List<MetaData>>() {
+        }.getType();
+
+        List<MetaData> dataList = gson.fromJson(response, messageType);
+
+        for (MetaData data : dataList)
+            switch (data.getMeta_key()) {
+                case Constant.JSON_OBJECT_EXPRESS_IMAGE:
+                    savePreferences(Constant.PREFERENCES_EXPRESS_IMAGE, data.getMeta_value());
+                    break;
+                case Constant.JSON_OBJECT_EXPRESS_REDIRECT:
+                    savePreferences(Constant.PREFERENCES_EXPRESS_LINK, data.getMeta_value());
+                    break;
+                case Constant.JSON_OBJECT_VERSION:
+                    checkVersion(data.getMeta_value());
+                    break;
+                case Constant.JSON_OBJECT_POINTS_UPDATED:
+                    try {
+                        long date = Long.parseLong(data.getMeta_value());
+                        SharedPreferences.Editor editor = context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
+                        editor.putLong(Constant.JSON_OBJECT_POINTS_UPDATED, date);
+                        editor.apply();
+                    }catch (ClassCastException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case Constant.JSON_OBJECT_ADVERTISEMENT:
+                    if (!data.getMeta_value().equals(""))
+                        showAdvertisement(data.getMeta_value());
+                    break;
+            }
+    }
+
+    private void savePreferences(String key, String value) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    private void showAdvertisement(String img_url) {
+        Intent intent = new Intent(context, AdvertisementActivity.class);
+        intent.putExtra(AdvertisementActivity.EXTRAS_IMAGE_LINK, img_url);
+
+        context.startActivity(intent);
+    }
+
+    private void checkVersion(String currentVersion) {
+        try {
+            int version = Integer.parseInt(currentVersion);
+
+            if (version > getAppVersion()) {
+                showUpdateAlert();
+            }
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
     private void showUpdateAlert() {
 
         ((Activity) context).runOnUiThread(new Runnable() {
@@ -253,5 +291,27 @@ public class ReadSyncJson {
                 builder.create().show();
             }
         });
+    }
+
+    private class MetaData {
+        int id;
+        String meta_key;
+        String meta_value;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        String getMeta_key() {
+            return meta_key;
+        }
+
+        String getMeta_value() {
+            return meta_value;
+        }
     }
 }

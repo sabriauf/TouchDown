@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.List;
 import java.util.Locale;
@@ -72,7 +74,9 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
         try {
             String img_link = AppConfig.TOUCHDOWN_BASE_URL + players.get(pos).getPlayer().getImg_url();
-            imageLoader.displayImage(img_link, holder.img_profile_pic, options);
+            holder.img_profile_pic.setImageDrawable(AppHandler.getDrawable(activity, R.drawable.default_profile_pic));
+            ImageAware imgAware = new ImageViewAware(holder.img_profile_pic);
+            imageLoader.displayImage(img_link, imgAware, options);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

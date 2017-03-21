@@ -1,12 +1,15 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Sabri on 12/15/2016. data model of Match
  */
 
-public class Match {
+public class Match implements Parcelable {
 
     private int idmatch;
     private int teamOne;
@@ -21,6 +24,53 @@ public class Match {
     private String lastMatch;
     @SerializedName("idgroup")
     private int group;
+
+    public Match() {
+    }
+
+    protected Match(Parcel in) {
+        idmatch = in.readInt();
+        teamOne = in.readInt();
+        teamTwo = in.readInt();
+        venue = in.readString();
+        matchDate = in.readLong();
+        result = in.readString();
+        longitude = in.readDouble();
+        latitude = in.readDouble();
+        lastMatch = in.readString();
+        group = in.readInt();
+    }
+
+    public static final Creator<Match> CREATOR = new Creator<Match>() {
+        @Override
+        public Match createFromParcel(Parcel in) {
+            return new Match(in);
+        }
+
+        @Override
+        public Match[] newArray(int size) {
+            return new Match[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(idmatch);
+        parcel.writeInt(teamOne);
+        parcel.writeInt(teamTwo);
+        parcel.writeString(venue);
+        parcel.writeLong(matchDate);
+        parcel.writeString(result);
+        parcel.writeDouble(longitude);
+        parcel.writeDouble(latitude);
+        parcel.writeString(lastMatch);
+        parcel.writeInt(group);
+    }
 
     public enum Status {
         PENDING, DONE, FULL_TIME, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF;

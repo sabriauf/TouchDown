@@ -13,17 +13,17 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:paddingBottom="2dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:paddingBottom="2dp">
 
         <RelativeLayout
             android:id="@+id/layout_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
             android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginBottom="2dp">
+            android:layout_marginRight="2dp">
 
             <LinearLayout
                 android:id="@+id/layout_no"
@@ -74,7 +74,6 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
@@ -102,7 +101,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -141,5 +139,143 @@
             android:scaleType="centerCrop"
             android:src="@drawable/default_profile_pic"
             android:transitionName="profile_pic" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/img_player_pic"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="#88000000">
+
+            <LinearLayout
+                android:id="@+id/layout_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/score_try" />
+
+                    <TextView
+                        android:id="@+id/txt_tries_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="@string/dummy_score"
+                        android:textColor="@color/tab_background"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/score_drop_goal" />
+
+                    <TextView
+                        android:id="@+id/txt_drop_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="@string/dummy_score"
+                        android:textColor="@color/tab_background"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/score_conversion" />
+
+                    <TextView
+                        android:id="@+id/txt_conversions_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="@string/dummy_score"
+                        android:textColor="@color/tab_background"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/score_penalty" />
+
+                    <TextView
+                        android:id="@+id/txt_penalty_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="@string/dummy_score"
+                        android:textColor="@color/tab_background"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/yellow_card" />
+
+                    <TextView
+                        android:id="@+id/txt_yellow_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="@string/dummy_score"
+                        android:textColor="@color/tab_background"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/red_card" />
+
+                    <TextView
+                        android:id="@+id/txt_red_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="5dp"
+                        android:text="@string/dummy_score"
+                        android:textColor="@color/tab_background"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_player_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@id/layout_stats"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="@string/ovin_askey"
+                android:textColor="@color/tab_background"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

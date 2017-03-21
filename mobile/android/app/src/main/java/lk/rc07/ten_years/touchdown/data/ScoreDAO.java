@@ -15,16 +15,12 @@ import lk.rc07.ten_years.touchdown.models.Score;
 public class ScoreDAO extends DBManager {
 
     private static boolean checkIfScoreAvailable(int scoreId) {
-        String query = "";
-        query = query.concat("SELECT * FROM ");
-        query = query.concat(DBContact.ScoreTable.TABLE_NAME);
-        query = query.concat(" WHERE ");
-        query = query.concat(DBContact.ScoreTable.COLUMN_ID);
-        query = query.concat("='");
-        query = query.concat(String.valueOf(scoreId));
-        query = query.concat("'");
 
-        Cursor cursor = mDatabase.rawQuery(query, null);
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_ID + "=?";
+        String[] WHERE_ARGS = {String.valueOf(scoreId)};
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+
         boolean isAvailable = cursor.moveToFirst();
         cursor.close();
         return isAvailable;
@@ -34,7 +30,7 @@ public class ScoreDAO extends DBManager {
 
         ContentValues values = new ContentValues();
 
-        boolean isRoomAlreadyExist = checkIfScoreAvailable(score.getIdscore());
+        boolean isScoreAlreadyExist = checkIfScoreAvailable(score.getIdscore());
 
         values.put(DBContact.ScoreTable.COLUMN_MATCH, score.getMatchid());
         values.put(DBContact.ScoreTable.COLUMN_DETAILS, score.getDetails());
@@ -47,7 +43,7 @@ public class ScoreDAO extends DBManager {
         if (score.getActionType() == Score.WHAT_ACTION_TIME)
             updateMatchTime(score);
 
-        if (!isRoomAlreadyExist) {
+        if (!isScoreAlreadyExist) {
             values.put(DBContact.ScoreTable.COLUMN_ID, score.getIdscore());
             mDatabase.insert(DBContact.ScoreTable.TABLE_NAME, null, values);
             return true;
@@ -116,6 +112,19 @@ public class ScoreDAO extends DBManager {
         }
         cursor.close();
         return scores;
+    }
+
+    public static int getPlayerAction(int playerId, Score.Action action) {
+        int count;
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_PLAYER + "=? and " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=?";
+        String[] WHERE_ARGS = {String.valueOf(playerId), String.valueOf(action)};
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     public static boolean deleteScore(int id) {

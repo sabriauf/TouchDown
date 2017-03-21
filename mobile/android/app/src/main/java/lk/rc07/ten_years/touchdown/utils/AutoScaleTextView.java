@@ -1,11 +1,12 @@
 package lk.rc07.ten_years.touchdown.utils;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Paint;
+import android.graphics.Rect;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.widget.TextView;
+import android.view.Gravity;
+import android.view.View;
 
 import lk.rc07.ten_years.touchdown.R;
 
@@ -13,92 +14,61 @@ import lk.rc07.ten_years.touchdown.R;
  * Created by Sabri on 12/13/2016. custom text view to auto scale the text size
  */
 
-public class AutoScaleTextView extends TextView {
-    private Paint textPaint;
+public class AutoScaleTextView extends AppCompatTextView {
 
-    private float preferredTextSize;
-    private float minTextSize;
+    private Rect bounds = new Rect();
 
-    public AutoScaleTextView(Context context)
-    {
+    public AutoScaleTextView(Context context) {
         this(context, null);
     }
 
-    public AutoScaleTextView(Context context, AttributeSet attrs)
-    {
+    public AutoScaleTextView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.autoScaleTextViewStyle);
-
-        // Use this constructor, if you do not want use the default style
-        // super(context, attrs);
+        setIncludeFontPadding(false);
     }
 
-    public AutoScaleTextView(Context context, AttributeSet attrs, int defStyle)
-    {
+    public AutoScaleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        this.textPaint = new Paint();
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AutoScaleTextView, defStyle, 0);
-        this.minTextSize = a.getDimension(R.styleable.AutoScaleTextView_minTextSize, 10f);
-        a.recycle();
-
-        this.preferredTextSize = this.getTextSize();
+        setIncludeFontPadding(false);
     }
 
-    /**
-     * Set the minimum text size for this view
-     *
-     * @param minTextSize
-     *            The minimum text size
-     */
-    public void setMinTextSize(float minTextSize)
-    {
-        this.minTextSize = minTextSize;
-    }
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-    /**
-     * Resize the text so that it fits
-     *
-     * @param text
-     *            The text. Neither <code>null</code> nor empty.
-     * @param textWidth
-     *            The width of the TextView. > 0
-     */
-    private void refitText(String text, int textWidth)
-    {
-        if (textWidth <= 0 || text == null || text.length() == 0)
-            return;
-
-        // the width
-        int targetWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
-
-        final float threshold = 0.5f; // How close we have to be
-
-        this.textPaint.set(this.getPaint());
-
-        while ((this.preferredTextSize - this.minTextSize) > threshold)
-        {
-            float size = (this.preferredTextSize + this.minTextSize) / 2;
-            this.textPaint.setTextSize(size);
-            if (this.textPaint.measureText(text) >= targetWidth)
-                this.preferredTextSize = size; // too big
-            else
-                this.minTextSize = size; // too small
+        int viewHeight = View.MeasureSpec.getSize(heightMeasureSpec);
+        int viewWidth = View.MeasureSpec.getSize(widthMeasureSpec);
+        float heightPerTextSize = getMaxTextSizeForHeight(viewHeight);
+        float widthPerTextSize = getMaxTextSizeForWidth(viewWidth);
+        if (heightPerTextSize < widthPerTextSize) {
+            this.setTextSize(0, heightPerTextSize);
+            setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        } else {
+            this.setTextSize(0, widthPerTextSize);
+            setGravity(Gravity.CENTER);
         }
-        // Use min size so that we undershoot rather than overshoot
-        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, this.minTextSize);
+
+        setText(getText());
+        setMeasuredDimension(viewWidth, viewHeight);
     }
 
-    @Override
-    protected void onTextChanged(final CharSequence text, final int start, final int before, final int after)
-    {
-        this.refitText(text.toString(), this.getWidth());
+    private float getMaxTextSizeForHeight(int viewHeight) {
+        viewHeight = viewHeight - (getPaddingTop() + getPaddingBottom());
+        viewHeight = viewHeight - (viewHeight / 4);
+
+        TextPaint textPaint = this.getPaint();
+        textPaint.getTextBounds(this.getText().toString(), 0, this.length(), bounds);
+        int textHeight = bounds.height();
+
+        return getTextSize() / textHeight * viewHeight;
     }
 
-    @Override
-    protected void onSizeChanged(int width, int height, int oldwidth, int oldheight)
-    {
-        if (width != oldwidth)
-            this.refitText(this.getText().toString(), width);
+    private float getMaxTextSizeForWidth(int viewWidth) {
+        viewWidth = viewWidth - (getPaddingRight() + getPaddingLeft());
+
+        TextPaint textPaint = this.getPaint();
+        textPaint.getTextBounds(this.getText().toString(), 0, this.length(), bounds);
+        int textWidth = bounds.width();
+
+        return getTextSize() / textWidth * viewWidth;
     }
 }

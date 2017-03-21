@@ -1,11 +1,15 @@
 package lk.rc07.ten_years.touchdown.fragments;
 
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +19,14 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.ScoreAdapter;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.GroupDAO;
@@ -31,7 +39,9 @@ import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
 import lk.rc07.ten_years.touchdown.utils.AutoScaleTextView;
+import lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight;
 import lk.rc07.ten_years.touchdown.utils.ScoreListener;
+import lk.rc07.ten_years.touchdown.utils.ScoreObserver;
 import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 
 /**
@@ -41,12 +51,14 @@ import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 public class LiveFragment extends Fragment {
 
     private static final String DIGITAL_CLOCK_FONT = "fonts/digital_7.ttf";
+    private static final String SHARE_STRING = "%s : %s %d : %d %s";
     //instances
     private ScoreAdapter adapter;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private ViewHolder holder;
     private Handler timer;
+    private LinearLayoutManager mLayoutManager;
 
     //primary data
     private long matchStartTime = 0;
@@ -67,7 +79,7 @@ public class LiveFragment extends Fragment {
         parentView = view;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_timeline);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(false);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -81,6 +93,7 @@ public class LiveFragment extends Fragment {
         super.onResume();
         loadScore.run();
     }
+
 
     Thread loadScore = new Thread(new Runnable() {
         @Override
@@ -124,7 +137,7 @@ public class LiveFragment extends Fragment {
                         recyclerView.setAdapter(adapter);
                         setData(parentView, match, finalGroup, teamOne, teamTwo);
                         if (temp_scores.size() > 0)
-                            recyclerView.smoothScrollToPosition(temp_scores.size() - 1);
+                            mLayoutManager.scrollToPositionWithOffset(temp_scores.size() - 1, 0);
                     } else {
                         setData(parentView, null, null, null, null);
                     }
@@ -133,6 +146,58 @@ public class LiveFragment extends Fragment {
 
         }
     });
+
+    private void setShareAction(final Match match) {
+        holder.fab_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (match != null) {
+
+                    DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getActivity()));
+                    dbManager.openDatabase();
+
+                    String message = "";
+                    if (match.getStatus() == Match.Status.PENDING)
+                        message = getResultString(match);
+                    else
+                        message = getResultString(match);
+
+                    Log.d(LiveFragment.class.getSimpleName(), message);
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+
+                    dbManager.closeDatabase();
+                }
+            }
+        });
+    }
+
+    private String getResultString(Match match) {
+        String homeTeam;
+        String opponentTeam;
+        String time = TimeFormatter.millisToGameTime(getContext(), matchStartTime);
+        if (match.getTeamOne() == AppConfig.HOME_TEAM_ID) {
+            opponentTeam = getTeamShortName(match.getTeamTwo());
+            homeTeam = getTeamShortName(match.getTeamOne());
+        } else {
+            opponentTeam = getTeamShortName(match.getTeamOne());
+            homeTeam = getTeamShortName(match.getTeamTwo());
+        }
+        return String.format(Locale.getDefault(), SHARE_STRING, time,
+                homeTeam, leftScoreTotal, rightScoreTotal, opponentTeam);
+    }
+
+    private String getTeamShortName(int teamId) {
+        String shortName = "";
+        String name = TeamDAO.getTeam(teamId).getName();
+        for (String part : name.split(" ")) {
+            shortName += part.charAt(0);
+        }
+        return shortName;
+    }
 
     private void getMatchStartTime(Match match) {
         List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.SECOND_HALF);
@@ -149,7 +214,15 @@ public class LiveFragment extends Fragment {
     private void setData(View view, final Match match, Group group, Team tOne, Team tTwo) {
         holder = new ViewHolder(view);
 
-        Score.setScoreListener(new ScoreListener() {
+        holder.img_murc_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.MURC_WEB_LINK));
+                getActivity().startActivity(intent);
+            }
+        });
+
+        ScoreObserver.setScoreListener(new ScoreListener() {
             @Override
             public void OnNewScoreUpdate(Score score) {
                 if (match == null || score.getMatchid() != match.getIdmatch())
@@ -195,6 +268,8 @@ public class LiveFragment extends Fragment {
             setMatchView(match, group, tOne, tTwo);
 
         setTimer(match);
+
+        setShareAction(match);
     }
 
     private Match getUpdatedMatch(Score score, Match match) {
@@ -223,6 +298,8 @@ public class LiveFragment extends Fragment {
 
     private void updateScore(Score score, Match match) {
         adapter.addItem(score);
+        if (adapter.getItemCount() > 0)
+            mLayoutManager.scrollToPositionWithOffset(adapter.getItemCount() - 1, 0);
         switch (score.getAction()) {
             case START:
                 matchStartTime = score.getTime();
@@ -282,7 +359,21 @@ public class LiveFragment extends Fragment {
             holder.txt_live.setVisibility(View.GONE);
             setTimerFont(false);
             matchStartTime = 0;
-            holder.txt_time.setText(match.getResult());
+            holder.txt_time.setText(getMatchString(match));
+        }
+    }
+
+    private String getMatchString(Match match) {
+        switch (match.getStatus()) {
+            case PENDING:
+                Date date = new Date(match.getMatchDate());
+                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+                return dateFormat.format(date);
+            case DONE:
+            case FULL_TIME:
+                return match.getResult();
+            default:
+                return match.getStatus().toStringValue();
         }
     }
 
@@ -310,7 +401,7 @@ public class LiveFragment extends Fragment {
         }
     }
 
-    class ViewHolder {
+    private class ViewHolder {
         AutoScaleTextView txt_league;
         AutoScaleTextView txt_round;
         AutoScaleTextView txt_score_one;
@@ -319,12 +410,15 @@ public class LiveFragment extends Fragment {
         TextView txt_time;
         ImageView img_team_one_logo;
         ImageView img_team_two_logo;
+        ImageViewAutoHeight img_murc_logo;
+        FloatingActionButton fab_share;
 
         ViewHolder(View view) {
             txt_league = (AutoScaleTextView) view.findViewById(R.id.txt_league_name);
             txt_round = (AutoScaleTextView) view.findViewById(R.id.txt_round_name);
             txt_live = (TextView) view.findViewById(R.id.txt_live_notifier);
             txt_time = (TextView) view.findViewById(R.id.txt_match_time);
+            img_murc_logo = (ImageViewAutoHeight) view.findViewById(R.id.img_murc);
 
             View view_team_one = view.findViewById(R.id.layout_score_team_one);
             txt_score_one = (AutoScaleTextView) view_team_one.findViewById(R.id.txt_score);
@@ -333,6 +427,8 @@ public class LiveFragment extends Fragment {
             View view_team_two = view.findViewById(R.id.layout_score_team_two);
             txt_score_two = (AutoScaleTextView) view_team_two.findViewById(R.id.txt_score);
             img_team_two_logo = (ImageView) view_team_two.findViewById(R.id.img_college_crest);
+
+            fab_share = (FloatingActionButton) view.findViewById(R.id.fab_share);
         }
     }
 }

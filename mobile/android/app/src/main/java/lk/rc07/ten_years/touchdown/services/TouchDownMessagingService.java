@@ -27,6 +27,8 @@ import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
+import lk.rc07.ten_years.touchdown.utils.AppHandler;
+import lk.rc07.ten_years.touchdown.utils.ScoreObserver;
 
 /**
  * Created by Sabri on 12/13/2016. handling fcm
@@ -40,9 +42,16 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
     private static final String PARAM_PUSH_MESSAGE = "message";
     private static final String PARAM_PUSH_FRAGMENT = "fragment";
     private static final String PARAM_PUSH_OBJECT = "object";
+    private static final String PARAM_PUSH_SUMMARY = "summary";
+    private static final String PARAM_PUSH_DESCRIPTION = "description";
+    private static final String PARAM_PUSH_COVER = "cover";
+    private static final String PARAM_PUSH_THUMB = "thumb";
+    private static final String PARAM_PUSH_ID = "id";
     private static final String PARAM_OBJECT_SCORE = "score";
     private static final String PARAM_OBJECT_LIVE = "live";
     private static final String PARAM_LIVE_LINK = "link";
+    private static final String PARAM_PUSH_SHOW = "show";
+    private static final String PARAM_SYNC_VALUE = "sync";
 
     //instances
     private Gson gson = null;
@@ -59,11 +68,17 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            int fragmentId = 0;
-            if (remoteMessage.getData().containsKey(PARAM_PUSH_FRAGMENT))
-                fragmentId = Integer.parseInt(remoteMessage.getData().get(PARAM_PUSH_FRAGMENT));
+            if (!remoteMessage.getData().containsKey(PARAM_PUSH_TITLE)) {
+                String title = remoteMessage.getData().get(PARAM_PUSH_TITLE);
+                if (title.equals(PARAM_SYNC_VALUE)) {
+                    MainActivity.mHandler.sendEmptyMessage(MainActivity.FORCE_SYNC);
+                    return;
+                }
+            }
 
-            String value = remoteMessage.getData().get(PARAM_PUSH_OBJECT);
+            NotificationData data = new NotificationData(remoteMessage);
+
+            String value = data.object;
             if (value != null && !value.equals("")) {
                 try {
                     JSONObject respond = new JSONObject(value);
@@ -82,25 +97,25 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                                 boolean inserted = ScoreDAO.addScore(score);
 
                                 if (inserted) {
-                                    msg.what = Score.WHAT_NEW_SCORE;
-                                    sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE),
-                                            fragmentId);
+                                    msg.what = ScoreObserver.WHAT_NEW_SCORE;
+                                    if (data.showNotification)
+                                        sendNotification(data);
                                 } else
-                                    msg.what = Score.WHAT_UPDATE_SCORE;
+                                    msg.what = ScoreObserver.WHAT_UPDATE_SCORE;
                             } else {
                                 if (score.getIdscore() == 0) {
                                     ScoreDAO.deleteAllScores(score.getMatchid());
                                     MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.PENDING);
-                                    msg.what = Score.WHAT_REMOVE_MATCH;
+                                    msg.what = ScoreObserver.WHAT_REMOVE_MATCH;
                                 } else {
                                     ScoreDAO.deleteScore(score.getIdscore());
-                                    msg.what = Score.WHAT_REMOVE_SCORE;
+                                    msg.what = ScoreObserver.WHAT_REMOVE_SCORE;
                                 }
 
                             }
 
                             dbManager.closeDatabase();
-                            Score.handler.sendMessage(msg);
+                            ScoreObserver.handler.sendMessage(msg);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -113,10 +128,11 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                         if (!link.equals("") && link.contains("=")) {
                             link = link.split("=")[1];
                             msg.obj = true;
-                            //TODO - add notification saying its live streaming now
                         } else
                             msg.obj = false;
                         editor.putString(Constant.PREFERENCES_LIVE_LINK, link);
+                        if (data.showNotification)
+                            sendNotification(data);
 
                         editor.apply();
                         msg.what = MainActivity.LIVE_STREAMING;
@@ -125,24 +141,29 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            } else if (!remoteMessage.getData().get(PARAM_PUSH_TITLE).equals("")) {
-                sendNotification(remoteMessage.getData().get(PARAM_PUSH_TITLE), remoteMessage.getData().get(PARAM_PUSH_MESSAGE), fragmentId);
+            } else if (data.showNotification) {
+                sendNotification(data);
             }
         }
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), 0);
+            try {
+                Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+                NotificationData data = new NotificationData(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), 0);
+                sendNotification(data);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
+     * @param data FCM message body received.
      */
-    private void sendNotification(String title, String messageBody, int fragmentId) {
+    private void sendNotification(NotificationData data) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(Constant.EXTRA_FRAGMENT_ID, fragmentId);
+        intent.putExtra(Constant.EXTRA_FRAGMENT_ID, data.fragment);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -150,15 +171,113 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title)
-                .setContentText(messageBody)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setSound(defaultSoundUri);
 
+        if (data.thumb != null && data.thumb.equals(""))
+            notificationBuilder.setLargeIcon(AppHandler.getImageBitmap(this, data.thumb));
+
+        setDefaultSmallView(notificationBuilder, data.title, data.message);
+        if ((data.desc != null && !data.desc.equals("")) || (data.cover != null && !data.cover.equals("")))
+            setDefaultBigView(this, notificationBuilder, data);
+
+
+        notificationBuilder.setContentIntent(pendingIntent);
+        notificationBuilder.setAutoCancel(true);
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(data.id, notificationBuilder.build());
+    }
+
+    private void setDefaultSmallView(NotificationCompat.Builder notificationBuilder, String title, String message) {
+        notificationBuilder.setContentTitle(title);
+        notificationBuilder.setContentText(message);
+    }
+
+    private void setDefaultBigView(Context context, NotificationCompat.Builder notificationBuilder, NotificationData data) {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN &&
+                data.cover != null && !data.cover.equals("")) {
+            NotificationCompat.BigPictureStyle bigStyle = new NotificationCompat.BigPictureStyle();
+            bigStyle.bigPicture(AppHandler.getImageBitmap(context, data.cover));
+
+            if (data.title != null)
+                bigStyle.setBigContentTitle(data.title);
+
+            if (data.summary != null)
+                bigStyle.setSummaryText(data.summary);
+
+            if (data.thumb != null)
+                bigStyle.bigLargeIcon(AppHandler.getImageBitmap(context, data.thumb));
+
+            notificationBuilder.setStyle(bigStyle);
+        } else {
+            NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
+            bigStyle.bigText(data.desc);
+
+            if (data.title != null)
+                bigStyle.setBigContentTitle(data.title);
+
+            if (data.thumb != null)
+                notificationBuilder.setLargeIcon(AppHandler.getImageBitmap(context, data.thumb));
+
+            notificationBuilder.setStyle(bigStyle);
+        }
+    }
+
+    class NotificationData {
+        int id = 0;
+        String title = "";
+        String message = "";
+        String summary;
+        String desc;
+        String thumb;
+        String cover;
+        String object = "";
+        boolean showNotification = true;
+        int fragment = 0;
+
+        NotificationData(String title, String message, int id) {
+            this.title = title;
+            this.message = message;
+            this.id = id;
+        }
+
+        NotificationData(RemoteMessage remoteMessage) {
+            try {
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_SHOW) && remoteMessage.getData().get(PARAM_PUSH_SHOW).equals("FALSE")) {
+                    showNotification = false;
+                }
+
+                object = remoteMessage.getData().get(PARAM_PUSH_OBJECT);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_TITLE))
+                    title = remoteMessage.getData().get(PARAM_PUSH_TITLE);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_FRAGMENT))
+                    fragment = Integer.parseInt(remoteMessage.getData().get(PARAM_PUSH_FRAGMENT));
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_MESSAGE))
+                    message = remoteMessage.getData().get(PARAM_PUSH_MESSAGE);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_SUMMARY))
+                    summary = remoteMessage.getData().get(PARAM_PUSH_SUMMARY);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_DESCRIPTION))
+                    desc = remoteMessage.getData().get(PARAM_PUSH_DESCRIPTION);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_COVER))
+                    cover = remoteMessage.getData().get(PARAM_PUSH_COVER);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_THUMB))
+                    thumb = remoteMessage.getData().get(PARAM_PUSH_THUMB);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_ID))
+                    id = Integer.parseInt(remoteMessage.getData().get(PARAM_PUSH_ID));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

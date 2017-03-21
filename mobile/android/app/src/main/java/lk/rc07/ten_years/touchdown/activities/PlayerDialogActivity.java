@@ -23,7 +23,13 @@ import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
+import lk.rc07.ten_years.touchdown.data.DBHelper;
+import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.PositionDAO;
+import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.models.Player;
+import lk.rc07.ten_years.touchdown.models.Position;
+import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
 public class PlayerDialogActivity extends AppCompatActivity {
@@ -63,6 +69,17 @@ public class PlayerDialogActivity extends AppCompatActivity {
         String player_pos = String.format(Locale.getDefault(), "%02d", getIntent().getExtras().getInt(EXTRA_PLAYER_POSITION));
 
         if (player != null) {
+            DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
+            dbManager.openDatabase();
+            Position position = PositionDAO.getPositionForNo(Integer.parseInt(player_pos));
+            int yellowCards = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.YELLOW_CARD);
+            int redCards = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.RED_CARD);
+            int tries = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.TRY);
+            int conversions = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.CONVERSION);
+            int penalties = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.PENALTY_KICK);
+            int dropGoals = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.DROP_GOAL);
+            dbManager.closeDatabase();
+
             ((TextView) findViewById(R.id.txt_player_name)).setText(player.getName());
             ((TextView) findViewById(R.id.txt_player_no)).setText(player_pos);
             ((TextView) findViewById(R.id.txt_player_age)).setText(String.format(Locale.getDefault(),
@@ -71,6 +88,15 @@ public class PlayerDialogActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.txt_player_weight)).setText(String.format(Locale.getDefault(),
                     PLAYER_WEIGHT_VALUE, (int) player.getWeight()));
             ((TextView) findViewById(R.id.txt_player_height)).setText(getHeightString(player.getHeight()));
+            ((TextView) findViewById(R.id.txt_player_position)).setText(position.getPosName());
+            ((TextView) findViewById(R.id.txt_yellow_stat)).setText(String.valueOf(yellowCards));
+            ((TextView) findViewById(R.id.txt_red_stat)).setText(String.valueOf(redCards));
+
+            ((TextView) findViewById(R.id.txt_tries_stat)).setText(String.valueOf(tries));
+            ((TextView) findViewById(R.id.txt_conversions_stat)).setText(String.valueOf(conversions));
+            ((TextView) findViewById(R.id.txt_penalty_stat)).setText(String.valueOf(penalties));
+            ((TextView) findViewById(R.id.txt_drop_stat)).setText(String.valueOf(dropGoals));
+
             profilePic = (ImageView) findViewById(R.id.img_player_pic);
 
             String img_link = AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url();

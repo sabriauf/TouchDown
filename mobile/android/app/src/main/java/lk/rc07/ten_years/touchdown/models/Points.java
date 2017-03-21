@@ -13,7 +13,7 @@ public class Points {
     private int played;
     private int won;
     private int lost;
-    private int points;
+    private float points;
     @SerializedName("idgroup")
     private int idGroup;
 
@@ -57,11 +57,11 @@ public class Points {
         this.lost = lost;
     }
 
-    public int getPoints() {
+    public float getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(float points) {
         this.points = points;
     }
 

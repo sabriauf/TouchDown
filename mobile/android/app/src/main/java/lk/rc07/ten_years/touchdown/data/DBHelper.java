@@ -12,7 +12,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //configs
     private static final String DATABASE_NAME = "touchdown_database.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
 
     //constants
     private static final String TEXT_TYPE = " TEXT";
@@ -77,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.PointsTable.COLUMN_WON + INTEGER_TYPE + COMMA_SEP
             + DBContact.PointsTable.COLUMN_LOST + INTEGER_TYPE + COMMA_SEP
             + DBContact.PointsTable.COLUMN_GROUP + INTEGER_TYPE + COMMA_SEP
-            + DBContact.PointsTable.COLUMN_POINTS + INTEGER_TYPE
+            + DBContact.PointsTable.COLUMN_POINTS + DOUBLE_TYPE
             + ")";
 
     //Score db create statement
@@ -104,8 +104,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + INTEGER_TYPE + COMMA_SEP
             + DBContact.PlayerPositionTable.COLUMN_POS_ID + INTEGER_TYPE + COMMA_SEP
             + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + INTEGER_TYPE + COMMA_SEP
-            + PRIMARY_KEY  + "(" + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + COMMA_SEP
-            + DBContact.PlayerPositionTable.COLUMN_POS_ID + ")"
+            + PRIMARY_KEY + "(" + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + COMMA_SEP
+            + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + ")"
             + ")";
 
     public DBHelper(Context context) {
@@ -133,6 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PointsTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PlayerPositionTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PositionTable.TABLE_NAME);

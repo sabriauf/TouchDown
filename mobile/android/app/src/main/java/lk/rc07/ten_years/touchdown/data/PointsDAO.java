@@ -14,6 +14,8 @@ import lk.rc07.ten_years.touchdown.models.Points;
 
 public class PointsDAO extends DBManager {
 
+    private static final String ORDER_DESC = " DESC";
+
     private static boolean checkIfPointsAvailable(int pointId) {
         String query = "";
         query = query.concat("SELECT * FROM ");
@@ -70,8 +72,9 @@ public class PointsDAO extends DBManager {
 
         String WHERE_CLAUSE = DBContact.PointsTable.COLUMN_GROUP + "=? ";
         String[] WHERE_ARGS = {String.valueOf(groupId)};
+        String orderBy =  DBContact.PointsTable.COLUMN_POINTS + ORDER_DESC;
 
-        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, orderBy);
         while (cursor.moveToNext()) {
             points.add(cursorToPoints(cursor));
         }
@@ -84,7 +87,7 @@ public class PointsDAO extends DBManager {
         points.setIdPoint(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_ID)));
         points.setLost(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_LOST)));
         points.setPlayed(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_PLAYED)));
-        points.setPoints(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_POINTS)));
+        points.setPoints(cursor.getFloat(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_POINTS)));
         points.setTeamId(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_TEAM)));
         points.setWon(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_WON)));
         points.setIdGroup(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_GROUP)));

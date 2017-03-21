@@ -23,7 +23,7 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize" />
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale" />
         <activity
             android:name=".activities.PlayerDialogActivity"
             android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
@@ -46,6 +46,10 @@
             android:name=".activities.AdvertisementActivity"
             android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
             android:theme="@style/MyAlertDialogStyle" />
+        <activity
+            android:name=".activities.MatchSummaryActivity"
+            android:label="@string/title_activity_match_summary"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

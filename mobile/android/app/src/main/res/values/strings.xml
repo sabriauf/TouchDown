@@ -31,5 +31,11 @@
     <string name="live_update_from">Live Score Update</string>
     <string name="x">X</string>
     <string name="ovin_askey">Ovin Askey Some Other</string>
+    <string name="title_activity_match_summary">MatchSummaryActivity</string>
+
+    <!-- Match Summary Details-->
+    <string name="penalty_title">PENALTIES</string>
+    <string name="score_title">SCORES</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 </resources>

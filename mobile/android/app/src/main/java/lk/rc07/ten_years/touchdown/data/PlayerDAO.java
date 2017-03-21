@@ -3,11 +3,8 @@ package lk.rc07.ten_years.touchdown.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.models.Player;
 
 /**
@@ -70,22 +67,23 @@ public class PlayerDAO extends DBManager {
         cursor.close();
         return player;
     }
-    public static List<AdapterPlayer> getPlayerOfTeam(int teamId, int matchId) {
-        List<AdapterPlayer> players = new ArrayList<>();
 
-        String WHERE_CLAUSE = DBContact.PlayerTable.COLUMN_TEAM + "=?";
-        String[] WHERE_ARGS = {String.valueOf(teamId)};
-
-        Cursor cursor = mDatabase.query(DBContact.PlayerTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
-        while (cursor.moveToNext()) {
-            AdapterPlayer player = new AdapterPlayer();
-            player.setPlayer(cursorToPlayer(cursor));
-            player.setPosition(PlayerPositionDAO.getPosition(player.getPlayer().getIdPlayer(), matchId));
-            players.add(player);
-        }
-        cursor.close();
-        return players;
-    }
+//    public static List<AdapterPlayer> getPlayerOfTeam(int teamId, int matchId) {
+//        List<AdapterPlayer> players = new ArrayList<>();
+//
+//        String WHERE_CLAUSE = DBContact.PlayerTable.COLUMN_TEAM + "=?";
+//        String[] WHERE_ARGS = {String.valueOf(teamId)};
+//
+//        Cursor cursor = mDatabase.query(DBContact.PlayerTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+//        while (cursor.moveToNext()) {
+//            AdapterPlayer player = new AdapterPlayer();
+//            player.setPlayer(cursorToPlayer(cursor));
+//            player.setPosition(PlayerPositionDAO.getPosition(player.getPlayer().getIdPlayer(), matchId));
+//            players.add(player);
+//        }
+//        cursor.close();
+//        return players;
+//    }
 
 //    public static List<Player> getAllPlayer() {
 //        List<Player> players = new ArrayList<>();
@@ -98,16 +96,16 @@ public class PlayerDAO extends DBManager {
 //        return players;
 //    }
 
-    public static AdapterPlayer getAdapterPlayer(int playerId, int matchId) {
-        AdapterPlayer aPlayer = new AdapterPlayer();
+//    public static AdapterPlayer getAdapterPlayer(int playerId, int matchId) {
+//        AdapterPlayer aPlayer = new AdapterPlayer();
+//
+//        aPlayer.setPlayer(PlayerDAO.getPlayer(playerId));
+//        aPlayer.setPosition(PlayerPositionDAO.getPosition(playerId, matchId));
+//
+//        return aPlayer;
+//    }
 
-        aPlayer.setPlayer(PlayerDAO.getPlayer(playerId));
-        aPlayer.setPosition(PlayerPositionDAO.getPosition(playerId, matchId));
-
-        return aPlayer;
-    }
-
-    private static Player cursorToPlayer(Cursor cursor) {
+    static Player cursorToPlayer(Cursor cursor) {
         Player player = new Player();
         int id = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_ID));
         player.setIdPlayer(id);

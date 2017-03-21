@@ -62,7 +62,7 @@ public class StandingFragment extends Fragment {
 
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         Long dateLong = getContext().getSharedPreferences(Constant.MY_PREFERENCES,
-                Context.MODE_PRIVATE).getLong(Constant.PREFERENCES_LAST_SYNC, 0);
+                Context.MODE_PRIVATE).getLong(Constant.JSON_OBJECT_POINTS_UPDATED, 0);
         String dateString = dateFormat.format(dateLong);
         txt_update.setText(String.format(UPDATE_STRING, dateString));
 
@@ -113,7 +113,7 @@ public class StandingFragment extends Fragment {
 
     private void setRoundSpinner(final String league) {
         String where = DBContact.GroupTable.COLUMN_LEAGUE + " = '" + league + "'";
-        final List<String> rounds = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_ROUND, where);
+        final List<String> rounds = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_ROUND, where, GroupDAO.ORDER_DESC);
         loadSpinner(rounds, spn_rounds);
         if (rounds.size() > 1)
             spn_rounds.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -138,7 +138,7 @@ public class StandingFragment extends Fragment {
         String where = DBContact.GroupTable.COLUMN_LEAGUE + " = '" + league
                 + "' and " +
                 DBContact.GroupTable.COLUMN_ROUND + " = '" + round + "'";
-        final List<String> groups = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_NAME, where);
+        final List<String> groups = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_NAME, where, GroupDAO.ORDER_ASC);
 //        final List<String> groups = GroupDAO.getGroupNames(league, round);
         loadSpinner(groups, spn_groups);
         if (groups.size() > 1)

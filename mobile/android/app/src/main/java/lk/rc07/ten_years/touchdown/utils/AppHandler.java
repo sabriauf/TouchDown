@@ -2,7 +2,7 @@ package lk.rc07.ten_years.touchdown.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
@@ -16,15 +16,16 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.List;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
+import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
-import lk.rc07.ten_years.touchdown.data.MatchDAO;
-import lk.rc07.ten_years.touchdown.models.Match;
 
 /**
  * Created by Sabri on 1/13/2017. application general methods
@@ -87,5 +88,30 @@ public class AppHandler {
 
     public static Spanned getLinkText(String source) {
         return getHtmlString("<span style=\"color:#1155cc\"> <u>" + source + " </u></span>");
+    }
+
+    public static Bitmap getImageBitmap(Context context, String link) {
+
+        try {
+            link = URLDecoder.decode(link, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        Bitmap bm;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        try {
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(new ImageLoaderConfiguration.Builder(context)
+                    .memoryCache(new WeakMemoryCache()).threadPoolSize(10)
+                    .denyCacheImageMultipleSizesInMemory()
+                    .imageDownloader(new BaseImageDownloader(context)).build());
+            bm = imageLoader.loadImageSync(link);
+        } catch (Exception | Error e) {
+            e.printStackTrace();
+            bm = BitmapFactory.decodeResource(context.getResources(),
+                    R.mipmap.ic_launcher, options);
+        }
+        return bm;
     }
 }

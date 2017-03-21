@@ -2,6 +2,7 @@ package lk.rc07.ten_years.touchdown.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,14 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
+import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.PlayerDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
@@ -42,6 +45,9 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int SCORE_VIEW_SCORE = 1;
     private static final int SCORE_VIEW_TOPIC = 2;
     private static final int SCORE_VIEW_MESSAGE = 3;
+    private static final String EVENT_ROW = " - %s";
+    private static final String CARD_MESSAGE = " to %s";
+
     //instances
     private Context context;
     private List<Score> scores;
@@ -51,7 +57,9 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private DisplayImageOptions options;
 
     //primary data
-    private long startTime;
+    private long firstHalfTime = 0;
+    private long secondHalfTime = 0;
+    private long intervalTime = 0;
 
     public ScoreAdapter(Context context, List<Score> scores, Match match) {
         this.context = context;
@@ -63,17 +71,6 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.imageLoader = ImageLoader.getInstance();
         options = AppHandler.getImageOption(imageLoader, context.getApplicationContext(), R.drawable.default_profile_pic);
 
-        setStartTime();
-    }
-
-    private void setStartTime() {
-        dbManager.openDatabase();
-        List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.START);
-        if (startScores.size() > 0)
-            startTime = startScores.get(0).getTime();
-        else
-            startTime = 0;
-        dbManager.closeDatabase();
     }
 
 
@@ -94,23 +91,55 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return null;
     }
 
+    private long getOffSetTime(long time) {
+        setGameTimes();
+
+        if (time > secondHalfTime && secondHalfTime != 0) {
+            return time - firstHalfTime - intervalTime;
+        } else if (firstHalfTime != 0) {
+            return time - firstHalfTime;
+        } else
+            return 0;
+    }
+
+    private void setGameTimes() {
+        if (firstHalfTime == 0 || secondHalfTime == 0) {
+            dbManager.openDatabase();
+            if (firstHalfTime == 0)
+                firstHalfTime = getGamePoint(Score.Action.START);
+            if (secondHalfTime == 0)
+                secondHalfTime = getGamePoint(Score.Action.SECOND_HALF);
+            if (firstHalfTime != 0 && secondHalfTime != 0 && intervalTime == 0) {
+                long firstHalfEnd = getGamePoint(Score.Action.HALF_TIME);
+                intervalTime = secondHalfTime - firstHalfEnd;
+            }
+            dbManager.closeDatabase();
+        }
+    }
+
+    private long getGamePoint(Score.Action point) {
+        List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), point);
+        if (startScores.size() > 0)
+            return startScores.get(0).getTime();
+        else
+            return 0;
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Score score = scores.get(position);
 
-        if (startTime == 0)
-            setStartTime();
-
         String playerName = "";
         if (score.getPlayer() != 0) {
             AdapterPlayer aPlayer = getPlayer(score.getPlayer());
-            playerName = aPlayer.getPlayer().getName();
+            if (aPlayer.getPlayer() != null)
+                playerName = aPlayer.getPlayer().getName();
         } else {
             if (score.getTeamId() != 0) {
                 playerName = getTeamName(score.getTeamId());
             }
         }
-        String time = TimeFormatter.millisToGameTime(context, startTime, score.getTime());
+        final String time = TimeFormatter.getGameTimeString(getOffSetTime(score.getTime()));
 
         if (holder instanceof ScoreViewHolder) {
             ScoreViewHolder scoreHolder = (ScoreViewHolder) holder;
@@ -128,21 +157,53 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    createShowDetails(score);
+                    createShowDetails(score, time);
                 }
             });
 
         } else if (holder instanceof TitleViewHolder) {
             TitleViewHolder titleViewHolder = (TitleViewHolder) holder;
             titleViewHolder.txt_title.setText(score.getActionString());
+
+            GradientDrawable shapeColor = (GradientDrawable) titleViewHolder.txt_title.getBackground();
+            if (score.getAction() == Score.Action.START || score.getAction() == Score.Action.SECOND_HALF)
+                shapeColor.setColor(AppHandler.getColor(context, R.color.timer_clock));
+            else
+                shapeColor.setColor(AppHandler.getColor(context, R.color.live_back));
         } else {
             MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
-            String message;
-            if (score.getAction() == Score.Action.MESSAGE)
-                message = time + " - " + score.getActionString() + " - " + score.getDetails();
-            else
-                message = time + " - " + score.getActionString() + " - " + playerName;
-            messageViewHolder.txt_title.setText(message);
+            String message = getMessageString(score, playerName);
+            messageViewHolder.txt_time.setText(time);
+
+            if(score.getAction() == Score.Action.RED_CARD) {
+                messageViewHolder.img_score.setVisibility(View.VISIBLE);
+                messageViewHolder.img_score.setImageDrawable(AppHandler.getDrawable(context, R.mipmap.red_card));
+                messageViewHolder.txt_title.setText(message);
+            } else if(score.getAction() == Score.Action.YELLOW_CARD) {
+                messageViewHolder.img_score.setVisibility(View.VISIBLE);
+                messageViewHolder.img_score.setImageDrawable(AppHandler.getDrawable(context, R.mipmap.yellow_card));
+                messageViewHolder.txt_title.setText(message);
+            } else {
+                messageViewHolder.img_score.setVisibility(View.GONE);
+                messageViewHolder.txt_title.setText(String.format(Locale.getDefault(), EVENT_ROW, message));
+            }
+        }
+    }
+
+    private String getMessageString(Score score, String name) {
+        switch (score.getAction()) {
+            case YELLOW_CARD:
+            case RED_CARD:
+                return String.format(Locale.getDefault(), CARD_MESSAGE, name);
+            case MESSAGE:
+                return score.getDetails();
+            case LINE_OUT:
+                return score.getActionString() + " to " + name;
+            default:
+                if (score.getDetails() != null && !score.getDetails().equals(""))
+                    return score.getDetails();
+                else
+                    return score.getActionString() + " conceded by " + name;
         }
     }
 
@@ -194,7 +255,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         AdapterPlayer aPlayer;
 
         dbManager.openDatabase();
-        aPlayer = PlayerDAO.getAdapterPlayer(playerId, match.getIdmatch());
+        aPlayer = PlayerPositionDAO.getAdapterPlayer(playerId, match.getIdmatch());
         dbManager.closeDatabase();
 
         return aPlayer;
@@ -239,10 +300,14 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView txt_title;
+        TextView txt_time;
+        ImageView img_score;
 
         MessageViewHolder(View itemView) {
             super(itemView);
             txt_title = (TextView) itemView.findViewById(R.id.txt_score_tag);
+            txt_time = (TextView) itemView.findViewById(R.id.txt_score_time);
+            img_score = (ImageView) itemView.findViewById(R.id.img_score);
         }
     }
 
@@ -277,14 +342,14 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return scores;
     }
 
-    private void createShowDetails(Score score) {
-        String time = TimeFormatter.millisToGameTime(context, startTime, score.getTime());
+    private void createShowDetails(Score score, String time) {
 
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_alert_score_details);
 
         ImageView img_profile = (ImageView) dialog.findViewById(R.id.img_alert_score_player);
+        ImageView img_score = (ImageView) dialog.findViewById(R.id.img_alert_score);
         TextView txt_score = (TextView) dialog.findViewById(R.id.txt_alert_score_title);
         TextView txt_time = (TextView) dialog.findViewById(R.id.txt_alert_score_time);
         TextView txt_team = (TextView) dialog.findViewById(R.id.txt_alert_score_team);
@@ -304,11 +369,27 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             txt_player.setVisibility(View.GONE);
         }
 
+        img_score.setImageDrawable(AppHandler.getDrawable(context, getScoreImage(score.getAction())));
+
         txt_score.setText(score.getActionString());
         txt_time.setText(time);
         txt_team.setText(team.getName());
         txt_details.setText(score.getDetails());
 
         dialog.show();
+    }
+
+    private int getScoreImage(Score.Action action) {
+        switch (action) {
+            case TRY:
+                return R.mipmap.score_try;
+            case CONVERSION:
+                return R.mipmap.score_conversion;
+            case DROP_GOAL:
+                return R.mipmap.score_drop_goal;
+            case PENALTY_KICK:
+                return R.mipmap.score_penalty;
+        }
+        return R.mipmap.score_try;
     }
 }

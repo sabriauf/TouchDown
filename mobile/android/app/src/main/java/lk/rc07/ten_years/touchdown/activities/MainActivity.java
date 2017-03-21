@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.HashMap;
@@ -25,6 +26,9 @@ import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.PageAdapter;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
+import lk.rc07.ten_years.touchdown.data.DBHelper;
+import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
 import lk.rc07.ten_years.touchdown.utils.DownloadManager;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "Bradby Express"};
     public static final int REFRESH_TABS = 1001;
     public static final int LIVE_STREAMING = 1002;
+    public static final int FORCE_SYNC = 1003;
 
     //instances
     private PageAdapter adapter;
@@ -76,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
                 if (message.what == REFRESH_TABS) {
                     adapter.notifyDataSetChanged();
                 } else if (message.what == LIVE_STREAMING) {
-                    if (!(boolean) message.obj)
-                        img_live.setVisibility(View.GONE);
-                    else
-                        img_live.setVisibility(View.VISIBLE);
+                    boolean isLive = (boolean) message.obj;
+                    setLiveLink(isLive);
+                } else if(message.what == FORCE_SYNC) {
+                    syncData();
                 }
                 return false;
             }
@@ -97,12 +102,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        if (link.equals(""))
+        setLiveLink(link.equals(""));
+
+        FirebaseMessaging.getInstance().subscribeToTopic("test");
+
+        syncData();
+    }
+
+    private void setLiveLink(boolean isLive) {
+        if (isLive)
             img_live.setVisibility(View.GONE);
         else
             img_live.setVisibility(View.VISIBLE);
-
-        syncData();
     }
 
     private void setTitle(String title) {
@@ -165,8 +176,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         HashMap<String, String> urlParams = new HashMap<>();
-        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(time));
-//        urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
+        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
+        dbManager.openDatabase();
+        if (MatchDAO.getAllMatches().size() > 0) {
+            urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(time));
+        } else {
+            urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
+        }
+        dbManager.closeDatabase();
 
         DownloadMeta meta = new DownloadMeta();
         meta.setUrl(AppConfig.SYNCHRONIZE_URL);

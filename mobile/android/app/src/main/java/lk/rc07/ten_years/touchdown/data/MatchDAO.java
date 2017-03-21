@@ -96,7 +96,7 @@ public class MatchDAO extends DBManager {
     private static Match getCalendarMatch() {
 
         Calendar from = Calendar.getInstance();
-        from.add(Calendar.DAY_OF_MONTH, -4);
+        from.add(Calendar.DAY_OF_MONTH, -5);
 
         Calendar to = Calendar.getInstance();
         to.add(Calendar.DAY_OF_MONTH, 3);

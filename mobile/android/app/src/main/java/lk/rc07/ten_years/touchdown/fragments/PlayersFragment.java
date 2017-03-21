@@ -16,7 +16,7 @@ import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
-import lk.rc07.ten_years.touchdown.data.PlayerDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.models.Match;
 
@@ -35,11 +35,12 @@ public class PlayersFragment extends Fragment {
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
         dbManager.openDatabase();
 
-        int matchId = 0;
-        Match match = MatchDAO.getDisplayMatch();
-        if (match != null)
-            matchId = match.getIdmatch();
-        List<AdapterPlayer> players = PlayerDAO.getPlayerOfTeam(AppConfig.HOME_TEAM_ID, matchId);
+//        int matchId = 0;
+//        Match match = MatchDAO.getDisplayMatch();
+//        if (match != null)
+//            matchId = match.getIdmatch();
+//        PlayerPositionDAO.getPlayerPosition(2);
+        List<AdapterPlayer> players = PlayerPositionDAO.getPlayersForMatch(AppConfig.HOME_TEAM_ID);
         dbManager.closeDatabase();
 
         RecyclerView recycler_fixture = (RecyclerView) view.findViewById(R.id.recycler_players);

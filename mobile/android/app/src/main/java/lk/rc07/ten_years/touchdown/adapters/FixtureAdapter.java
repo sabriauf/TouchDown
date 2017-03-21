@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.activities.MatchSummaryActivity;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
@@ -87,7 +88,9 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewHolder instanceof PendingViewHolder) {
             PendingViewHolder holder = (PendingViewHolder) viewHolder;
 
+            dbManager.openDatabase();
             holder.txt_team.setText(getTeamName(match));
+            dbManager.closeDatabase();
             holder.txt_date.setText(AppHandler.getLinkText(dateFormat.format(date)));
 
             dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -119,7 +122,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ResultViewHolder holder = (ResultViewHolder) viewHolder;
 
             dbManager.openDatabase();
-
+            holder.txt_team.setText(getTeamName(match));
             holder.txt_date.setText(dateFormat.format(date));
             holder.txt_time.setText(match.getStatus().toStringValue());
             if (match.getResult() != null)
@@ -129,8 +132,16 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
             holder.txt_result.setText(getResultString(match));
-
             dbManager.closeDatabase();
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, MatchSummaryActivity.class);
+                    intent.putExtra(MatchSummaryActivity.EXTRA_MATCH_OBJECT, match);
+                    context.startActivity(intent);
+                }
+            });
 
             img_crest = holder.img_crest;
         }
@@ -145,9 +156,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else
             teamId = match.getTeamOne();
 
-        dbManager.openDatabase();
         Team team = TeamDAO.getTeam(teamId);
-        dbManager.closeDatabase();
 
         return team.getName();
     }
@@ -268,6 +277,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private class ResultViewHolder extends RecyclerView.ViewHolder {
 
+        TextView txt_team;
         TextView txt_result;
         TextView txt_time;
         TextView txt_date;
@@ -277,7 +287,8 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ResultViewHolder(View itemView) {
             super(itemView);
-            txt_result = (TextView) itemView.findViewById(R.id.txt_fixture_result);
+            txt_team = (TextView) itemView.findViewById(R.id.txt_fixture_team_name);
+            txt_result = (TextView) itemView.findViewById(R.id.txt_fixture_score);
             txt_time = (TextView) itemView.findViewById(R.id.txt_fixture_time);
             txt_date = (TextView) itemView.findViewById(R.id.txt_fixture_date);
             txt_final = (TextView) itemView.findViewById(R.id.txt_fixture_final);

@@ -47,11 +47,25 @@ public class PositionDAO extends DBManager {
         }
     }
 
-    static Position getPosition(int posId) {
+    public static Position getPosition(int posId) {
         Position position = null;
 
         String WHERE_CLAUSE = DBContact.PositionTable.COLUMN_ID + "=?";
         String[] WHERE_ARGS = {String.valueOf(posId)};
+
+        Cursor cursor = mDatabase.query(DBContact.PositionTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        if (cursor.moveToFirst()) {
+            position = cursorToPosition(cursor);
+        }
+        cursor.close();
+        return position;
+    }
+
+    public static Position getPositionForNo(int posNo) {
+        Position position = null;
+
+        String WHERE_CLAUSE = DBContact.PositionTable.COLUMN_NO + "=?";
+        String[] WHERE_ARGS = {String.valueOf(posNo)};
 
         Cursor cursor = mDatabase.query(DBContact.PositionTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
         if (cursor.moveToFirst()) {
