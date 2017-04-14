@@ -40,4 +40,8 @@ public class Constant {
     public static final String PREFERENCES_EXPRESS_IMAGE = "pref_express_image";
     public static final String PREFERENCES_EXPRESS_LINK = "pref_express_link";
     public static final String PREFERENCES_LIVE_LINK = "pref_live_link";
+    public static final String SHEARED_PREFEREANCE_KEY_USER_ID = "pref_fb_user_id";
+    public static final String SHEARED_PREFEREANCE_KEY_USER_NAME = "pref_fb_user_name";
+
+    public static final String SHARE_APP_PROM = " - Get Live update from ";
 }

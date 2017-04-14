@@ -9,6 +9,8 @@ public class AppConfig {
     public static final String APPLICATION_AUTHENTICATION_KEY = "";
     public static final int API_VERSION = 1;
 
+    public static final long SECOND_HALF_START_TIME = 2400000;
+
     public static final long DEFAULT_TIME_STAMP = 1486307570;
     public static final String DEVELOPER_KEY = "AIzaSyDx_svQDRRdqGkJXnnKe7E30nxthgC0HgI";
 
@@ -18,6 +20,10 @@ public class AppConfig {
     public static final String MURC_WEB_LINK = "http://www.MurcLive.com";
 
     public static final String EXPRESS_DEFAULT_LINK = "http://i.imgur.com/LzWjVb2.jpg"; //TODO - change it for our server
+
+    public static final String APP_DOWNLOAD_LINK = "https://play.google.com/store/apps/details?id=lk.rc07.ten_years.touchdown&hl=en";
+    public static final String APP_PROMOTION_LINK = "http://redpixelcreations.com/touchdown/contents/toudown_banner.jpeg";
+    public static final String APP_INVITE_LINK = "https://fb.me/188721238305794";
 
     public static final int HOME_TEAM_ID = 1;
 }

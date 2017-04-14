@@ -1,5 +1,7 @@
 package lk.rc07.ten_years.touchdown.utils;
 
+import android.support.v4.app.Fragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import java.util.List;
 public class PageBuilder {
 
     List<String> pageTitles;
+    Fragment[] fragments;
 
     public PageBuilder() {
         pageTitles = new ArrayList<>();
@@ -26,5 +29,13 @@ public class PageBuilder {
 
     public void setPageTitles(List<String> pageTitles) {
         this.pageTitles = pageTitles;
+    }
+
+    public Fragment[] getFragments() {
+        return fragments;
+    }
+
+    public void setFragments(Fragment[] fragments) {
+        this.fragments = fragments;
     }
 }

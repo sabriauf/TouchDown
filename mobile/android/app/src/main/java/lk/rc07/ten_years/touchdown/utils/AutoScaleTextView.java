@@ -16,7 +16,12 @@ import lk.rc07.ten_years.touchdown.R;
 
 public class AutoScaleTextView extends AppCompatTextView {
 
+    public static final int AUTO_RESIZE = 1;
+    public static final int WIDTH_RESIZE = 2;
+    public static final int HEIGHT_RESIZE = 3;
+
     private Rect bounds = new Rect();
+    private int preference = AUTO_RESIZE;
 
     public AutoScaleTextView(Context context) {
         this(context, null);
@@ -32,6 +37,10 @@ public class AutoScaleTextView extends AppCompatTextView {
         setIncludeFontPadding(false);
     }
 
+    public void setPreference(int preference) {
+        this.preference = preference;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
@@ -39,12 +48,25 @@ public class AutoScaleTextView extends AppCompatTextView {
         int viewWidth = View.MeasureSpec.getSize(widthMeasureSpec);
         float heightPerTextSize = getMaxTextSizeForHeight(viewHeight);
         float widthPerTextSize = getMaxTextSizeForWidth(viewWidth);
-        if (heightPerTextSize < widthPerTextSize) {
-            this.setTextSize(0, heightPerTextSize);
-            setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        } else {
-            this.setTextSize(0, widthPerTextSize);
-            setGravity(Gravity.CENTER);
+
+        switch (preference) {
+            case AUTO_RESIZE:
+                if (heightPerTextSize < widthPerTextSize) {
+                    this.setTextSize(0, heightPerTextSize);
+                    setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                } else {
+                    this.setTextSize(0, widthPerTextSize);
+                    setGravity(Gravity.CENTER);
+                }
+                break;
+            case WIDTH_RESIZE:
+                this.setTextSize(0, widthPerTextSize);
+                setGravity(Gravity.CENTER);
+                break;
+            case HEIGHT_RESIZE:
+                this.setTextSize(0, heightPerTextSize);
+                setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                break;
         }
 
         setText(getText());

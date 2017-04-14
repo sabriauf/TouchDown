@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_score"
+            layout="@layout/component_live_score_card"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="start"
+            android:padding="10dp"
+            android:text="@string/score_title"
+            android:textColor="@android:color/white" />
+
+        <!--<include layout="@layout/component_summary_row" />-->
+        <LinearLayout
+            android:id="@+id/layout_scores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="start"
+            android:padding="10dp"
+            android:text="@string/penalty_title"
+            android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/layout_penalties"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="start"
+            android:padding="10dp"
+            android:text="@string/scoreres_title"
+            android:textColor="@android:color/white" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_scoreres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="start"
+            android:padding="10dp"
+            android:text="@string/penalized_title"
+            android:textColor="@android:color/white" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_penalized"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp" />
+
+    </LinearLayout>
+</ScrollView>

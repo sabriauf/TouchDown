@@ -173,7 +173,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setSound(defaultSoundUri);
 
-        if (data.thumb != null && data.thumb.equals(""))
+        if (data.thumb != null && !data.thumb.equals(""))
             notificationBuilder.setLargeIcon(AppHandler.getImageBitmap(this, data.thumb));
 
         setDefaultSmallView(notificationBuilder, data.title, data.message);
@@ -225,7 +225,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         }
     }
 
-    class NotificationData {
+    private class NotificationData {
         int id = 0;
         String title = "";
         String message = "";
@@ -245,7 +245,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
         NotificationData(RemoteMessage remoteMessage) {
             try {
-                if (remoteMessage.getData().containsKey(PARAM_PUSH_SHOW) && remoteMessage.getData().get(PARAM_PUSH_SHOW).equals("FALSE")) {
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_SHOW) && remoteMessage.getData().get(PARAM_PUSH_SHOW).equals("false")) {
                     showNotification = false;
                 }
 

@@ -12,7 +12,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //configs
     private static final String DATABASE_NAME = "touchdown_database.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 10;
 
     //constants
     private static final String TEXT_TYPE = " TEXT";
@@ -54,7 +54,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.MatchTable.COLUMN_VENUE + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_LAST + TEXT_TYPE + COMMA_SEP
             + DBContact.MatchTable.COLUMN_LATITUDE + DOUBLE_TYPE + COMMA_SEP
-            + DBContact.MatchTable.COLUMN_LONGITUDE + DOUBLE_TYPE
+            + DBContact.MatchTable.COLUMN_LONGITUDE + DOUBLE_TYPE + COMMA_SEP
+            + DBContact.MatchTable.COLUMN_ALBUM + TEXT_TYPE
             + ")";
 
     //Player db create statement
@@ -108,6 +109,15 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + ")"
             + ")";
 
+    //Position db create statement
+    private static final String CREATE_TABLE_IMAGE = "CREATE TABLE " + DBContact.ImageTable.TABLE_NAME + "("
+            + DBContact.ImageTable.COLUMN_ID + TEXT_TYPE + PRIMARY_KEY + COMMA_SEP
+            + DBContact.ImageTable.COLUMN_MATCH + INTEGER_TYPE + COMMA_SEP
+            + DBContact.ImageTable.COLUMN_WIDTH + INTEGER_TYPE + COMMA_SEP
+            + DBContact.ImageTable.COLUMN_HEIGHT + INTEGER_TYPE + COMMA_SEP
+            + DBContact.ImageTable.COLUMN_CREATED + TEXT_TYPE
+            + ")";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -129,6 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_SCORE);
         sqLiteDatabase.execSQL(CREATE_TABLE_POSITION);
         sqLiteDatabase.execSQL(CREATE_TABLE_PLAYER_POSITION);
+        sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE);
     }
 
     @Override
@@ -142,6 +153,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.TeamTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.MatchTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.GroupTable.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.ImageTable.TABLE_NAME);
 
         onCreate(sqLiteDatabase);
     }

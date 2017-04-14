@@ -19,6 +19,7 @@ public class DBContact {
         static final String COLUMN_LONGITUDE = "match_longitude";
         static final String COLUMN_LATITUDE = "match_latitude";
         static final String COLUMN_GROUP = "match_group";
+        static final String COLUMN_ALBUM = "match_album";
     }
 
 
@@ -86,5 +87,14 @@ public class DBContact {
         public static final String COLUMN_NAME = "group_name";
         public static final String COLUMN_LEAGUE = "group_league";
         public static final String COLUMN_ROUND = "group_round";
+    }
+
+    static abstract class ImageTable {
+        static final String TABLE_NAME = "image_table";
+        static final String COLUMN_ID = "image_id";
+        static final String COLUMN_MATCH = "image_match";
+        static final String COLUMN_WIDTH = "image_width";
+        static final String COLUMN_HEIGHT = "image_height";
+        static final String COLUMN_CREATED = "image_created";
     }
 }

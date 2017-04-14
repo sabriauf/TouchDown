@@ -24,6 +24,7 @@ public class Match implements Parcelable {
     private String lastMatch;
     @SerializedName("idgroup")
     private int group;
+    private String album;
 
     public Match() {
     }
@@ -39,6 +40,7 @@ public class Match implements Parcelable {
         latitude = in.readDouble();
         lastMatch = in.readString();
         group = in.readInt();
+        album = in.readString();
     }
 
     public static final Creator<Match> CREATOR = new Creator<Match>() {
@@ -70,6 +72,7 @@ public class Match implements Parcelable {
         parcel.writeDouble(latitude);
         parcel.writeString(lastMatch);
         parcel.writeInt(group);
+        parcel.writeString(album);
     }
 
     public enum Status {
@@ -182,5 +185,13 @@ public class Match implements Parcelable {
 
     public void setLastMatch(String lastMatch) {
         this.lastMatch = lastMatch;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
     }
 }

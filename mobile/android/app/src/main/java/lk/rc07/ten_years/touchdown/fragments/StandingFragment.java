@@ -80,7 +80,7 @@ public class StandingFragment extends Fragment {
     private void setSpinners(View view) {
         spn_leagues = setSpinnerRow(view.findViewById(R.id.spn_league), SPINNER_TITLE_LEAGUE);
         spn_rounds = setSpinnerRow(view.findViewById(R.id.spn_rounds), SPINNER_TITLE_ROUND);
-        spn_groups =setSpinnerRow(view.findViewById(R.id.spn_group), SPINNER_TITLE_GROUP);
+        spn_groups = setSpinnerRow(view.findViewById(R.id.spn_group), SPINNER_TITLE_GROUP);
     }
 
     private Spinner setSpinnerRow(View view, String title) {
@@ -91,47 +91,47 @@ public class StandingFragment extends Fragment {
     private void setLeagueSpinners() {
         final List<String> leagues = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_LEAGUE);
         loadSpinner(leagues, spn_leagues);
-        if (leagues.size() > 1)
-            spn_leagues.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
-                    dbManager.openDatabase();
-                    setRoundSpinner(leagues.get(i));
-                    dbManager.closeDatabase();
-                }
+//        if (leagues.size() > 1)
+        spn_leagues.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
+                dbManager.openDatabase();
+                setRoundSpinner(leagues.get(i));
+                dbManager.closeDatabase();
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
-                }
-            });
-        else if (leagues.size() == 1) {
-            setRoundSpinner(leagues.get(0));
-        }
+            }
+        });
+//        else if (leagues.size() == 1) {
+//            setRoundSpinner(leagues.get(0));
+//        }
     }
 
     private void setRoundSpinner(final String league) {
         String where = DBContact.GroupTable.COLUMN_LEAGUE + " = '" + league + "'";
         final List<String> rounds = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_ROUND, where, GroupDAO.ORDER_DESC);
         loadSpinner(rounds, spn_rounds);
+        spn_rounds.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
+                dbManager.openDatabase();
+                setGroupSpinner(league, rounds.get(i));
+                dbManager.closeDatabase();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         if (rounds.size() > 1)
-            spn_rounds.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
-                    dbManager.openDatabase();
-                    setGroupSpinner(league, rounds.get(i));
-                    dbManager.closeDatabase();
-                }
+            spn_rounds.setSelection(rounds.size() - 1);
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-        else if (rounds.size() == 1)
-            setGroupSpinner(league, rounds.get(0));
     }
 
     private void setGroupSpinner(final String league, final String round) {
@@ -141,25 +141,25 @@ public class StandingFragment extends Fragment {
         final List<String> groups = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_NAME, where, GroupDAO.ORDER_ASC);
 //        final List<String> groups = GroupDAO.getGroupNames(league, round);
         loadSpinner(groups, spn_groups);
-        if (groups.size() > 1)
-            spn_groups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
-                    dbManager.openDatabase();
-                    int id = GroupDAO.getGroupIdForInfo(league, round, groups.get(i));
-                    loadTable(table, PointsDAO.getPointTable(id));
-                    dbManager.closeDatabase();
-                }
+//        if (groups.size() > 1)
+        spn_groups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
+                dbManager.openDatabase();
+                int id = GroupDAO.getGroupIdForInfo(league, round, groups.get(i));
+                loadTable(table, PointsDAO.getPointTable(id));
+                dbManager.closeDatabase();
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-            });
-        else if (groups.size() == 1) {
-            int id = GroupDAO.getGroupIdForInfo(league, round, groups.get(0));
-            loadTable(table, PointsDAO.getPointTable(id));
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+//        else if (groups.size() == 1) {
+//            int id = GroupDAO.getGroupIdForInfo(league, round, groups.get(0));
+//            loadTable(table, PointsDAO.getPointTable(id));
+//        }
     }
 
     private void loadSpinner(List<String> labels, Spinner spinner) {

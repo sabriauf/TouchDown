@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.widget.AppInviteDialog;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
@@ -29,6 +32,11 @@ import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
+import lk.rc07.ten_years.touchdown.fragments.BradbyExpressFragment;
+import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
+import lk.rc07.ten_years.touchdown.fragments.LiveFragment;
+import lk.rc07.ten_years.touchdown.fragments.PlayersFragment;
+import lk.rc07.ten_years.touchdown.fragments.StandingFragment;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
 import lk.rc07.ten_years.touchdown.utils.DownloadManager;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (message.what == LIVE_STREAMING) {
                     boolean isLive = (boolean) message.obj;
                     setLiveLink(isLive);
-                } else if(message.what == FORCE_SYNC) {
+                } else if (message.what == FORCE_SYNC) {
                     syncData();
                 }
                 return false;
@@ -104,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         });
         setLiveLink(link.equals(""));
 
-        FirebaseMessaging.getInstance().subscribeToTopic("test");
+        FirebaseMessaging.getInstance().subscribeToTopic("test2"); //TODO
 
         syncData();
     }
@@ -127,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
         for (String title : TAB_TITLES) {
             pageBuilder.addPage(title);
         }
+        Fragment[] fragments = new Fragment[]{new LiveFragment(), new FixtureFragment(), new StandingFragment(),
+                new PlayersFragment(), new BradbyExpressFragment()};
+        pageBuilder.setFragments(fragments);
         adapter = new PageAdapter(
                 getSupportFragmentManager(), pageBuilder);
 
@@ -209,6 +220,18 @@ public class MainActivity extends AppCompatActivity {
                 Intent i2 = new Intent(getApplicationContext(), AboutUsActivity.class);
                 startActivity(i2);
                 break;
+            case R.id.menu_sync:
+                syncData();
+            case R.id.menu_profile:
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            case R.id.menu_invite:
+                if (AppInviteDialog.canShow()) {
+                    AppInviteContent content = new AppInviteContent.Builder()
+                            .setApplinkUrl(AppConfig.APP_INVITE_LINK)
+                            .setPreviewImageUrl(AppConfig.APP_PROMOTION_LINK)
+                            .build();
+                    AppInviteDialog.show(this, content);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -20,18 +20,33 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
+import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.data.TeamDAO;
+import lk.rc07.ten_years.touchdown.models.Match;
+import lk.rc07.ten_years.touchdown.models.Score;
 
 /**
  * Created by Sabri on 1/13/2017. application general methods
  */
 
 public class AppHandler {
+
+    private static final String SHARE_STRING_PENDING = "%s vs %s match on %s at %s";
+    private static final String SHARE_STRING_PROGRESS = "%s leading by %d points against %s, score %d-%d at %s";
+    private static final String SHARE_STRING_PROGRESS_EAQUAL = "%s vs %s, score %d-%d at %s";
+    private static final String SHARE_STRING_ENDED = "%s won by %d points against %s, final score %d-%d";
+    private static final String SHARE_STRING_ENDED_DRAW = "%s vs %s match drawn, final score %d-%d";
 
     static HashMap<String, String> getHeaders(Context context) {
         HashMap<String, String> headers = new HashMap<>();
@@ -113,5 +128,87 @@ public class AppHandler {
                     R.mipmap.ic_launcher, options);
         }
         return bm;
+    }
+
+    public static String getResultString(Context context, Match match) {
+        String homeTeam;
+        String opponentTeam;
+//        String time = TimeFormatter.millisToGameTime(getContext(), matchStartTime);
+        if (match.getTeamOne() == AppConfig.HOME_TEAM_ID) {
+            opponentTeam = TeamDAO.getTeam(match.getTeamTwo()).getName();
+            homeTeam = TeamDAO.getTeam(match.getTeamOne()).getName();
+        } else {
+            opponentTeam = TeamDAO.getTeam(match.getTeamOne()).getName();
+            homeTeam = TeamDAO.getTeam(match.getTeamTwo()).getName();
+        }
+
+        int leftScoreTotal = 0;
+        int rightScoreTotal = 0;
+        List<Score> scores = ScoreDAO.getScores(match.getIdmatch());
+        for (Score score : scores) {
+            if (score.getTeamId() == match.getTeamOne())
+                leftScoreTotal += score.getScore();
+            else
+                rightScoreTotal += score.getScore();
+        }
+
+        switch (match.getStatus()) {
+            case PENDING:
+                Date date = new Date(match.getMatchDate());
+                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+                String day = dateFormat.format(date);
+                dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                String time = dateFormat.format(date);
+                return String.format(Locale.getDefault(), SHARE_STRING_PENDING, homeTeam,
+                        opponentTeam, day, time);
+            case FULL_TIME:
+            case DONE:
+                if (leftScoreTotal == rightScoreTotal) {
+                    return String.format(Locale.getDefault(), SHARE_STRING_ENDED_DRAW, homeTeam,
+                            opponentTeam, leftScoreTotal, rightScoreTotal);
+                } else if (leftScoreTotal > rightScoreTotal) {
+                    return String.format(Locale.getDefault(), SHARE_STRING_ENDED, homeTeam,
+                            (leftScoreTotal - rightScoreTotal), opponentTeam, leftScoreTotal, rightScoreTotal);
+                } else {
+                    return String.format(Locale.getDefault(), SHARE_STRING_ENDED, opponentTeam,
+                            (rightScoreTotal - leftScoreTotal), homeTeam, rightScoreTotal, leftScoreTotal);
+                }
+            case FIRST_HALF:
+            case SECOND_HALF:
+                return progressReport(homeTeam, opponentTeam, TimeFormatter.millisToGameTime(context,
+                        AppHandler.getMatchStartTime(match)), leftScoreTotal, rightScoreTotal);
+
+            case HALF_TIME:
+                return progressReport(homeTeam, opponentTeam, match.getStatus().toStringValue(), leftScoreTotal, rightScoreTotal);
+        }
+
+        return "";
+    }
+
+    private static String progressReport(String homeTeam, String opponentTeam, String time, int leftScoreTotal, int rightScoreTotal) {
+        if (leftScoreTotal == rightScoreTotal) {
+            return String.format(Locale.getDefault(), SHARE_STRING_PROGRESS_EAQUAL, homeTeam,
+                    opponentTeam, leftScoreTotal, rightScoreTotal, time);
+        } else if (leftScoreTotal > rightScoreTotal) {
+            return String.format(Locale.getDefault(), SHARE_STRING_PROGRESS, homeTeam,
+                    (leftScoreTotal - rightScoreTotal), opponentTeam, leftScoreTotal, rightScoreTotal,
+                    time);
+        } else {
+            return String.format(Locale.getDefault(), SHARE_STRING_PROGRESS, opponentTeam,
+                    (rightScoreTotal - leftScoreTotal), homeTeam, rightScoreTotal, leftScoreTotal,
+                    time);
+        }
+    }
+
+    public static long getMatchStartTime(Match match) {
+        List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.SECOND_HALF);
+        if (startScores.size() > 0)
+            return (startScores.get(0).getTime() - AppConfig.SECOND_HALF_START_TIME);
+        else {
+            startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.START);
+            if (startScores.size() > 0)
+                return startScores.get(0).getTime();
+        }
+        return 0;
     }
 }

@@ -5,10 +5,10 @@
     android:background="@color/background_blue">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_players"
+        android:id="@+id/recycler_images"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_blue"/>
+        android:layout_height="wrap_content"
+        android:background="@android:color/white" />
 
     <TextView
         android:id="@+id/txt_no_items"

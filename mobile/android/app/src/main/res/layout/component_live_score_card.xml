@@ -11,26 +11,31 @@
         android:layout_weight="3"
         android:orientation="vertical">
 
-        <lk.rc07.ten_years.touchdown.utils.AutoScaleTextView
-            android:id="@+id/txt_league_name"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:text="SCHOOL RUGBY"
-            android:maxLines="1"
-            android:textColor="@android:color/white" />
+            android:layout_weight="3">
+
+            <lk.rc07.ten_years.touchdown.utils.AutoScaleTextView
+                android:id="@+id/txt_league_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="SCHOOL RUGBY LEAGUE 2017"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+        </RelativeLayout>
 
         <lk.rc07.ten_years.touchdown.utils.AutoScaleTextView
             android:id="@+id/txt_round_name"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="1ST ROUND MATCHES"
             android:gravity="center"
+            android:text="1ST ROUND MATCHES"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
     </LinearLayout>

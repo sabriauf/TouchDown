@@ -73,10 +73,13 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         holder.txt_player_no.setText(no);
 
         try {
-            String img_link = AppConfig.TOUCHDOWN_BASE_URL + players.get(pos).getPlayer().getImg_url();
-            holder.img_profile_pic.setImageDrawable(AppHandler.getDrawable(activity, R.drawable.default_profile_pic));
-            ImageAware imgAware = new ImageViewAware(holder.img_profile_pic);
-            imageLoader.displayImage(img_link, imgAware, options);
+            String img_link = players.get(pos).getPlayer().getImg_url();
+            if (!img_link.equals("/contents/players/")) {
+                img_link = AppConfig.TOUCHDOWN_BASE_URL + img_link;
+                holder.img_profile_pic.setImageDrawable(AppHandler.getDrawable(activity, R.drawable.default_profile_pic));
+                ImageAware imgAware = new ImageViewAware(holder.img_profile_pic);
+                imageLoader.displayImage(img_link, imgAware, options);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

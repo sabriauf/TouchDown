@@ -2,9 +2,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_profile"
+        android:title="@string/profile"
+        android:orderInCategory="11"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/menu_invite"
+        android:title="@string/invite"
+        android:orderInCategory="12"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/menu_sync"
+        android:title="@string/sync_now"
+        android:orderInCategory="13"
+        app:showAsAction="collapseActionView" />
+
+    <item
         android:id="@+id/menu_about"
         android:title="@string/about_us"
-        android:orderInCategory="11"
+        android:orderInCategory="14"
         app:showAsAction="collapseActionView" />
 
 </menu>

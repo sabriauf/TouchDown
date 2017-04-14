@@ -2,15 +2,15 @@ package lk.rc07.ten_years.touchdown.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 
 /**
  * Created by Sabri on 2/4/2017. ImageView for height match for width
  */
 
-public class ImageViewAutoHeight extends ImageView {
+public class ImageViewAutoHeight extends AppCompatImageView {
 
     public ImageViewAutoHeight(Context context) {
         super(context);

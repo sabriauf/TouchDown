@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
+import lk.rc07.ten_years.touchdown.models.Scorer;
 
 /**
  * Created by Sabri on 12/24/2016. Score data access model
@@ -112,6 +114,72 @@ public class ScoreDAO extends DBManager {
         }
         cursor.close();
         return scores;
+    }
+
+    public static ArrayList<Score> getActionScore(int matchId, int teamId, Score.Action action) {
+        ArrayList<Score> scores = new ArrayList<>();
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? and " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=? and " + DBContact.ScoreTable.COLUMN_TEAM + "=?";
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(action), String.valueOf(teamId)};
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        while (cursor.moveToNext()) {
+            scores.add(cursorToScore(cursor));
+        }
+        cursor.close();
+        return scores;
+    }
+
+    public static ArrayList<Scorer> getScorers(int matchId, int teamId) {
+        ArrayList<Scorer> scorers = new ArrayList<>();
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? and " + DBContact.ScoreTable.COLUMN_TEAM + "=?";
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(teamId)};
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        while (cursor.moveToNext()) {
+            Score score = cursorToScore(cursor);
+            if(score.getPlayer() != 0 && score.getScore() > 0) {
+                addScoreToScorers(scorers, score);
+            }
+        }
+        cursor.close();
+        return scorers;
+    }
+
+    public static ArrayList<Scorer> getPenalizedPlayers(int matchId, int teamId) {
+        ArrayList<Scorer> scorers = new ArrayList<>();
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? and " + DBContact.ScoreTable.COLUMN_TEAM + "=?";
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(teamId)};
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        while (cursor.moveToNext()) {
+            Score score = cursorToScore(cursor);
+            Score.Action action = score.getAction();
+            if(score.getPlayer() != 0 && (action == Score.Action.RED_CARD || action == Score.Action.YELLOW_CARD)) {
+                addScoreToScorers(scorers, score);
+            }
+        }
+        cursor.close();
+        return scorers;
+    }
+
+    private static void addScoreToScorers(ArrayList<Scorer> scorers, Score score) {
+        for (Scorer scorer: scorers) {
+            if(score.getPlayer() == scorer.getPlayer().getIdPlayer()) {
+                scorer.getScores().add(score);
+                return;
+            }
+        }
+        Scorer scorer = new Scorer();
+        scorer.setPlayer(PlayerDAO.getPlayer(score.getPlayer()));
+        List<Score> scores = new ArrayList<>();
+        scores.add(score);
+        scorer.setScores(scores);
+
+        scorers.add(scorer);
     }
 
     public static int getPlayerAction(int playerId, Score.Action action) {

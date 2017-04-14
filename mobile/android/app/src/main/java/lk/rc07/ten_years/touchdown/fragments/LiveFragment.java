@@ -27,6 +27,7 @@ import java.util.Locale;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.ScoreAdapter;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
+import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.GroupDAO;
@@ -51,7 +52,7 @@ import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 public class LiveFragment extends Fragment {
 
     private static final String DIGITAL_CLOCK_FONT = "fonts/digital_7.ttf";
-    private static final String SHARE_STRING = "%s : %s %d : %d %s";
+
     //instances
     private ScoreAdapter adapter;
     private ImageLoader imageLoader;
@@ -115,7 +116,7 @@ public class LiveFragment extends Fragment {
 
             //set matchStart time
             if (match != null) {
-                getMatchStartTime(match);
+                matchStartTime = AppHandler.getMatchStartTime(match);
                 calculateScore(match, scores);
 
                 tOne = TeamDAO.getTeam(match.getTeamOne());
@@ -156,18 +157,15 @@ public class LiveFragment extends Fragment {
                     DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getActivity()));
                     dbManager.openDatabase();
 
-                    String message = "";
-                    if (match.getStatus() == Match.Status.PENDING)
-                        message = getResultString(match);
-                    else
-                        message = getResultString(match);
+                    String message = AppHandler.getResultString(getActivity(), match);
+                    message += Constant.SHARE_APP_PROM + AppConfig.APP_DOWNLOAD_LINK;
 
                     Log.d(LiveFragment.class.getSimpleName(), message);
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_TEXT, message);
                     sendIntent.setType("text/plain");
-                    startActivity(sendIntent);
+                    startActivity(Intent.createChooser(sendIntent, "Share the score"));
 
                     dbManager.closeDatabase();
                 }
@@ -175,40 +173,14 @@ public class LiveFragment extends Fragment {
         });
     }
 
-    private String getResultString(Match match) {
-        String homeTeam;
-        String opponentTeam;
-        String time = TimeFormatter.millisToGameTime(getContext(), matchStartTime);
-        if (match.getTeamOne() == AppConfig.HOME_TEAM_ID) {
-            opponentTeam = getTeamShortName(match.getTeamTwo());
-            homeTeam = getTeamShortName(match.getTeamOne());
-        } else {
-            opponentTeam = getTeamShortName(match.getTeamOne());
-            homeTeam = getTeamShortName(match.getTeamTwo());
-        }
-        return String.format(Locale.getDefault(), SHARE_STRING, time,
-                homeTeam, leftScoreTotal, rightScoreTotal, opponentTeam);
-    }
-
-    private String getTeamShortName(int teamId) {
-        String shortName = "";
-        String name = TeamDAO.getTeam(teamId).getName();
-        for (String part : name.split(" ")) {
-            shortName += part.charAt(0);
-        }
-        return shortName;
-    }
-
-    private void getMatchStartTime(Match match) {
-        List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.SECOND_HALF);
-        if (startScores.size() > 0)
-            matchStartTime = startScores.get(0).getTime();
-        else {
-            startScores = ScoreDAO.getActionScore(match.getIdmatch(), Score.Action.START);
-            if (startScores.size() > 0)
-                matchStartTime = startScores.get(0).getTime();
-        }
-    }
+//    private String getTeamShortName(int teamId) {
+//        String shortName = "";
+//        String name = TeamDAO.getTeam(teamId).getName();
+//        for (String part : name.split(" ")) {
+//            shortName += part.charAt(0);
+//        }
+//        return shortName;
+//    }
 
 
     private void setData(View view, final Match match, Group group, Team tOne, Team tTwo) {
@@ -311,7 +283,7 @@ public class LiveFragment extends Fragment {
                 matchStartTime = 0;
                 break;
             case SECOND_HALF:
-                matchStartTime = score.getTime();
+                matchStartTime = (score.getTime() - AppConfig.SECOND_HALF_START_TIME);
                 holder.txt_live.setVisibility(View.VISIBLE);
                 setTimerFont(true);
                 setTimer(match);
@@ -415,6 +387,7 @@ public class LiveFragment extends Fragment {
 
         ViewHolder(View view) {
             txt_league = (AutoScaleTextView) view.findViewById(R.id.txt_league_name);
+            txt_league.setPreference(AutoScaleTextView.WIDTH_RESIZE);
             txt_round = (AutoScaleTextView) view.findViewById(R.id.txt_round_name);
             txt_live = (TextView) view.findViewById(R.id.txt_live_notifier);
             txt_time = (TextView) view.findViewById(R.id.txt_match_time);

@@ -12,6 +12,9 @@
     <string name="default_player_pos">18</string>
 
     <string name="google_calendar_api_key">959794019019-cnga03kchd5e95iln7d6mfebtmlqk907.apps.googleusercontent.com</string>
+    <string name="facebook_api_key">175608982950353</string>
+
+
     <string name="score">Score</string>
     <string name="time_12_05">Time - 12:05</string>
     <string name="score_details">Score details</string>
@@ -19,7 +22,6 @@
     <string name="team_name">Team Name</string>
     <string name="menu_title">Menu</string>
     <string name="menu_live_title">LIVE</string>
-    <string name="about_us">About Us</string>
     <string name="close">Close</string>
     <string name="app_support">App Support</string>
     <string name="more_apps">More Apps</string>
@@ -31,11 +33,24 @@
     <string name="live_update_from">Live Score Update</string>
     <string name="x">X</string>
     <string name="ovin_askey">Ovin Askey Some Other</string>
-    <string name="title_activity_match_summary">MatchSummaryActivity</string>
+    <string name="title_activity_match_summary">Match Details</string>
+    <string name="vs">Vs</string>
 
     <!-- Match Summary Details-->
     <string name="penalty_title">PENALTIES</string>
     <string name="score_title">SCORES</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="scoreres_title">SCORERES</string>
+    <string name="penalized_title">PENALIZED</string>
+
+    <!-- menu items -->
+    <string name="about_us">About Us</string>
+    <string name="sync_now">Sync Now</string>
+    <string name="profile">Profile</string>
+    <string name="invite">Invite Friends</string>
+    <string name="tries">Tries</string>
+    <string name="title_activity_image_view">ImageViewActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="no_items_available">No Items available</string>
 
 </resources>

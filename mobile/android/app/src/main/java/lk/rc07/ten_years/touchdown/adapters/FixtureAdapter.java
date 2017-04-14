@@ -3,7 +3,7 @@ package lk.rc07.ten_years.touchdown.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
+import android.os.Message;
 import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
@@ -31,6 +31,7 @@ import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
+import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
 import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Team;
@@ -54,6 +55,9 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private DBManager dbManager;
+
+    //primary data
+    private long dateDifference = 0;
 
     public FixtureAdapter(Context context, List<Match> matches) {
         this.context = context;
@@ -147,6 +151,17 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), img_crest, options);
+
+        if (dateDifference == 0)
+            dateDifference = System.currentTimeMillis() - match.getMatchDate();
+        else {
+            if (dateDifference > (System.currentTimeMillis() - match.getMatchDate())) {
+                dateDifference = System.currentTimeMillis() - match.getMatchDate();
+                Message msg = new Message();
+                msg.arg1 = viewHolder.getAdapterPosition();
+                FixtureFragment.mHandler.sendMessage(msg);
+            }
+        }
     }
 
     private String getTeamName(Match match) {
@@ -199,31 +214,28 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         dbManager.closeDatabase();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Calendar matchDate = Calendar.getInstance();
-            matchDate.setTime(new Date(match.getMatchDate()));
-            matchDate.set(Calendar.HOUR, 15);
+        Calendar matchDate = Calendar.getInstance();
+        matchDate.setTime(new Date(match.getMatchDate()));
+//        matchDate.set(Calendar.HOUR, 15);
 
-            Intent intent = new Intent(Intent.ACTION_INSERT);
-            intent.setType("vnd.android.cursor.item/event");
-            intent.putExtra(CalendarContract.Events.TITLE, tOne.getName() + " vs " + tTwo.getName());
-            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, match.getVenue());
-            intent.putExtra(CalendarContract.Events.DESCRIPTION, group.getLeagueName() + " - " + group.getRoundName()
-                    + " - " + group.getGroupName());
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra(CalendarContract.Events.TITLE, tOne.getName() + " vs " + tTwo.getName());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, match.getVenue());
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, group.getLeagueName() + " - " + group.getRoundName()
+                + " - " + group.getGroupName());
 
-            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    matchDate.getTimeInMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                matchDate.getTimeInMillis());
 
-            matchDate.set(Calendar.HOUR, 19);
+        matchDate.set(Calendar.HOUR, 6);
 
-            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                    matchDate.getTimeInMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
+                matchDate.getTimeInMillis());
 
-            intent.putExtra(CalendarContract.Events.ACCESS_LEVEL, CalendarContract.Events.ACCESS_PRIVATE);
-            intent.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
-            context.startActivity(intent);
-        }
-
+        intent.putExtra(CalendarContract.Events.ACCESS_LEVEL, CalendarContract.Events.ACCESS_PRIVATE);
+        intent.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+        context.startActivity(intent);
 
     }
 

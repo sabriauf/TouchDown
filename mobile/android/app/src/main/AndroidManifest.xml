@@ -5,11 +5,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".config.TouchDownApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_api_key" />
+
         <service android:name=".services.TouchDownMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -50,6 +55,15 @@
             android:name=".activities.MatchSummaryActivity"
             android:label="@string/title_activity_match_summary"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
+            android:theme="@style/MyAlertDialogStyle" />
+        <activity
+            android:name=".activities.ImageViewActivity"
+            android:label="@string/title_activity_image_view"
+            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

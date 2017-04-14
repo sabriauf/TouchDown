@@ -70,11 +70,11 @@ public class PointsDAO extends DBManager {
     public static List<Points> getPointTable(int groupId) {
         List<Points> points = new ArrayList<>();
 
+        String[] SELECT = {"*", "(" + DBContact.PointsTable.COLUMN_POINTS + "/" + DBContact.PointsTable.COLUMN_PLAYED + ") as total"};
         String WHERE_CLAUSE = DBContact.PointsTable.COLUMN_GROUP + "=? ";
         String[] WHERE_ARGS = {String.valueOf(groupId)};
-        String orderBy =  DBContact.PointsTable.COLUMN_POINTS + ORDER_DESC;
-
-        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, orderBy);
+        String orderBy = "total" + ORDER_DESC;
+        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, SELECT, WHERE_CLAUSE, WHERE_ARGS, null, null, orderBy);
         while (cursor.moveToNext()) {
             points.add(cursorToPoints(cursor));
         }

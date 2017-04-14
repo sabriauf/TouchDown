@@ -48,6 +48,7 @@ public class MatchDAO extends DBManager {
         values.put(DBContact.MatchTable.COLUMN_LAST, match.getLastMatch());
         values.put(DBContact.MatchTable.COLUMN_LATITUDE, match.getLatitude());
         values.put(DBContact.MatchTable.COLUMN_LONGITUDE, match.getLongitude());
+        values.put(DBContact.MatchTable.COLUMN_ALBUM, match.getAlbum());
 
         if (!isMatchAlreadyExist) {
             values.put(DBContact.MatchTable.COLUMN_ID, match.getIdmatch());
@@ -179,6 +180,7 @@ public class MatchDAO extends DBManager {
         match.setLastMatch(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LAST)));
         match.setLongitude(cursor.getDouble(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LONGITUDE)));
         match.setLatitude(cursor.getDouble(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LATITUDE)));
+        match.setAlbum(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_ALBUM)));
         return match;
     }
 }

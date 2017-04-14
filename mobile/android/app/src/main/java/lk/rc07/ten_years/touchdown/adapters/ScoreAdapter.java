@@ -59,7 +59,6 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     //primary data
     private long firstHalfTime = 0;
     private long secondHalfTime = 0;
-    private long intervalTime = 0;
 
     public ScoreAdapter(Context context, List<Score> scores, Match match) {
         this.context = context;
@@ -95,7 +94,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         setGameTimes();
 
         if (time > secondHalfTime && secondHalfTime != 0) {
-            return time - firstHalfTime - intervalTime;
+            return time - secondHalfTime + AppConfig.SECOND_HALF_START_TIME;
         } else if (firstHalfTime != 0) {
             return time - firstHalfTime;
         } else
@@ -109,10 +108,10 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 firstHalfTime = getGamePoint(Score.Action.START);
             if (secondHalfTime == 0)
                 secondHalfTime = getGamePoint(Score.Action.SECOND_HALF);
-            if (firstHalfTime != 0 && secondHalfTime != 0 && intervalTime == 0) {
-                long firstHalfEnd = getGamePoint(Score.Action.HALF_TIME);
-                intervalTime = secondHalfTime - firstHalfEnd;
-            }
+//            if (firstHalfTime != 0 && secondHalfTime != 0 && SECOND_HALF_START_TIME == 0) {
+//                long firstHalfEnd = getGamePoint(Score.Action.HALF_TIME);
+//                SECOND_HALF_START_TIME = secondHalfTime - firstHalfEnd;
+//            }
             dbManager.closeDatabase();
         }
     }

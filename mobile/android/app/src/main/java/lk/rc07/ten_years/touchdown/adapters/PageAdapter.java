@@ -42,20 +42,10 @@ public class PageAdapter extends FragmentPagerAdapter {
     }
 
     private Fragment getFragmentForPosition(int pos) {
-        switch (pos) {
-            case 0:
-                return new LiveFragment();
-            case 1:
-                return new FixtureFragment();
-            case 2:
-                return new StandingFragment();
-            case 3:
-                return new PlayersFragment();
-            case 4:
-                return new BradbyExpressFragment();
-            default:
-                return new Fragment();
+        if (pos < pageBuilder.getFragments().length) {
+            return pageBuilder.getFragments()[pos];
         }
+        return new Fragment();
     }
 
     @Override
