@@ -88,54 +88,55 @@ public class SummaryFragment extends Fragment {
         });
 
         match = getArguments().getParcelable(MatchSummaryActivity.EXTRA_MATCH_OBJECT);
-        loadScore.start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadScoreBackground();
+            }
+        }).start();
 
         return view;
     }
 
-    Thread loadScore = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            DBManager dbManager = DBManager.initializeInstance(
-                    DBHelper.getInstance(activity));
-            dbManager.openDatabase();
+    private void loadScoreBackground() {
+        DBManager dbManager = DBManager.initializeInstance(
+                DBHelper.getInstance(activity));
+        dbManager.openDatabase();
 
-            List<Score> scores = null;
-            Group group = null;
-            if (match != null) {
-                scores = ScoreDAO.getScores(match.getIdmatch());
-                group = GroupDAO.getGroupForId(match.getGroup());
-            }
+        List<Score> scores = null;
+        Group group = null;
+        if (match != null) {
+            scores = ScoreDAO.getScores(match.getIdmatch());
+            group = GroupDAO.getGroupForId(match.getGroup());
+        }
 
-            Team tOne = null;
-            Team tTwo = null;
+        Team tOne = null;
+        Team tTwo = null;
 
-            //set matchStart time
-            if (match != null) {
-                tOne = TeamDAO.getTeam(match.getTeamOne());
-                tTwo = TeamDAO.getTeam(match.getTeamTwo());
+        //set matchStart time
+        if (match != null) {
+            tOne = TeamDAO.getTeam(match.getTeamOne());
+            tTwo = TeamDAO.getTeam(match.getTeamTwo());
 
-                calculateScore(match, scores, group, tOne, tTwo);
-            }
+            calculateScore(match, scores, group, tOne, tTwo);
+        }
 
-            final Team teamOne = tOne;
-            final Team teamTwo = tTwo;
+        final Team teamOne = tOne;
+        final Team teamTwo = tTwo;
 
-            dbManager.closeDatabase();
+        dbManager.closeDatabase();
 
 //            final Group finalGroup = group;
 //            final List<Score> temp_scores = scores;
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (match != null) {
-                        setViews(teamOne, teamTwo);
-                    }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (match != null) {
+                    setViews(teamOne, teamTwo);
                 }
-            });
-
-        }
-    });
+            }
+        });
+    }
 
     private void calculateScore(Match match, List<Score> scores, final Group group, final Team tOne, final Team tTwo) {
 

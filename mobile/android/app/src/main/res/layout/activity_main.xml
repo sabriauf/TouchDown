@@ -35,12 +35,21 @@
                 android:id="@+id/live_icon"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:scaleType="centerCrop"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/live_icon" />
+
+            <Spinner
+                android:id="@+id/spn_selector_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:layout_centerVertical="true" />
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>

@@ -80,7 +80,7 @@ public class LiveFragment extends Fragment {
         parentView = view;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_timeline);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(parentView.getContext());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(false);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -154,10 +154,10 @@ public class LiveFragment extends Fragment {
             public void onClick(View view) {
                 if (match != null) {
 
-                    DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getActivity()));
+                    DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(parentView.getContext()));
                     dbManager.openDatabase();
 
-                    String message = AppHandler.getResultString(getActivity(), match);
+                    String message = AppHandler.getResultString(parentView.getContext(), match);
                     message += Constant.SHARE_APP_PROM + AppConfig.APP_DOWNLOAD_LINK;
 
                     Log.d(LiveFragment.class.getSimpleName(), message);
@@ -190,7 +190,7 @@ public class LiveFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.MURC_WEB_LINK));
-                getActivity().startActivity(intent);
+                parentView.getContext().startActivity(intent);
             }
         });
 
@@ -351,13 +351,13 @@ public class LiveFragment extends Fragment {
 
     private void setTimerFont(boolean isTimer) {
         if (isTimer) {
-            holder.txt_time.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), DIGITAL_CLOCK_FONT));
+            holder.txt_time.setTypeface(Typeface.createFromAsset(parentView.getContext().getAssets(), DIGITAL_CLOCK_FONT));
             holder.txt_time.setTextSize(42);
-            holder.txt_time.setTextColor(AppHandler.getColor(getActivity(), R.color.timer_clock));
+            holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.timer_clock));
         } else {
             holder.txt_time.setTypeface(Typeface.SANS_SERIF);
             holder.txt_time.setTextSize(22);
-            holder.txt_time.setTextColor(AppHandler.getColor(getActivity(), R.color.text_title));
+            holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.text_title));
         }
     }
 

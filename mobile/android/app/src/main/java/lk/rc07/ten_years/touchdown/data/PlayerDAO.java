@@ -37,11 +37,9 @@ public class PlayerDAO extends DBManager {
 
         values.put(DBContact.PlayerTable.COLUMN_NAME, player.getName());
         values.put(DBContact.PlayerTable.COLUMN_IMG, player.getImg_url());
-        values.put(DBContact.PlayerTable.COLUMN_TEAM, player.getTeamId());
         values.put(DBContact.PlayerTable.COLUMN_HEIGHT, player.getHeight());
         values.put(DBContact.PlayerTable.COLUMN_WEIGHT, player.getWeight());
         values.put(DBContact.PlayerTable.COLUMN_BIRTH, player.getBirthDay().getTime());
-        values.put(DBContact.PlayerTable.COLUMN_COLORS, player.getColors());
 
         if (!isPlayerAlreadyExist) {
             values.put(DBContact.PlayerTable.COLUMN_ID, player.getIdPlayer());
@@ -109,13 +107,15 @@ public class PlayerDAO extends DBManager {
         Player player = new Player();
         int id = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_ID));
         player.setIdPlayer(id);
-        player.setTeamId(cursor.getInt(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_TEAM)));
         player.setImg_url(cursor.getString(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_IMG)));
         player.setName(cursor.getString(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_NAME)));
         player.setHeight(cursor.getDouble(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_HEIGHT)));
         player.setWeight(cursor.getDouble(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_WEIGHT)));
         player.setBirthDay(new Date(cursor.getLong(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_BIRTH))));
-        player.setColors(cursor.getInt(cursor.getColumnIndex(DBContact.PlayerTable.COLUMN_COLORS)));
         return player;
+    }
+
+    public static boolean deleteAll() {
+        return mDatabase.delete(DBContact.PlayerTable.TABLE_NAME, null, null) == 1;
     }
 }

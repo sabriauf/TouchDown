@@ -36,7 +36,6 @@ public class TeamDAO extends DBManager {
         values.put(DBContact.TeamTable.COLUMN_FLAG, team.getFlag_url());
         values.put(DBContact.TeamTable.COLUMN_LOGO, team.getLogo_url());
         values.put(DBContact.TeamTable.COLUMN_NAME, team.getName());
-        values.put(DBContact.TeamTable.COLUMN_YEAR, team.getYear());
 
         if (!isTeamAlreadyExist) {
             values.put(DBContact.TeamTable.COLUMN_ID, team.getIdTeam());
@@ -69,7 +68,10 @@ public class TeamDAO extends DBManager {
         team.setFlag_url(cursor.getString(cursor.getColumnIndex(DBContact.TeamTable.COLUMN_FLAG)));
         team.setLogo_url(cursor.getString(cursor.getColumnIndex(DBContact.TeamTable.COLUMN_LOGO)));
         team.setName(cursor.getString(cursor.getColumnIndex(DBContact.TeamTable.COLUMN_NAME)));
-        team.setYear(cursor.getString(cursor.getColumnIndex(DBContact.TeamTable.COLUMN_YEAR)));
         return team;
+    }
+
+    public static boolean deleteAll() {
+        return mDatabase.delete(DBContact.TeamTable.TABLE_NAME, null, null) == 1;
     }
 }

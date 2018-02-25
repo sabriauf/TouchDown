@@ -24,6 +24,7 @@ import java.util.Locale;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.PlayerDialogActivity;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
+import lk.rc07.ten_years.touchdown.fragments.PlayersFragment;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
@@ -99,6 +100,8 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
                 Intent intent = new Intent(activity, PlayerDialogActivity.class);
                 intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_OBJECT, players.get(pos).getPlayer());
+                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_TEAM, PlayersFragment.team_id);
+                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_YEAR, PlayersFragment.year);
                 if (players.get(pos).getPosition() != null)
                     intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION, players.get(pos).getPosition().getPosNo());
                 else

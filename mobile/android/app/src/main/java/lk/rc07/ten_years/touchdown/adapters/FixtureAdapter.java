@@ -29,6 +29,7 @@ import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.GroupDAO;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
@@ -55,9 +56,6 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private DBManager dbManager;
-
-    //primary data
-    private long dateDifference = 0;
 
     public FixtureAdapter(Context context, List<Match> matches) {
         this.context = context;
@@ -94,13 +92,18 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             dbManager.openDatabase();
             holder.txt_team.setText(getTeamName(match));
+            Group group = GroupDAO.getGroupForId(match.getGroup());
+            Match lastMatch = MatchDAO.getMatchForTheYear(group.getYear() - 1, match.getTeamOne(), match.getTeamTwo());
             dbManager.closeDatabase();
             holder.txt_date.setText(AppHandler.getLinkText(dateFormat.format(date)));
 
             dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             holder.txt_time.setText(dateFormat.format(date));
             holder.txt_venue.setText(AppHandler.getLinkText(match.getVenue()));
-            holder.txt_last.setText(String.format(LAST_RESULT, match.getLastMatch()));
+            if (lastMatch == null)
+                holder.txt_last.setText(String.format(LAST_RESULT, match.getLastMatch()));
+            else
+                holder.txt_last.setText(String.format(LAST_RESULT, lastMatch.getResult()));
 
             holder.txt_venue.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -151,17 +154,6 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), img_crest, options);
-
-        if (dateDifference == 0)
-            dateDifference = System.currentTimeMillis() - match.getMatchDate();
-        else {
-            if (dateDifference > (System.currentTimeMillis() - match.getMatchDate())) {
-                dateDifference = System.currentTimeMillis() - match.getMatchDate();
-                Message msg = new Message();
-                msg.arg1 = viewHolder.getAdapterPosition();
-                FixtureFragment.mHandler.sendMessage(msg);
-            }
-        }
     }
 
     private String getTeamName(Match match) {
@@ -277,13 +269,13 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         PendingViewHolder(View itemView) {
             super(itemView);
-            txt_team = (TextView) itemView.findViewById(R.id.txt_fixture_team_name);
-            txt_date = (TextView) itemView.findViewById(R.id.txt_fixture_date);
-            txt_time = (TextView) itemView.findViewById(R.id.txt_fixture_time);
-            txt_venue = (TextView) itemView.findViewById(R.id.txt_fixture_venue);
-            txt_last = (TextView) itemView.findViewById(R.id.txt_fixture_last_match);
+            txt_team = itemView.findViewById(R.id.txt_fixture_team_name);
+            txt_date = itemView.findViewById(R.id.txt_fixture_date);
+            txt_time = itemView.findViewById(R.id.txt_fixture_time);
+            txt_venue = itemView.findViewById(R.id.txt_fixture_venue);
+            txt_last = itemView.findViewById(R.id.txt_fixture_last_match);
 
-            img_crest = (ImageView) itemView.findViewById(R.id.img_fixture_college_crest);
+            img_crest = itemView.findViewById(R.id.img_fixture_college_crest);
         }
     }
 
@@ -299,13 +291,13 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ResultViewHolder(View itemView) {
             super(itemView);
-            txt_team = (TextView) itemView.findViewById(R.id.txt_fixture_team_name);
-            txt_result = (TextView) itemView.findViewById(R.id.txt_fixture_score);
-            txt_time = (TextView) itemView.findViewById(R.id.txt_fixture_time);
-            txt_date = (TextView) itemView.findViewById(R.id.txt_fixture_date);
-            txt_final = (TextView) itemView.findViewById(R.id.txt_fixture_final);
+            txt_team = itemView.findViewById(R.id.txt_fixture_team_name);
+            txt_result = itemView.findViewById(R.id.txt_fixture_score);
+            txt_time = itemView.findViewById(R.id.txt_fixture_time);
+            txt_date = itemView.findViewById(R.id.txt_fixture_date);
+            txt_final = itemView.findViewById(R.id.txt_fixture_final);
 
-            img_crest = (ImageView) itemView.findViewById(R.id.img_fixture_college_crest);
+            img_crest = itemView.findViewById(R.id.img_fixture_college_crest);
         }
     }
 }

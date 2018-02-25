@@ -43,9 +43,10 @@ public class DownloadManager {
             urlConnection.setReadTimeout(timeout);
             urlConnection.setConnectTimeout(timeout);
 
-            for (String key : headers.keySet()) {
-                urlConnection.setRequestProperty(key, headers.get(key));
-            }
+            if (headers != null)
+                for (String key : headers.keySet()) {
+                    urlConnection.setRequestProperty(key, headers.get(key));
+                }
 
 
             if (type != null)

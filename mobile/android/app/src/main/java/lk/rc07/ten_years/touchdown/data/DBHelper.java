@@ -12,7 +12,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //configs
     private static final String DATABASE_NAME = "touchdown_database.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     //constants
     private static final String TEXT_TYPE = " TEXT";
@@ -30,6 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.GroupTable.COLUMN_ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
             + DBContact.GroupTable.COLUMN_NAME + TEXT_TYPE + COMMA_SEP
             + DBContact.GroupTable.COLUMN_LEAGUE + TEXT_TYPE + COMMA_SEP
+            + DBContact.GroupTable.COLUMN_YEAR + INTEGER_TYPE + COMMA_SEP
             + DBContact.GroupTable.COLUMN_ROUND + INTEGER_TYPE
             + ")";
 
@@ -118,6 +119,16 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.ImageTable.COLUMN_CREATED + TEXT_TYPE
             + ")";
 
+    //Player Team db create statement
+    private static final String CREATE_TABLE_PLAYER_TEAM = "CREATE TABLE " + DBContact.PlayerTeamTable.TABLE_NAME + "("
+            + DBContact.PlayerTeamTable.COLUMN_PLAYER_ID + INTEGER_TYPE + COMMA_SEP
+            + DBContact.PlayerTeamTable.COLUMN_TEAM_ID + INTEGER_TYPE + COMMA_SEP
+            + DBContact.PlayerTeamTable.COLUMN_COLORS + INTEGER_TYPE + COMMA_SEP
+            + DBContact.PlayerTeamTable.COLUMN_YEAR + INTEGER_TYPE + COMMA_SEP
+            + PRIMARY_KEY + "(" + DBContact.PlayerTeamTable.COLUMN_PLAYER_ID + COMMA_SEP
+            + DBContact.PlayerTeamTable.COLUMN_TEAM_ID + COMMA_SEP + DBContact.PlayerTeamTable.COLUMN_YEAR + ")"
+            + ")";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -140,11 +151,11 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_POSITION);
         sqLiteDatabase.execSQL(CREATE_TABLE_PLAYER_POSITION);
         sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_PLAYER_TEAM);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PointsTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PlayerPositionTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PositionTable.TABLE_NAME);
@@ -154,7 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.MatchTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.GroupTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.ImageTable.TABLE_NAME);
-
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PlayerTeamTable.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

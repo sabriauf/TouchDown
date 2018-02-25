@@ -87,6 +87,7 @@ public class DBContact {
         public static final String COLUMN_NAME = "group_name";
         public static final String COLUMN_LEAGUE = "group_league";
         public static final String COLUMN_ROUND = "group_round";
+        public static final String COLUMN_YEAR = "group_year";
     }
 
     static abstract class ImageTable {
@@ -96,5 +97,13 @@ public class DBContact {
         static final String COLUMN_WIDTH = "image_width";
         static final String COLUMN_HEIGHT = "image_height";
         static final String COLUMN_CREATED = "image_created";
+    }
+
+    public static abstract class PlayerTeamTable {
+        public static final String TABLE_NAME = "player_team";
+        public static final String COLUMN_TEAM_ID = "team_id";
+        public static final String COLUMN_PLAYER_ID = "player_id";
+        public static final String COLUMN_YEAR = "year";
+        public static final String COLUMN_COLORS = "colors";
     }
 }

@@ -27,7 +27,9 @@ import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.fragments.PlayerTeamDAO;
 import lk.rc07.ten_years.touchdown.models.Player;
+import lk.rc07.ten_years.touchdown.models.PlayerTeam;
 import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
@@ -37,6 +39,8 @@ public class PlayerDialogActivity extends AppCompatActivity {
     //constants
     public static final String EXTRA_PLAYER_OBJECT = "player_extra";
     public static final String EXTRA_PLAYER_POSITION = "player_pos_extra";
+    public static final String EXTRA_PLAYER_YEAR = "player_year";
+    public static final String EXTRA_PLAYER_TEAM = "player_team";
     //    public static final String EXTRA_PLAYER_POSITION_ID = "player_pos_id_extra";
     //values
     private static final String PLAYER_AGE_VALUE = "Age : %d";
@@ -67,6 +71,8 @@ public class PlayerDialogActivity extends AppCompatActivity {
 
         Player player = getIntent().getExtras().getParcelable(EXTRA_PLAYER_OBJECT);
         String player_pos = String.format(Locale.getDefault(), "%02d", getIntent().getExtras().getInt(EXTRA_PLAYER_POSITION));
+        int year = getIntent().getExtras().getInt(EXTRA_PLAYER_YEAR);
+        int team = getIntent().getExtras().getInt(EXTRA_PLAYER_TEAM);
 
         if (player != null) {
             DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
@@ -78,13 +84,14 @@ public class PlayerDialogActivity extends AppCompatActivity {
             int conversions = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.CONVERSION);
             int penalties = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.PENALTY_KICK);
             int dropGoals = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.DROP_GOAL);
+            int colors = PlayerTeamDAO.getPlayerTeam(player.getIdPlayer(), team, year).getColors();
             dbManager.closeDatabase();
 
             ((TextView) findViewById(R.id.txt_player_name)).setText(player.getName());
             ((TextView) findViewById(R.id.txt_player_no)).setText(player_pos);
             ((TextView) findViewById(R.id.txt_player_age)).setText(String.format(Locale.getDefault(),
                     PLAYER_AGE_VALUE, calculateAge(player.getBirthDay())));
-            ((TextView) findViewById(R.id.txt_player_colors)).setText(getOrdinalString(player.getColors()));
+            ((TextView) findViewById(R.id.txt_player_colors)).setText(getOrdinalString(colors));
             ((TextView) findViewById(R.id.txt_player_weight)).setText(String.format(Locale.getDefault(),
                     PLAYER_WEIGHT_VALUE, (int) player.getWeight()));
             ((TextView) findViewById(R.id.txt_player_height)).setText(getHeightString(player.getHeight()));

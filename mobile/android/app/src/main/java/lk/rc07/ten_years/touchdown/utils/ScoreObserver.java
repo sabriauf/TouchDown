@@ -29,31 +29,35 @@ public class ScoreObserver {
     }
 
     private static void notifyOnNewScoreUpdate(Score score) {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnNewScoreUpdate(score);
-        }
+        if (scoreListeners != null)
+            for (ScoreListener listener : scoreListeners.values()) {
+                if (listener != null)
+                    listener.OnNewScoreUpdate(score);
+            }
     }
 
     private static void notifyOnScoreUpdate(Score score) {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnScoreUpdate(score);
-        }
+        if (scoreListeners != null)
+            for (ScoreListener listener : scoreListeners.values()) {
+                if (listener != null)
+                    listener.OnScoreUpdate(score);
+            }
     }
 
     private static void notifyOnScoreRemove(Score score) {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnScoreRemove(score);
-        }
+        if (scoreListeners != null)
+            for (ScoreListener listener : scoreListeners.values()) {
+                if (listener != null)
+                    listener.OnScoreRemove(score);
+            }
     }
 
     private static void notifyOnMatchRemove() {
-        for (ScoreListener listener : scoreListeners.values()) {
-            if (listener != null)
-                listener.OnMatchRemoved();
-        }
+        if (scoreListeners != null)
+            for (ScoreListener listener : scoreListeners.values()) {
+                if (listener != null)
+                    listener.OnMatchRemoved();
+            }
     }
 
     public static Handler handler = new Handler(new Handler.Callback() {

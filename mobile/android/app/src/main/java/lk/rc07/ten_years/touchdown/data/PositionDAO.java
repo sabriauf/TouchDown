@@ -82,4 +82,8 @@ public class PositionDAO extends DBManager {
         position.setPosNo(cursor.getInt(cursor.getColumnIndex(DBContact.PositionTable.COLUMN_NO)));
         return position;
     }
+
+    public static boolean deleteAll() {
+        return mDatabase.delete(DBContact.PositionTable.TABLE_NAME, null, null) == 1;
+    }
 }

@@ -28,6 +28,10 @@ public class PlayersFragment extends Fragment {
     private static final int PLAYER_COLUMNS = 4;
     public static final String MATCH_ID = "match_id";
 
+    //primary data
+    public static int team_id = AppConfig.HOME_TEAM_ID;
+    public static int year = 2018;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_players, container, false);
@@ -36,13 +40,13 @@ public class PlayersFragment extends Fragment {
         dbManager.openDatabase();
         List<AdapterPlayer> players;
         if(getArguments() == null || !getArguments().containsKey(MATCH_ID)) {
-            players = PlayerPositionDAO.getPlayersForMatch(AppConfig.HOME_TEAM_ID);
+            players = PlayerPositionDAO.getPlayersForMatch(team_id);
         } else {
             players = PlayerPositionDAO.getAdapterPlayers(getArguments().getInt(MATCH_ID));
         }
         dbManager.closeDatabase();
 
-        RecyclerView recycler_fixture = (RecyclerView) view.findViewById(R.id.recycler_players);
+        RecyclerView recycler_fixture = view.findViewById(R.id.recycler_players);
         if(players != null && players.size() > 0) {
             view.findViewById(R.id.txt_no_items).setVisibility(View.GONE);
             GridLayoutManager layoutManager = new GridLayoutManager(getContext(), PLAYER_COLUMNS);

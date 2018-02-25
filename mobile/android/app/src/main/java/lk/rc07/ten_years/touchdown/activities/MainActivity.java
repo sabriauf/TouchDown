@@ -2,6 +2,7 @@ package lk.rc07.ten_years.touchdown.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -10,43 +11,37 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.facebook.share.model.AppInviteContent;
-import com.facebook.share.widget.AppInviteDialog;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
+import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.PageAdapter;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
-import lk.rc07.ten_years.touchdown.data.DBHelper;
-import lk.rc07.ten_years.touchdown.data.DBManager;
-import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.fragments.BradbyExpressFragment;
 import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
 import lk.rc07.ten_years.touchdown.fragments.LiveFragment;
 import lk.rc07.ten_years.touchdown.fragments.PlayersFragment;
 import lk.rc07.ten_years.touchdown.fragments.StandingFragment;
-import lk.rc07.ten_years.touchdown.models.DownloadMeta;
-import lk.rc07.ten_years.touchdown.utils.DownloadManager;
+import lk.rc07.ten_years.touchdown.utils.AppHandler;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
-import lk.rc07.ten_years.touchdown.utils.ReadSyncJson;
-import lk.rc07.ten_years.touchdown.utils.SynchronizeData;
 
 public class MainActivity extends AppCompatActivity {
 
     //constants
-    private final String SERVER_ERROR_MESSAGE = "Server error: Code - %d : Message - %s";
     private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "Bradby Express"};
     public static final int REFRESH_TABS = 1001;
     public static final int LIVE_STREAMING = 1002;
@@ -55,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
     //instances
     private PageAdapter adapter;
     public static Handler mHandler;
+    private SharedPreferences sharedPreferences;
 
     //views
     private TextView txt_tab_title = null;
     private ImageView img_live;
+    public Spinner spnSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +64,16 @@ public class MainActivity extends AppCompatActivity {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        sharedPreferences = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("");
 
         setTitle(TAB_TITLES[0]);
 
+        spnSelector = findViewById(R.id.spn_selector_toolbar);
         ViewPager viewPager = setTabView();
 
         //on Push notification go to request tab
@@ -98,35 +98,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
-        img_live = (ImageView) findViewById(R.id.live_icon);
+        String link = sharedPreferences.getString(Constant.PREFERENCES_LIVE_LINK, "");
+        img_live = findViewById(R.id.live_icon);
         img_live.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String link = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).getString(Constant.PREFERENCES_LIVE_LINK, "");
+                String link = sharedPreferences.getString(Constant.PREFERENCES_LIVE_LINK, "");
 
                 Intent i = new Intent(getApplicationContext(), PlayerActivity.class);
                 i.putExtra(PlayerActivity.EXTRAS_VIDEO_ID, link);
                 startActivity(i);
             }
         });
-        setLiveLink(link.equals(""));
+        setLiveLink(!link.equals(""));
 
-        FirebaseMessaging.getInstance().subscribeToTopic("test2"); //TODO
+        if (BuildConfig.BUILD_TYPE.equals("debug"))
+            FirebaseMessaging.getInstance().subscribeToTopic("test2");
 
         syncData();
     }
 
     private void setLiveLink(boolean isLive) {
         if (isLive)
-            img_live.setVisibility(View.GONE);
-        else
             img_live.setVisibility(View.VISIBLE);
+        else
+            img_live.setVisibility(View.GONE);
     }
 
     private void setTitle(String title) {
         if (txt_tab_title == null)
-            txt_tab_title = (TextView) findViewById(R.id.txt_tab_title);
+            txt_tab_title = findViewById(R.id.txt_tab_title);
         txt_tab_title.setText(title);
     }
 
@@ -141,10 +142,10 @@ public class MainActivity extends AppCompatActivity {
         adapter = new PageAdapter(
                 getSupportFragmentManager(), pageBuilder);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
 
-        SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpager_tab);
+        SmartTabLayout viewPagerTab = findViewById(R.id.viewpager_tab);
         viewPagerTab.setViewPager(viewPager);
 
         viewPagerTab.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -156,6 +157,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 setTitle(TAB_TITLES[position]);
+                img_live.setVisibility(View.GONE);
+                spnSelector.setVisibility(View.GONE);
+                switch (position) {
+                    case 0:
+                        setLiveLink(!sharedPreferences.getString(Constant.PREFERENCES_LIVE_LINK, "").equals(""));
+                        spnSelector.setVisibility(View.GONE);
+                        break;
+                    case 1:
+                        img_live.setVisibility(View.GONE);
+                        spnSelector.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
 
             @Override
@@ -167,41 +180,47 @@ public class MainActivity extends AppCompatActivity {
         return viewPager;
     }
 
+    private void setSpinner(final List<String> years) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> yearArray = new ArrayList<>();
+                String lastYear = "";
+                for (String year: years) {
+                    if(!lastYear.equals(year)) {
+                        lastYear = year;
+                        yearArray.add(year);
+                    }
+                }
+
+                final ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(MainActivity.this,
+                        android.R.layout.simple_spinner_item, yearArray);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        spnSelector.setAdapter(dataAdapter);
+                    }
+                });
+            }
+        }).start();
+
+    }
+
     private void syncData() {
-        final long time = getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE)
-                .getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP);
 
-        SynchronizeData syncData = new SynchronizeData(this);
-        syncData.setOnDownloadListener(MainActivity.class.getSimpleName(), new SynchronizeData.DownloadListener() {
-            @Override
-            public void onDownloadSuccess(final String response, DownloadMeta meta, int code) {
-                getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit().
-                        putLong(Constant.PREFERENCES_LAST_SYNC, System.currentTimeMillis()).apply();
-                new ReadSyncJson(MainActivity.this, response, time);
-            }
+        boolean isFirstSync = sharedPreferences.getBoolean(Constant.SHEARED_PREFEREANCE_SERVER_CHANGE_ACCEPTED, false);
 
-            @Override
-            public void onDownloadFailed(String errorMessage, DownloadMeta meta, int code) {
-                Log.e(MainActivity.class.getSimpleName(), String.format(SERVER_ERROR_MESSAGE, code, errorMessage));
-            }
-        });
+        long time;
+        if (!isFirstSync) {
+            sharedPreferences.edit().putBoolean(Constant.SHEARED_PREFEREANCE_SERVER_CHANGE_ACCEPTED, true).apply();
+            time = AppConfig.DEFAULT_TIME_STAMP;
+        } else
+            time = sharedPreferences.getLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP);
 
-        HashMap<String, String> urlParams = new HashMap<>();
-        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
-        dbManager.openDatabase();
-        if (MatchDAO.getAllMatches().size() > 0) {
-            urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(time));
-        } else {
-            urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
-        }
-        dbManager.closeDatabase();
-
-        DownloadMeta meta = new DownloadMeta();
-        meta.setUrl(AppConfig.SYNCHRONIZE_URL);
-        meta.setRequestMethod(DownloadManager.GET_REQUEST);
-        meta.setUrlParams(urlParams);
-
-        syncData.execute(meta);
+        setSpinner(AppHandler.callSync(this, time));
     }
 
     @Override
@@ -222,16 +241,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.menu_sync:
                 syncData();
+                break;
             case R.id.menu_profile:
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            case R.id.menu_invite:
-                if (AppInviteDialog.canShow()) {
-                    AppInviteContent content = new AppInviteContent.Builder()
-                            .setApplinkUrl(AppConfig.APP_INVITE_LINK)
-                            .setPreviewImageUrl(AppConfig.APP_PROMOTION_LINK)
-                            .build();
-                    AppInviteDialog.show(this, content);
-                }
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }

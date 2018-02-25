@@ -10,7 +10,7 @@ public class Team {
     private String name;
     private String flag_url;
     private String logo_url;
-    private String year;
+//    private String year;
 
     public int getIdTeam() {
         return idTeam;
@@ -44,11 +44,11 @@ public class Team {
         this.logo_url = logo_url;
     }
 
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
+//    public String getYear() {
+//        return year;
+//    }
+//
+//    public void setYear(String year) {
+//        this.year = year;
+//    }
 }

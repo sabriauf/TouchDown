@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -29,10 +30,15 @@ import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.activities.MainActivity;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
+import lk.rc07.ten_years.touchdown.data.DBHelper;
+import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
+import lk.rc07.ten_years.touchdown.models.DownloadMeta;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 
@@ -48,7 +54,7 @@ public class AppHandler {
     private static final String SHARE_STRING_ENDED = "%s won by %d points against %s, final score %d-%d";
     private static final String SHARE_STRING_ENDED_DRAW = "%s vs %s match drawn, final score %d-%d";
 
-    static HashMap<String, String> getHeaders(Context context) {
+    public static HashMap<String, String> getHeaders(Context context) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put(Constant.PARAM_AUTH_KEY, AppConfig.APPLICATION_AUTHENTICATION_KEY);
         headers.put(Constant.PARAM_PLATFORM, String.valueOf(Constant.PLATFORM_ANDROID));
@@ -210,5 +216,43 @@ public class AppHandler {
                 return startScores.get(0).getTime();
         }
         return 0;
+    }
+
+    public static List<String> callSync(final Context context, final long time) {
+        SynchronizeData syncData = new SynchronizeData(context);
+        syncData.setOnDownloadListener(MainActivity.class.getSimpleName(), new SynchronizeData.DownloadListener() {
+            @Override
+            public void onDownloadSuccess(final String response, DownloadMeta meta, int code) {
+                context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit()
+                        .putLong(Constant.PREFERENCES_LAST_SYNC, System.currentTimeMillis()).apply();
+                new ReadSyncJson(context, response, time);
+            }
+
+            @Override
+            public void onDownloadFailed(String errorMessage, DownloadMeta meta, int code) {
+                Log.e(MainActivity.class.getSimpleName(), String.format(Constant.SERVER_ERROR_MESSAGE, code, errorMessage));
+            }
+        });
+
+        HashMap<String, String> urlParams = new HashMap<>();
+        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
+        dbManager.openDatabase();
+        if (MatchDAO.getAllMatches().size() > 0) {
+            urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(time));
+        } else {
+            urlParams.put(Constant.PARAM_API_LAST_UPDATE, String.valueOf(AppConfig.DEFAULT_TIME_STAMP));
+        }
+        List<String> years = MatchDAO.getYears();
+        dbManager.closeDatabase();
+
+        DownloadMeta meta = new DownloadMeta();
+        meta.setUrl(AppConfig.SYNCHRONIZE_URL);
+        meta.setRequestMethod(DownloadManager.GET_REQUEST);
+        meta.setUrlParams(urlParams);
+        meta.setHeaders(AppHandler.getHeaders(context));
+
+        syncData.execute(meta);
+
+        return years;
     }
 }

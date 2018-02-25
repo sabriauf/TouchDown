@@ -13,6 +13,7 @@ public class Group {
     private String groupName;
     private String leagueName;
     private String roundName;
+    private int year;
 
     public int getGroupId() {
         return groupId;
@@ -44,5 +45,13 @@ public class Group {
 
     public void setRoundName(String roundName) {
         this.roundName = roundName;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

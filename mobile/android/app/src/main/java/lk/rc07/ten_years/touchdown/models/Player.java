@@ -14,11 +14,11 @@ public class Player implements Parcelable{
     private int idPlayer;
     private String name;
     private String img_url;
-    private int teamId;
+//    private int teamId;
     private double weight;
     private double height;
     private Date birthDay;
-    private int colors;
+//    private int colors;
 
 
     public Player() {
@@ -28,10 +28,10 @@ public class Player implements Parcelable{
         idPlayer = in.readInt();
         name = in.readString();
         img_url = in.readString();
-        teamId = in.readInt();
+//        teamId = in.readInt();
         weight = in.readDouble();
         height = in.readDouble();
-        colors = in.readInt();
+//        colors = in.readInt();
         birthDay = new Date(in.readLong());
     }
 
@@ -71,13 +71,13 @@ public class Player implements Parcelable{
         this.img_url = img_url;
     }
 
-    public int getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
-    }
+//    public int getTeamId() {
+//        return teamId;
+//    }
+//
+//    public void setTeamId(int teamId) {
+//        this.teamId = teamId;
+//    }
 
     public double getWeight() {
         return weight;
@@ -103,13 +103,13 @@ public class Player implements Parcelable{
         this.birthDay = birthDay;
     }
 
-    public int getColors() {
-        return colors;
-    }
-
-    public void setColors(int colors) {
-        this.colors = colors;
-    }
+//    public int getColors() {
+//        return colors;
+//    }
+//
+//    public void setColors(int colors) {
+//        this.colors = colors;
+//    }
 
     @Override
     public int describeContents() {
@@ -121,10 +121,10 @@ public class Player implements Parcelable{
         parcel.writeInt(idPlayer);
         parcel.writeString(name);
         parcel.writeString(img_url);
-        parcel.writeInt(teamId);
+//        parcel.writeInt(teamId);
         parcel.writeDouble(weight);
         parcel.writeDouble(height);
-        parcel.writeInt(colors);
+//        parcel.writeInt(colors);
         parcel.writeLong(birthDay.getTime());
     }
 }

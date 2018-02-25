@@ -3,6 +3,7 @@ package lk.rc07.ten_years.touchdown.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.HashMap;
 
@@ -17,7 +18,7 @@ import lk.rc07.ten_years.touchdown.utils.PageBuilder;
  * Created by Sabri on 12/13/2016. adapter for page in viewpager
  */
 
-public class PageAdapter extends FragmentPagerAdapter {
+public class PageAdapter extends FragmentStatePagerAdapter {
 
     private PageBuilder pageBuilder;
     private HashMap<Integer, Fragment> fragments;

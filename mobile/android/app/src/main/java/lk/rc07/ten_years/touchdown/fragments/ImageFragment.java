@@ -82,7 +82,7 @@ public class ImageFragment extends Fragment {
         images = getImageRows(ImageDAO.getImages(matchId));
         dbManager.closeDatabase();
 
-        if (images.size() > 0) {
+        if (images.size() > 1) {
             view.findViewById(R.id.txt_no_items).setVisibility(View.GONE);
             setAdapter();
         } else {

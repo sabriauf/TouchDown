@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import lk.rc07.ten_years.touchdown.models.Match;
+import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 
 /**
  * Created by Sabri on 12/24/2016. match data access model
@@ -124,6 +125,45 @@ public class MatchDAO extends DBManager {
         return match;
     }
 
+    public static Match getMatchForTheYear(int year, int teamOne, int teamTwo) {
+
+        long yearStart = TimeFormatter.getMilisecondsForYear(String.valueOf(year));
+        long yearEnd = TimeFormatter.getMilisecondsForYear(String.valueOf(year + 1));
+
+        String query = "";
+        query = query.concat("SELECT * FROM ");
+        query = query.concat(DBContact.MatchTable.TABLE_NAME);
+        query = query.concat(" WHERE ");
+        query = query.concat(DBContact.MatchTable.COLUMN_DATE);
+        query = query.concat(">'");
+        query = query.concat(String.valueOf(yearStart));
+
+        query = query.concat("' and ");
+        query = query.concat(DBContact.MatchTable.COLUMN_DATE);
+        query = query.concat("<'");
+        query = query.concat(String.valueOf(yearEnd));
+
+        query = query.concat("' and ");
+        query = query.concat(DBContact.MatchTable.COLUMN_TEAM_ONE);
+        query = query.concat("='");
+        query = query.concat(String.valueOf(teamOne));
+
+        query = query.concat("' and ");
+        query = query.concat(DBContact.MatchTable.COLUMN_TEAM_TWO);
+        query = query.concat("='");
+        query = query.concat(String.valueOf(teamTwo));
+
+        query = query.concat("'");
+
+        Match match = null;
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            match = cursorToMatch(cursor);
+        }
+        cursor.close();
+        return match;
+    }
+
     public static Match getDisplayMatch() {
         Match.Status[] currentMatchStatus = new Match.Status[]{Match.Status.FIRST_HALF, Match.Status.SECOND_HALF, Match.Status.HALF_TIME};
         List<Match> matches = getMatchesOnStatus(currentMatchStatus);
@@ -143,6 +183,34 @@ public class MatchDAO extends DBManager {
         }
         cursor.close();
         return matches;
+    }
+
+    public static List<Match> getAllMatches(long date) {
+        List<Match> matches = new ArrayList<>();
+
+        String orderBy = DBContact.MatchTable.COLUMN_DATE + " ASC";
+        String selection = DBContact.MatchTable.COLUMN_DATE + " > ?";
+        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, selection, new String[]{String.valueOf(date)},
+                null, null, orderBy);
+        while (cursor.moveToNext()) {
+            matches.add(cursorToMatch(cursor));
+        }
+        cursor.close();
+        return matches;
+    }
+
+    public static List<String> getYears() {
+        List<String> years = new ArrayList<>();
+
+        String orderBy = DBContact.MatchTable.COLUMN_DATE + " DESC";
+        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, null,
+                null, null, null, orderBy);
+        while (cursor.moveToNext()) {
+            years.add(TimeFormatter.millisecondsToString(cursor.getLong(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_DATE)),
+                    TimeFormatter.DATE_FORMAT_YEAR));
+        }
+        cursor.close();
+        return years;
     }
 
     public static boolean updateMatchStatus(int matchId, Match.Status status) {
@@ -182,5 +250,9 @@ public class MatchDAO extends DBManager {
         match.setLatitude(cursor.getDouble(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_LATITUDE)));
         match.setAlbum(cursor.getString(cursor.getColumnIndex(DBContact.MatchTable.COLUMN_ALBUM)));
         return match;
+    }
+
+    public static boolean deleteAll() {
+        return mDatabase.delete(DBContact.MatchTable.TABLE_NAME, null, null) == 1;
     }
 }

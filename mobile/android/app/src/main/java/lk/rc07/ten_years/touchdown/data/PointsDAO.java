@@ -93,4 +93,8 @@ public class PointsDAO extends DBManager {
         points.setIdGroup(cursor.getInt(cursor.getColumnIndex(DBContact.PointsTable.COLUMN_GROUP)));
         return points;
     }
+
+    public static boolean deleteAll() {
+        return mDatabase.delete(DBContact.PointsTable.TABLE_NAME, null, null) == 1;
+    }
 }

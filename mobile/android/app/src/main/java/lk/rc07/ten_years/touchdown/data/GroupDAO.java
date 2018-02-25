@@ -42,6 +42,7 @@ public class GroupDAO extends DBManager {
         values.put(DBContact.GroupTable.COLUMN_NAME, group.getGroupName());
         values.put(DBContact.GroupTable.COLUMN_LEAGUE, group.getLeagueName());
         values.put(DBContact.GroupTable.COLUMN_ROUND, group.getRoundName());
+        values.put(DBContact.GroupTable.COLUMN_YEAR, group.getYear());
 
         if (!isMatchAlreadyExist) {
             values.put(DBContact.GroupTable.COLUMN_ID, group.getGroupId());
@@ -69,7 +70,8 @@ public class GroupDAO extends DBManager {
         List<String> values = new ArrayList<>();
         String orderBy =  column + ORDER_DESC;
 
-        Cursor cursor = mDatabase.query(true, DBContact.GroupTable.TABLE_NAME, new String[]{column}, null, null, null, null, null, null);
+        Cursor cursor = mDatabase.query(true, DBContact.GroupTable.TABLE_NAME, new String[]{column}, null, null,
+                null, null, orderBy, null);
         while (cursor.moveToNext()) {
             values.add(cursor.getString(cursor.getColumnIndex(column)));
         }
@@ -126,6 +128,11 @@ public class GroupDAO extends DBManager {
         group.setGroupName(cursor.getString(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_NAME)));
         group.setLeagueName(cursor.getString(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_LEAGUE)));
         group.setRoundName(cursor.getString(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_ROUND)));
+        group.setYear(cursor.getInt(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_YEAR)));
         return group;
+    }
+
+    public static boolean deleteAll() {
+        return mDatabase.delete(DBContact.GroupTable.TABLE_NAME, null, null) == 1;
     }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 
 import lk.rc07.ten_years.touchdown.activities.AdvertisementActivity;
 import lk.rc07.ten_years.touchdown.activities.MainActivity;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
@@ -33,10 +34,12 @@ import lk.rc07.ten_years.touchdown.data.PointsDAO;
 import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
+import lk.rc07.ten_years.touchdown.fragments.PlayerTeamDAO;
 import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.PlayerPosition;
+import lk.rc07.ten_years.touchdown.models.PlayerTeam;
 import lk.rc07.ten_years.touchdown.models.Points;
 import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Score;
@@ -46,13 +49,13 @@ import lk.rc07.ten_years.touchdown.models.Team;
  * Created by Sabri on 2/24/2017. read sync json object and saves in db
  */
 
-public class ReadSyncJson {
+class ReadSyncJson {
 
     private Context context;
 
     private long time;
 
-    public ReadSyncJson(Context context, final String response, long time) {
+    ReadSyncJson(Context context, final String response, long time) {
         this.context = context;
         this.time = time;
 
@@ -74,6 +77,15 @@ public class ReadSyncJson {
 
         try {
             JSONObject jsonObject = new JSONObject(response);
+
+            if (jsonObject.has(Constant.JSON_OBJECT_META)) {
+                if (!readMetaData(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_META).toString())) {
+                    dbManager.closeDatabase();
+                    AppHandler.callSync(context, AppConfig.DEFAULT_TIME_STAMP);
+                    return;
+                }
+            }
+
             if (jsonObject.has(Constant.JSON_OBJECT_GROUPS))
                 saveGroups(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_GROUPS).toString());
 
@@ -98,8 +110,8 @@ public class ReadSyncJson {
             if (jsonObject.has(Constant.JSON_OBJECT_SCORES))
                 saveScores(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_SCORES).toString());
 
-            if (jsonObject.has(Constant.JSON_OBJECT_META)) {
-                readMetaData(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_META).toString());
+            if (jsonObject.has(Constant.JSON_OBJECT_PLAYER_TEAM)) {
+                savePlayerTeam(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYER_TEAM).toString());
             }
 
 //            if (jsonObject.has(Constant.JSON_OBJECT_ADVERTISEMENT)) {
@@ -110,12 +122,11 @@ public class ReadSyncJson {
 //            }
 
 
+            MainActivity.mHandler.sendEmptyMessage(MainActivity.REFRESH_TABS);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             dbManager.closeDatabase();
-
-            MainActivity.mHandler.sendEmptyMessage(MainActivity.REFRESH_TABS);
         }
     }
 
@@ -211,11 +222,23 @@ public class ReadSyncJson {
             ScoreDAO.addScore(score);
     }
 
-    private void readMetaData(Gson gson, String response) {
+    private void savePlayerTeam(Gson gson, String response) {
+        Type messageType = new TypeToken<List<PlayerTeam>>() {
+        }.getType();
+
+        List<PlayerTeam> playerTeam = gson.fromJson(response, messageType);
+
+        for (PlayerTeam pTeam : playerTeam)
+            PlayerTeamDAO.addPlayerTeam(pTeam);
+    }
+
+    private boolean readMetaData(Gson gson, String response) {
+        boolean continueSync = true;
         Type messageType = new TypeToken<List<MetaData>>() {
         }.getType();
 
         List<MetaData> dataList = gson.fromJson(response, messageType);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE);
 
         for (MetaData data : dataList)
             switch (data.getMeta_key()) {
@@ -231,18 +254,42 @@ public class ReadSyncJson {
                 case Constant.JSON_OBJECT_POINTS_UPDATED:
                     try {
                         long date = Long.parseLong(data.getMeta_value());
-                        SharedPreferences.Editor editor = context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putLong(Constant.JSON_OBJECT_POINTS_UPDATED, date);
                         editor.apply();
-                    }catch (ClassCastException ex) {
+                    } catch (ClassCastException ex) {
                         ex.printStackTrace();
                     }
                     break;
+                case Constant.JSON_OBJECT_RESET_DATA:
+                    long date = Long.parseLong(data.getMeta_value());
+                    if (sharedPreferences.getLong(Constant.SHEARED_PREFEREANCE_LAST_REST, System.currentTimeMillis()) < date) {
+                        sharedPreferences.edit().putLong(Constant.SHEARED_PREFEREANCE_LAST_REST, date).apply();
+                        DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
+                        dbManager.openDatabase();
+                        clearData();
+                        dbManager.closeDatabase();
+                        continueSync = false;
+                    }
+
                 case Constant.JSON_OBJECT_ADVERTISEMENT:
                     if (!data.getMeta_value().equals(""))
                         showAdvertisement(data.getMeta_value());
                     break;
             }
+        return continueSync;
+    }
+
+    private void clearData() {
+        PointsDAO.deleteAll();
+        PlayerPositionDAO.deleteAll();
+        PositionDAO.deleteAll();
+        PlayerDAO.deleteAll();
+        ScoreDAO.deleteAll();
+        TeamDAO.deleteAll();
+        MatchDAO.deleteAll();
+        GroupDAO.deleteAll();
+        PlayerTeamDAO.deleteAll();
     }
 
     private void savePreferences(String key, String value) {

@@ -32,6 +32,7 @@ public class TimeFormatter {
     public static final String DATE_FORMAT_LONG = "yyyy-MMMM-d";
     public static final String DATE_FORMAT_SHORT = "yyyy-MMM-d";
     public static final String DATE_FORMAT_ROUGH = "MMM yyyy";
+    public static final String DATE_FORMAT_YEAR = "yyyy";
     public static final String DATE_TIME_FORMAT_ISO8601 = "yyyy-MM-dd'T'HH:mm'Z'";
 
     public static String millisToGameTime(Context context, Long time) {
@@ -57,5 +58,11 @@ public class TimeFormatter {
         DateFormat df = new SimpleDateFormat(format, Locale.getDefault());
         df.setTimeZone(tz);
         return df.format(new Date(milliseconds));
+    }
+
+    public static long getMilisecondsForYear(String year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.parseInt(year), 0, 1);
+        return calendar.getTime().getTime();
     }
 }

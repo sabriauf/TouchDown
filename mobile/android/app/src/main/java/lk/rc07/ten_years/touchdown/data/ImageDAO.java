@@ -59,7 +59,7 @@ public class ImageDAO extends DBManager {
         String[] WHERE_ARGS = {String.valueOf(matchId)};
 
         Cursor cursor = mDatabase.query(DBContact.ImageTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
-        if (cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             images.add(cursorToImage(cursor));
         }
         cursor.close();

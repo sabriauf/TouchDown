@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
@@ -25,13 +27,29 @@ import com.facebook.login.widget.ProfilePictureView;
 import org.json.JSONException;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
+import lk.rc07.ten_years.touchdown.models.DownloadMeta;
+import lk.rc07.ten_years.touchdown.utils.DownloadManager;
+import lk.rc07.ten_years.touchdown.utils.SynchronizeData;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Instance
+    //constants
+    private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final String PARAM_METHOD_NAME = "method";
+    private static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_USER_NAME = "user_name";
+    private static final String PARAM_USER_EMAIL = "user_email";
+    private static final String PARAM_USER_GENDER = "user_gender";
+    private static final String PARAM_USER_BIRTHDAY = "user_birthday";
+    private static final String PARAM_USER_TOWN = "user_town";
+    private static final String LOGIN_METHOD = "addUsers";
+
+    // Instances
     private SharedPreferences sharedPref;
     private CallbackManager callbackManager;
 
@@ -50,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initializeViews() {
         LoginButton authButton = (LoginButton) findViewById(R.id.fb_login_button_fragment_login);
-        authButton.setReadPermissions(Arrays.asList(new String[]{"public_profile"}));
+        authButton.setReadPermissions(Arrays.asList(new String[]{"public_profile", "email"}));
 
         authButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -65,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(LoginActivity.this, "Authentication Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Authentication Error : " + error.toString(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -82,13 +100,31 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(GraphResponse response) {
                         try {
+
+                            Log.d(TAG, "Facebook Login API result : " + response.getJSONObject().toString());
                             String name = response.getJSONObject().getString("first_name") + " " + response.getJSONObject().getString("last_name");
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString(Constant.SHEARED_PREFEREANCE_KEY_USER_ID, userId);
                             editor.putString(Constant.SHEARED_PREFEREANCE_KEY_USER_NAME, name);
                             editor.apply();
-                            setResult(Activity.RESULT_OK, null);
-                            finish();
+
+                            String birthday = "";
+                            if (response.getJSONObject().has("birthday"))
+                                birthday = response.getJSONObject().getString("birthday");
+
+                            String hometown = "";
+                            if (response.getJSONObject().has("hometown"))
+                                hometown = response.getJSONObject().getString("hometown");
+
+                            String gender = "";
+                            if (response.getJSONObject().has("gender"))
+                                gender = response.getJSONObject().getString("gender");
+
+                            String email = "";
+                            if(response.getJSONObject().has("email"))
+                                email = response.getJSONObject().getString("email");
+
+                            serverLogin(userId, name, email, birthday, gender, hometown);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -96,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
         Bundle param = new Bundle();
-        param.putString("fields", "first_name, last_name, email, age_range");
+        param.putString("fields", "first_name, last_name, email, birthday, gender, hometown");
         requestGetEmail.setParameters(param);
         requestGetEmail.executeAsync();
     }
@@ -123,5 +159,41 @@ public class LoginActivity extends AppCompatActivity {
             profilePictureView.setProfileId(sharedPref.getString(Constant.SHEARED_PREFEREANCE_KEY_USER_ID, ""));
             userNameView.setText(sharedPref.getString(Constant.SHEARED_PREFEREANCE_KEY_USER_NAME, ""));
         }
+    }
+
+    private void serverLogin(String userId, String name, String email, String birthday, String gender, String hometown) {
+        SynchronizeData syncData = new SynchronizeData(this);
+        syncData.setOnDownloadListener(LoginActivity.class.getSimpleName(), new SynchronizeData.DownloadListener() {
+            @Override
+            public void onDownloadSuccess(final String response, DownloadMeta meta, int code) {
+                Log.d(LoginActivity.class.getSimpleName(), response);
+                setResult(Activity.RESULT_OK, null);
+                finish();
+            }
+
+            @Override
+            public void onDownloadFailed(String errorMessage, DownloadMeta meta, int code) {
+                Log.e(LoginActivity.class.getSimpleName(), String.format(Constant.SERVER_ERROR_MESSAGE, code, errorMessage));
+                LoginManager.getInstance().logOut();
+                setResult(Activity.RESULT_CANCELED, null);
+                finish();
+            }
+        });
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put(PARAM_METHOD_NAME, LOGIN_METHOD);
+        params.put(PARAM_USER_ID, userId);
+        params.put(PARAM_USER_NAME, name);
+        params.put(PARAM_USER_EMAIL, email);
+        params.put(PARAM_USER_GENDER, gender);
+        params.put(PARAM_USER_BIRTHDAY, birthday);
+        params.put(PARAM_USER_TOWN, hometown);
+
+        DownloadMeta meta = new DownloadMeta();
+        meta.setUrl(AppConfig.LOGIN_URL);
+        meta.setRequestMethod(DownloadManager.POST_REQUEST);
+        meta.setParams(params);
+
+        syncData.execute(meta);
     }
 }

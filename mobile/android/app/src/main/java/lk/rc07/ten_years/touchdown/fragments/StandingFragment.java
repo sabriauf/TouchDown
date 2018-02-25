@@ -57,8 +57,8 @@ public class StandingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_standings, container, false);
 
-        table = (TableLayout) view.findViewById(R.id.tableLayout1);
-        TextView txt_update = (TextView) view.findViewById(R.id.txt_last_update);
+        table = view.findViewById(R.id.tableLayout1);
+        TextView txt_update = view.findViewById(R.id.txt_last_update);
 
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         Long dateLong = getContext().getSharedPreferences(Constant.MY_PREFERENCES,

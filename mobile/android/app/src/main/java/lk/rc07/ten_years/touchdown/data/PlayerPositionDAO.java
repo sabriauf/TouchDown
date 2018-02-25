@@ -55,10 +55,20 @@ public class PlayerPositionDAO extends DBManager {
     }
 
     public static List<AdapterPlayer> getPlayersForMatch(int teamId) {
-        List<AdapterPlayer> players = new ArrayList<>();
+        List<AdapterPlayer> players;
 
         int matchId = getAvailableLastMatch();
 
+        players = getPlayersForLastMatch(teamId, matchId);
+
+        if(players.size() == 0) {
+            players = getPlayersForLastMatch(teamId, getLastMatchIdWithPlayers());
+        }
+
+        return players;
+    }
+
+    private static List<AdapterPlayer> getPlayersForLastMatch(int teamId, int matchId) {
         String WHERE_CLAUSE = " O." + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + " = P."
                 + DBContact.PlayerTable.COLUMN_ID + " AND O."
                 + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + "=? AND P."
@@ -73,6 +83,15 @@ public class PlayerPositionDAO extends DBManager {
         String rawQuery = "SELECT * FROM " + TABLES + " WHERE " + WHERE_CLAUSE + " ORDER BY " + ORDER_BY;
 
         Cursor cursor = mDatabase.rawQuery(rawQuery, WHERE_ARGS);
+        List<AdapterPlayer> players = getAdapterPlayers(cursor);
+
+        cursor.close();
+
+        return players;
+    }
+
+    private static List<AdapterPlayer> getAdapterPlayers(Cursor cursor) {
+        List<AdapterPlayer> players = new ArrayList<>();
         while (cursor.moveToNext()) {
             int posId = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_POS_ID));
             AdapterPlayer player = new AdapterPlayer();
@@ -80,8 +99,6 @@ public class PlayerPositionDAO extends DBManager {
             player.setPosition(PositionDAO.getPosition(posId));
             players.add(player);
         }
-        cursor.close();
-
         return players;
     }
 
@@ -90,18 +107,25 @@ public class PlayerPositionDAO extends DBManager {
         int matchId = 0;
 
         Match match = MatchDAO.getDisplayMatch();
-        if (match != null)
+        if (match != null && match.getStatus() != Match.Status.PENDING)
             matchId = match.getIdmatch();
 
         if (matchId == 0) {
-            Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME,
-                    new String[]{"MAX(" + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + ")"}, null, null, null, null, null);
-
-            if (cursor.moveToFirst()) {
-                matchId = cursor.getInt(0);
-            }
-            cursor.close();
+            matchId = getLastMatchIdWithPlayers();
         }
+
+        return matchId;
+    }
+
+    private static int getLastMatchIdWithPlayers() {
+        int matchId = 0;
+        Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME,
+                new String[]{"MAX(" + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + ")"}, null, null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            matchId = cursor.getInt(0);
+        }
+        cursor.close();
 
         return matchId;
     }
@@ -180,5 +204,9 @@ public class PlayerPositionDAO extends DBManager {
         cursor.close();
 
         return adapterPlayers;
+    }
+
+    public static boolean deleteAll() {
+        return mDatabase.delete(DBContact.PlayerPositionTable.TABLE_NAME, null, null) == 1;
     }
 }

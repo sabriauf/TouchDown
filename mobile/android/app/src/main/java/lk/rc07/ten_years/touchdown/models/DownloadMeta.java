@@ -12,6 +12,7 @@ public class DownloadMeta {
     private HashMap<String, String> params;
     private String url;
     private HashMap<String, String> urlParams;
+    private HashMap<String, String> headers;
     private String requestMethod;
 
     public HashMap<String, String> getParams() {
@@ -52,5 +53,13 @@ public class DownloadMeta {
 
     public void setRequestMethod(String requestMethod) {
         this.requestMethod = requestMethod;
+    }
+
+    public HashMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(HashMap<String, String> headers) {
+        this.headers = headers;
     }
 }
