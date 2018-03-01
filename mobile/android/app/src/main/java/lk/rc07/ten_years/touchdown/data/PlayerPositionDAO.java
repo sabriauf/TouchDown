@@ -102,7 +102,7 @@ public class PlayerPositionDAO extends DBManager {
         return players;
     }
 
-    private static int getAvailableLastMatch() {
+    public static int getAvailableLastMatch() {
 
         int matchId = 0;
 

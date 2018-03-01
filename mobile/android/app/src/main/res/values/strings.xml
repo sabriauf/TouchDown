@@ -34,7 +34,7 @@
     <string name="x">X</string>
     <string name="ovin_askey">Ovin Askey Some Other</string>
     <string name="title_activity_match_summary">Match Details</string>
-    <string name="vs">Vs</string>
+    <string name="vs">VS</string>
 
     <!-- Match Summary Details-->
     <string name="penalty_title">PENALTIES</string>
@@ -52,5 +52,8 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="no_items_available">No Items available</string>
+    <string name="school_rugby_league_2017">SCHOOL RUGBY LEAGUE 2017</string>
+    <string name="_1st_round_matches">1ST ROUND MATCHES</string>
+    <string name="dummy_time">22:30</string>
 
 </resources>

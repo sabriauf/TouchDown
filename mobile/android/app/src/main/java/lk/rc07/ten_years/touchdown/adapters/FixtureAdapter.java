@@ -158,14 +158,17 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private String getTeamName(Match match) {
         int teamId;
-        if (match.getTeamOne() == AppConfig.HOME_TEAM_ID)
-            teamId = match.getTeamTwo();
-        else
-            teamId = match.getTeamOne();
+        if(match != null) {
+            if (match.getTeamOne() == AppConfig.HOME_TEAM_ID)
+                teamId = match.getTeamTwo();
+            else
+                teamId = match.getTeamOne();
 
-        Team team = TeamDAO.getTeam(teamId);
+            Team team = TeamDAO.getTeam(teamId);
 
-        return team.getName();
+            return team.getName();
+        } else
+            return "";
     }
 
     private Spanned getResultString(Match match) {

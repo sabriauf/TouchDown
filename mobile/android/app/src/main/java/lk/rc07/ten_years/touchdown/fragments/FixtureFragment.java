@@ -54,20 +54,32 @@ public class FixtureFragment extends Fragment {
         }
         setAdapter(TimeFormatter.millisecondsToString(System.currentTimeMillis(), "yyyy"));
 
-//        if(getActivity() != null) {
-//            Activity activity = getActivity();
-//            RelativeLayout.LayoutParams lps = (RelativeLayout.LayoutParams) recycler_fixture.getLayoutParams();
-//            lps.addRule(RelativeLayout.CENTER_IN_PARENT);
-//
-//            ViewTarget target = new ViewTarget(R.id.recycler_fixtures, activity);
-//            ShowcaseView sv = new ShowcaseView.Builder(activity)
-//                    .withMaterialShowcase()
-//                    .setTarget(target)
-//                    .setContentTitle("More Details")
-//                    .setContentText("Select a match for more details.")
-//                    .build();
-//            sv.setButtonPosition(lps);
-//        }
+        if (activity != null)
+            ((MainActivity) activity).spnSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, final int i, long l) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final String selectedYear = ((MainActivity) activity).spnSelector.getAdapter().getItem(i).toString();
+                            if (!currentYear.equals(selectedYear)) {
+
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setAdapter(selectedYear);
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
 
         return view;
     }
@@ -102,7 +114,8 @@ public class FixtureFragment extends Fragment {
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
         dbManager.openDatabase();
         matches.clear();
-        matches.addAll(MatchDAO.getAllMatches(TimeFormatter.getMilisecondsForYear(year)));
+        String nextYear = String.valueOf(Integer.parseInt(year) + 1);
+        matches.addAll(MatchDAO.getAllMatches(TimeFormatter.getMilisecondsForYear(year), TimeFormatter.getMilisecondsForYear(nextYear)));
         dbManager.closeDatabase();
 
         if (adapter == null) {
@@ -123,32 +136,5 @@ public class FixtureFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = getActivity();
-
-        if (activity != null)
-            ((MainActivity) activity).spnSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, final int i, long l) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final String selectedYear = ((MainActivity) activity).spnSelector.getAdapter().getItem(i).toString();
-                            if (!currentYear.equals(selectedYear)) {
-
-                                activity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        setAdapter(selectedYear);
-                                    }
-                                });
-                            }
-                        }
-                    }).start();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
     }
 }

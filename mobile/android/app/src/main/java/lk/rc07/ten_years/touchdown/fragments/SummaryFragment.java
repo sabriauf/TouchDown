@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -158,10 +159,9 @@ public class SummaryFragment extends Fragment {
                 View layout_score = view.findViewById(R.id.layout_score);
 
                 layout_score.findViewById(R.id.txt_match_time).setVisibility(View.GONE);
-                AutoScaleTextView txt_league = (AutoScaleTextView) view.findViewById(R.id.txt_league_name);
-                txt_league.setPreference(AutoScaleTextView.WIDTH_RESIZE);
+                AppCompatTextView txt_league = view.findViewById(R.id.txt_league_name);
                 txt_league.setText(group.getLeagueName());
-                ((AutoScaleTextView) view.findViewById(R.id.txt_round_name)).setText(group.getRoundName());
+                ((AppCompatTextView) view.findViewById(R.id.txt_round_name)).setText(group.getRoundName());
 
                 View score_layout_home = layout_score.findViewById(R.id.layout_score_team_one);
                 View score_layout_oppo = layout_score.findViewById(R.id.layout_score_team_two);

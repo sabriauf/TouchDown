@@ -1,12 +1,16 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Sabri on 2/25/2018. model for Player and team
  */
 
 public class PlayerTeam {
 
+    @SerializedName("id_team")
     private int teamId;
+    @SerializedName("id_player")
     private int playerId;
     private int year;
     private int colors;

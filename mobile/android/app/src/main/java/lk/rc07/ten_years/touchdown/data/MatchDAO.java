@@ -185,12 +185,13 @@ public class MatchDAO extends DBManager {
         return matches;
     }
 
-    public static List<Match> getAllMatches(long date) {
+    public static List<Match> getAllMatches(long rangeStart, long rangeEnd) {
         List<Match> matches = new ArrayList<>();
 
         String orderBy = DBContact.MatchTable.COLUMN_DATE + " ASC";
-        String selection = DBContact.MatchTable.COLUMN_DATE + " > ?";
-        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, selection, new String[]{String.valueOf(date)},
+        String selection = DBContact.MatchTable.COLUMN_DATE + " > ? AND " + DBContact.MatchTable.COLUMN_DATE + " < ?";
+        Cursor cursor = mDatabase.query(DBContact.MatchTable.TABLE_NAME, null, selection, new String[]{String.valueOf(rangeStart),
+                String.valueOf(rangeEnd)},
                 null, null, orderBy);
         while (cursor.moveToNext()) {
             matches.add(cursorToMatch(cursor));

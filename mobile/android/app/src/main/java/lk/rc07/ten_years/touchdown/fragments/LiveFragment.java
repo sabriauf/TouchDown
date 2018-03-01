@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,7 +40,6 @@ import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
-import lk.rc07.ten_years.touchdown.utils.AutoScaleTextView;
 import lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight;
 import lk.rc07.ten_years.touchdown.utils.ScoreListener;
 import lk.rc07.ten_years.touchdown.utils.ScoreObserver;
@@ -79,7 +79,7 @@ public class LiveFragment extends Fragment {
 
         parentView = view;
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_timeline);
+        recyclerView = view.findViewById(R.id.recycler_timeline);
         mLayoutManager = new LinearLayoutManager(parentView.getContext());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(false);
@@ -374,10 +374,10 @@ public class LiveFragment extends Fragment {
     }
 
     private class ViewHolder {
-        AutoScaleTextView txt_league;
-        AutoScaleTextView txt_round;
-        AutoScaleTextView txt_score_one;
-        AutoScaleTextView txt_score_two;
+        AppCompatTextView txt_league;
+        AppCompatTextView txt_round;
+        AppCompatTextView txt_score_one;
+        AppCompatTextView txt_score_two;
         TextView txt_live;
         TextView txt_time;
         ImageView img_team_one_logo;
@@ -386,22 +386,21 @@ public class LiveFragment extends Fragment {
         FloatingActionButton fab_share;
 
         ViewHolder(View view) {
-            txt_league = (AutoScaleTextView) view.findViewById(R.id.txt_league_name);
-            txt_league.setPreference(AutoScaleTextView.WIDTH_RESIZE);
-            txt_round = (AutoScaleTextView) view.findViewById(R.id.txt_round_name);
-            txt_live = (TextView) view.findViewById(R.id.txt_live_notifier);
-            txt_time = (TextView) view.findViewById(R.id.txt_match_time);
-            img_murc_logo = (ImageViewAutoHeight) view.findViewById(R.id.img_murc);
+            txt_league = view.findViewById(R.id.txt_league_name);
+            txt_round = view.findViewById(R.id.txt_round_name);
+            txt_live = view.findViewById(R.id.txt_live_notifier);
+            txt_time = view.findViewById(R.id.txt_match_time);
+            img_murc_logo = view.findViewById(R.id.img_murc);
 
             View view_team_one = view.findViewById(R.id.layout_score_team_one);
-            txt_score_one = (AutoScaleTextView) view_team_one.findViewById(R.id.txt_score);
-            img_team_one_logo = (ImageView) view_team_one.findViewById(R.id.img_college_crest);
+            txt_score_one = view_team_one.findViewById(R.id.txt_score);
+            img_team_one_logo = view_team_one.findViewById(R.id.img_college_crest);
 
             View view_team_two = view.findViewById(R.id.layout_score_team_two);
-            txt_score_two = (AutoScaleTextView) view_team_two.findViewById(R.id.txt_score);
-            img_team_two_logo = (ImageView) view_team_two.findViewById(R.id.img_college_crest);
+            txt_score_two = view_team_two.findViewById(R.id.txt_score);
+            img_team_two_logo = view_team_two.findViewById(R.id.img_college_crest);
 
-            fab_share = (FloatingActionButton) view.findViewById(R.id.fab_share);
+            fab_share = view.findViewById(R.id.fab_share);
         }
     }
 }

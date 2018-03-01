@@ -3,22 +3,16 @@ package lk.rc07.ten_years.touchdown.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.HashMap;
 
-import lk.rc07.ten_years.touchdown.fragments.BradbyExpressFragment;
-import lk.rc07.ten_years.touchdown.fragments.FixtureFragment;
-import lk.rc07.ten_years.touchdown.fragments.LiveFragment;
-import lk.rc07.ten_years.touchdown.fragments.PlayersFragment;
-import lk.rc07.ten_years.touchdown.fragments.StandingFragment;
 import lk.rc07.ten_years.touchdown.utils.PageBuilder;
 
 /**
  * Created by Sabri on 12/13/2016. adapter for page in viewpager
  */
 
-public class PageAdapter extends FragmentStatePagerAdapter {
+public class PageAdapter extends FragmentPagerAdapter {
 
     private PageBuilder pageBuilder;
     private HashMap<Integer, Fragment> fragments;
@@ -34,7 +28,10 @@ public class PageAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (fragments.containsKey(position))
-            return fragments.get(position);
+            if (fragments.get(position).isAdded())
+                return fragments.get(position);
+            else
+                return null;
         else {
             Fragment fragment = getFragmentForPosition(position);
             fragments.put(position, fragment);

@@ -34,7 +34,7 @@ public class MatchSummaryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_summary);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Match match = getIntent().getExtras().getParcelable(EXTRA_MATCH_OBJECT);
@@ -76,10 +76,10 @@ public class MatchSummaryActivity extends AppCompatActivity {
         PageAdapter adapter = new PageAdapter(
                 getSupportFragmentManager(), pageBuilder);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
 
-        SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpager_tab);
+        SmartTabLayout viewPagerTab = findViewById(R.id.viewpager_tab);
         viewPagerTab.setViewPager(viewPager);
     }
 

@@ -104,7 +104,7 @@ public class PlayerDialogActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.txt_penalty_stat)).setText(String.valueOf(penalties));
             ((TextView) findViewById(R.id.txt_drop_stat)).setText(String.valueOf(dropGoals));
 
-            profilePic = (ImageView) findViewById(R.id.img_player_pic);
+            profilePic = findViewById(R.id.img_player_pic);
 
             String img_link = AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url();
             imageLoader.displayImage(img_link, profilePic, options, new ImageLoadingListener() {
@@ -150,7 +150,7 @@ public class PlayerDialogActivity extends AppCompatActivity {
 
     private String getOrdinalString(int years) {
         String ordinal = ORDINAL_INDICATOR[ORDINAL_INDICATOR.length - 1];
-        if (years < ORDINAL_INDICATOR.length)
+        if (years < ORDINAL_INDICATOR.length && years > 0)
             ordinal = ORDINAL_INDICATOR[years - 1];
 
         return String.format(Locale.getDefault(), PLAYER_COLORS_VALUE, years, ordinal);

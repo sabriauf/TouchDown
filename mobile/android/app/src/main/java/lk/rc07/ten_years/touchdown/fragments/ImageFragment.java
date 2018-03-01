@@ -1,8 +1,10 @@
 package lk.rc07.ten_years.touchdown.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,6 +56,7 @@ public class ImageFragment extends Fragment {
     private List<FBImageRow> images;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
+    private Activity activity;
 
     //views
     private RecyclerView recycler_fixture;
@@ -65,17 +68,19 @@ public class ImageFragment extends Fragment {
     private int matchId;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         parentView = view;
 
         imageLoader = ImageLoader.getInstance();
         options = AppHandler.getImageOption(imageLoader, getContext(), R.drawable.icon_book_placeholder);
 
-        recycler_fixture = (RecyclerView) view.findViewById(R.id.recycler_images);
+        recycler_fixture = view.findViewById(R.id.recycler_images);
 
-        albumId = getArguments().getString(FACEBOOK_ALBUM_ID);
-        matchId = getArguments().getInt(PlayersFragment.MATCH_ID);
+        if(getArguments() != null) {
+            albumId = getArguments().getString(FACEBOOK_ALBUM_ID);
+            matchId = getArguments().getInt(PlayersFragment.MATCH_ID);
+        }
 
         dbManager = DBManager.initializeInstance(DBHelper.getInstance(view.getContext()));
         dbManager.openDatabase();
@@ -126,12 +131,15 @@ public class ImageFragment extends Fragment {
                                         List<FBImage> imagesList = new Gson().fromJson(imgString, messageType);
                                         images = getImageRows(imagesList);
 
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                setAdapter();
-                                            }
-                                        });
+                                        if (activity == null)
+                                            activity = getActivity();
+                                        if (activity != null)
+                                            activity.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    setAdapter();
+                                                }
+                                            });
 
                                         dbManager.openDatabase();
                                         for (FBImage image : imagesList) {
@@ -306,9 +314,9 @@ public class ImageFragment extends Fragment {
 
             ViewHolder(View itemView) {
                 super(itemView);
-                img_one = (ImageView) itemView.findViewById(R.id.img_portrait);
-                img_two = (ImageView) itemView.findViewById(R.id.img_landscape_one);
-                img_three = (ImageView) itemView.findViewById(R.id.img_landscape_two);
+                img_one = itemView.findViewById(R.id.img_portrait);
+                img_two = itemView.findViewById(R.id.img_landscape_one);
+                img_three = itemView.findViewById(R.id.img_landscape_two);
             }
         }
 
@@ -323,5 +331,11 @@ public class ImageFragment extends Fragment {
                 parentView.findViewById(R.id.txt_no_items).setVisibility(View.GONE);
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = getActivity();
     }
 }

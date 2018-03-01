@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -130,19 +132,19 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout parentView;
-        RelativeLayout background;
+        ConstraintLayout parentView;
+//        RelativeLayout background;
         ImageView img_profile_pic;
         TextView txt_player_no;
-        TextView txt_player_name;
+        AppCompatTextView txt_player_name;
 
         ViewHolder(View itemView) {
             super(itemView);
-            background = (RelativeLayout) itemView.findViewById(R.id.layout_background);
-            parentView = (RelativeLayout) itemView.findViewById(R.id.layout_player_parent);
-            img_profile_pic = (ImageView) itemView.findViewById(R.id.img_player_pic);
-            txt_player_no = (TextView) itemView.findViewById(R.id.txt_player_no);
-            txt_player_name = (TextView) itemView.findViewById(R.id.txt_player_name);
+//            background = itemView.findViewById(R.id.layout_background);
+            parentView = itemView.findViewById(R.id.layout_player_parent);
+            img_profile_pic = itemView.findViewById(R.id.img_player_pic);
+            txt_player_no = itemView.findViewById(R.id.txt_player_no);
+            txt_player_name = itemView.findViewById(R.id.txt_player_name);
         }
     }
 }

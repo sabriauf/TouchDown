@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/img_college_crest"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="3"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        android:src="@drawable/icon_book_placeholder"/>
+        android:src="@drawable/icon_book_placeholder"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <lk.rc07.ten_years.touchdown.utils.AutoScaleTextView
-        android:id="@+id/txt_score"
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:textColor="@android:color/white"
-        android:padding="5dp"
-        android:gravity="center"
-        android:textSize="28sp"
-        android:text="@string/dummy_score"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".67" />
 
-</LinearLayout>
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/txt_score"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/dummy_score"
+        android:textColor="@android:color/white"
+        android:textSize="28sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:layout_constraintVertical_bias="0.666" />
+
+</android.support.constraint.ConstraintLayout>

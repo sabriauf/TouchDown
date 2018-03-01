@@ -30,7 +30,7 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale" />
+            android:configChanges="keyboard|screenSize|keyboardHidden|layoutDirection|locale" />
         <activity
             android:name=".activities.PlayerDialogActivity"
             android:configChanges="keyboard|orientation|screenSize|keyboardHidden|layoutDirection|locale"
