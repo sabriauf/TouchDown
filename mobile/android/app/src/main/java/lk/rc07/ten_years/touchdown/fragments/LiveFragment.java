@@ -261,6 +261,10 @@ public class LiveFragment extends Fragment {
             public void run() {
                 if (match != null && (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF)
                         && matchStartTime != 0) {
+                    if(System.currentTimeMillis() - matchStartTime > AppConfig.SECOND_HALF_START_TIME)
+                        holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.live_back));
+                     else
+                        holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.timer_clock));
                     holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
                     timer.postDelayed(this, 1000);
                 }

@@ -33,6 +33,7 @@ import lk.rc07.ten_years.touchdown.models.PlayerTeam;
 import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
+import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 
 public class PlayerDialogActivity extends AppCompatActivity {
 
@@ -77,13 +78,14 @@ public class PlayerDialogActivity extends AppCompatActivity {
         if (player != null) {
             DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
             dbManager.openDatabase();
+            String currentYear = TimeFormatter.millisecondsToString(System.currentTimeMillis(), "yyyy");
             Position position = PositionDAO.getPositionForNo(Integer.parseInt(player_pos));
-            int yellowCards = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.YELLOW_CARD);
-            int redCards = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.RED_CARD);
-            int tries = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.TRY);
-            int conversions = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.CONVERSION);
-            int penalties = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.PENALTY_KICK);
-            int dropGoals = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.DROP_GOAL);
+            int yellowCards = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.YELLOW_CARD, currentYear);
+            int redCards = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.RED_CARD, currentYear);
+            int tries = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.TRY, currentYear);
+            int conversions = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.CONVERSION, currentYear);
+            int penalties = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.PENALTY_KICK, currentYear);
+            int dropGoals = ScoreDAO.getPlayerAction(player.getIdPlayer(), Score.Action.DROP_GOAL, currentYear);
             int colors = PlayerTeamDAO.getPlayerTeam(player.getIdPlayer(), team, year).getColors();
             dbManager.closeDatabase();
 

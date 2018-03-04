@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.List;
@@ -21,7 +20,6 @@ import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
-import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 
 /**
  * Created by Sabri on 2/4/2017. Fragment to show Player profiles

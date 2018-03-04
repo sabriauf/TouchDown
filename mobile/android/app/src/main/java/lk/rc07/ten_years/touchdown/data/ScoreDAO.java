@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
@@ -140,7 +141,7 @@ public class ScoreDAO extends DBManager {
         Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
         while (cursor.moveToNext()) {
             Score score = cursorToScore(cursor);
-            if(score.getPlayer() != 0 && score.getScore() > 0) {
+            if (score.getPlayer() != 0 && score.getScore() > 0) {
                 addScoreToScorers(scorers, score);
             }
         }
@@ -158,7 +159,7 @@ public class ScoreDAO extends DBManager {
         while (cursor.moveToNext()) {
             Score score = cursorToScore(cursor);
             Score.Action action = score.getAction();
-            if(score.getPlayer() != 0 && (action == Score.Action.RED_CARD || action == Score.Action.YELLOW_CARD)) {
+            if (score.getPlayer() != 0 && (action == Score.Action.RED_CARD || action == Score.Action.YELLOW_CARD)) {
                 addScoreToScorers(scorers, score);
             }
         }
@@ -167,8 +168,8 @@ public class ScoreDAO extends DBManager {
     }
 
     private static void addScoreToScorers(ArrayList<Scorer> scorers, Score score) {
-        for (Scorer scorer: scorers) {
-            if(score.getPlayer() == scorer.getPlayer().getIdPlayer()) {
+        for (Scorer scorer : scorers) {
+            if (score.getPlayer() == scorer.getPlayer().getIdPlayer()) {
                 scorer.getScores().add(score);
                 return;
             }
@@ -182,14 +183,21 @@ public class ScoreDAO extends DBManager {
         scorers.add(scorer);
     }
 
-    public static int getPlayerAction(int playerId, Score.Action action) {
+    public static int getPlayerAction(int playerId, Score.Action action, String year) {
         int count;
 
-        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_PLAYER + "=? and " +
-                DBContact.ScoreTable.COLUMN_ACTION + "=?";
-        String[] WHERE_ARGS = {String.valueOf(playerId), String.valueOf(action)};
+        String QUERY = "SELECT * FROM %s WHERE %s";
+        String TABLE = "%s G, %s S, %s M";
+        String WHERE = " S.%s = M.%s AND M.%s = G.%s AND S.%s = ? AND S.%s = ? AND G.%s = ?";
 
-        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        String tables = String.format(Locale.getDefault(), TABLE, DBContact.GroupTable.TABLE_NAME, DBContact.ScoreTable.TABLE_NAME,
+                DBContact.MatchTable.TABLE_NAME);
+        String where_clause = String.format(Locale.getDefault(), WHERE, DBContact.ScoreTable.COLUMN_MATCH,
+                DBContact.MatchTable.COLUMN_ID, DBContact.MatchTable.COLUMN_GROUP, DBContact.GroupTable.COLUMN_ID,
+                DBContact.ScoreTable.COLUMN_PLAYER, DBContact.ScoreTable.COLUMN_ACTION, DBContact.GroupTable.COLUMN_YEAR);
+        String[] WHERE_ARGS = {String.valueOf(playerId), String.valueOf(action), year};
+
+        Cursor cursor = mDatabase.rawQuery(String.format(Locale.getDefault(), QUERY, tables, where_clause), WHERE_ARGS);
         count = cursor.getCount();
         cursor.close();
         return count;

@@ -9,7 +9,7 @@ public class AppConfig {
     public static final String APPLICATION_AUTHENTICATION_KEY = "";
     public static final int API_VERSION = 1;
 
-    public static final long SECOND_HALF_START_TIME = 2400000;
+    public static final long SECOND_HALF_START_TIME = 2100000;
 
     public static final long DEFAULT_TIME_STAMP = 1486307570;
     public static final String DEVELOPER_KEY = "AIzaSyDx_svQDRRdqGkJXnnKe7E30nxthgC0HgI";

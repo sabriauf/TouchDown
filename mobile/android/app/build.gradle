@@ -7,8 +7,8 @@ android {
         applicationId "lk.rc07.ten_years.touchdown"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 24
-        versionName "1.1.5"
+        versionCode 25
+        versionName "1.1.6"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "TouchDown-$versionCode")

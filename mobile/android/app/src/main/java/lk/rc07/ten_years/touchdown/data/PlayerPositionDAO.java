@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.models.Match;
@@ -61,7 +62,7 @@ public class PlayerPositionDAO extends DBManager {
 
         players = getPlayersForLastMatch(teamId, matchId);
 
-        if(players.size() == 0) {
+        if (players.size() == 0) {
             players = getPlayersForLastMatch(teamId, getLastMatchIdWithPlayers());
         }
 
@@ -69,18 +70,36 @@ public class PlayerPositionDAO extends DBManager {
     }
 
     private static List<AdapterPlayer> getPlayersForLastMatch(int teamId, int matchId) {
-        String WHERE_CLAUSE = " O." + DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + " = P."
-                + DBContact.PlayerTable.COLUMN_ID + " AND O."
-                + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + "=? AND P."
-                + DBContact.PlayerTable.COLUMN_TEAM + " =?";
 
-        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(teamId)};
+        String QUERY = "SELECT * from %s where %s IN (SELECT DISTINCT %s from %s where %s) order by %s";
 
-        String TABLES = DBContact.PlayerPositionTable.TABLE_NAME + " O INNER JOIN "
-                + DBContact.PlayerTable.TABLE_NAME + " P ";
-        String ORDER_BY = DBContact.PlayerPositionTable.COLUMN_POS_ID + " ASC";
+        String TABLE_1 = "%s P, %s O";
+        String WHERE1 = "O.%s = P.%s AND O.%s = ? AND P.%s";
 
-        String rawQuery = "SELECT * FROM " + TABLES + " WHERE " + WHERE_CLAUSE + " ORDER BY " + ORDER_BY;
+        String SELECT = "A.%s";
+        String TABLE_2 = "%s B inner join %s A";
+        String WHERE2 = " A.%s = B.%s AND B.%s = ? AND A.%s = ? ";
+
+        String ORDER_BY = " %s ASC";
+
+        String tables1 = String.format(Locale.getDefault(), TABLE_1, DBContact.PlayerTable.TABLE_NAME,
+                DBContact.PlayerPositionTable.TABLE_NAME);
+        String tables2 = String.format(Locale.getDefault(), TABLE_2, DBContact.PlayerPositionTable.TABLE_NAME,
+                DBContact.PlayerTeamTable.TABLE_NAME);
+
+        String select = String.format(Locale.getDefault(), SELECT, DBContact.PlayerTeamTable.COLUMN_PLAYER_ID);
+        String where_clause_1 = String.format(Locale.getDefault(), WHERE1, DBContact.PlayerPositionTable.COLUMN_PLAYER_ID,
+                DBContact.PlayerTable.COLUMN_ID, DBContact.PlayerPositionTable.COLUMN_MATCH_ID,
+                DBContact.PlayerTable.COLUMN_ID);
+        String where_clause_2 = String.format(Locale.getDefault(), WHERE2, DBContact.PlayerTeamTable.COLUMN_PLAYER_ID,
+                DBContact.PlayerPositionTable.COLUMN_PLAYER_ID, DBContact.PlayerPositionTable.COLUMN_MATCH_ID,
+                DBContact.PlayerTeamTable.COLUMN_TEAM_ID);
+
+        String order = String.format(Locale.getDefault(), ORDER_BY, DBContact.PlayerPositionTable.COLUMN_POS_ID);
+
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(matchId), String.valueOf(teamId)};
+
+        String rawQuery = String.format(Locale.getDefault(), QUERY, tables1, where_clause_1, select, tables2, where_clause_2, order);
 
         Cursor cursor = mDatabase.rawQuery(rawQuery, WHERE_ARGS);
         List<AdapterPlayer> players = getAdapterPlayers(cursor);
