@@ -271,10 +271,15 @@ class ReadSyncJson {
                         dbManager.closeDatabase();
                         continueSync = false;
                     }
+                    break;
 
                 case Constant.JSON_OBJECT_ADVERTISEMENT:
                     if (!data.getMeta_value().equals(""))
                         showAdvertisement(data.getMeta_value());
+                    break;
+                case Constant.JSON_OBJECT_POINTS_STATUS:
+                    if (!data.getMeta_value().equals(""))
+                        sharedPreferences.edit().putBoolean(Constant.SHEARED_PREFEREANCE_PONITS_STATUS, data.getMeta_value().equals("true")).apply();
                     break;
             }
         return continueSync;

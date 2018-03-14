@@ -1,9 +1,11 @@
 package lk.rc07.ten_years.touchdown.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,12 +61,25 @@ public class StandingFragment extends Fragment {
 
         table = view.findViewById(R.id.tableLayout1);
         TextView txt_update = view.findViewById(R.id.txt_last_update);
+        TextView txt_official = view.findViewById(R.id.txt_official);
 
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        Long dateLong = getContext().getSharedPreferences(Constant.MY_PREFERENCES,
-                Context.MODE_PRIVATE).getLong(Constant.JSON_OBJECT_POINTS_UPDATED, 0);
-        String dateString = dateFormat.format(dateLong);
-        txt_update.setText(String.format(UPDATE_STRING, dateString));
+        Context context = getContext();
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE);
+
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+            Long dateLong = sharedPreferences.getLong(Constant.JSON_OBJECT_POINTS_UPDATED, 0);
+            String dateString = dateFormat.format(dateLong);
+            txt_update.setText(String.format(UPDATE_STRING, dateString));
+
+            if (sharedPreferences.getBoolean(Constant.SHEARED_PREFEREANCE_PONITS_STATUS, false)) {
+                txt_official.setText(getString(R.string.official));
+                txt_official.setTextColor(ContextCompat.getColor(context, R.color.timer_clock));
+            } else {
+                txt_official.setText(getString(R.string.unofficial));
+                txt_official.setTextColor(ContextCompat.getColor(context, R.color.live_back));
+            }
+        }
 
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
         dbManager.openDatabase();
@@ -185,10 +200,11 @@ public class StandingFragment extends Fragment {
         TableRow tr1 = new TableRow(getContext());
         tr1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        tr1.setPadding(0, 0, 0, 40);
+        tr1.setPadding(30, 0, 0, 40);
         tr1.setGravity(Gravity.CENTER_HORIZONTAL);
-        for (String title : titles) {
-            tr1.addView(addTitleTextView(title));
+        for (int i = 0; i < titles.length; i++) {
+            String title = titles[i];
+            tr1.addView(addTitleTextView(title), getLayoutParams(i == 0 ? 5 : (i == title.length() - 1 ? 2 : 1))); //
         }
         return tr1;
     }
@@ -206,14 +222,24 @@ public class StandingFragment extends Fragment {
         tr1.setPadding(30, 80, 0, 0);
         Team team = TeamDAO.getTeam(points.getTeamId());
         boolean isRoyal = (team.getIdTeam() == AppConfig.HOME_TEAM_ID);
-        tr1.addView(addTextView(team.getName(), isRoyal, Gravity.START));
-        tr1.addView(addTextView(String.valueOf(points.getPlayed()), isRoyal, Gravity.CENTER_HORIZONTAL));
-        tr1.addView(addTextView(String.valueOf(points.getWon()), isRoyal, Gravity.CENTER_HORIZONTAL));
-        tr1.addView(addTextView(String.valueOf(points.getPlayed() - (points.getWon() + points.getLost())), isRoyal, Gravity.CENTER_HORIZONTAL));
-        tr1.addView(addTextView(String.valueOf(points.getLost()), isRoyal, Gravity.CENTER_HORIZONTAL));
-        tr1.addView(addTextView(String.valueOf(points.getPoints()), isRoyal, Gravity.CENTER_HORIZONTAL));
+
+        tr1.addView(addTextView(team.getName(), isRoyal, Gravity.START), getLayoutParams(5));
+        tr1.addView(addTextView(String.valueOf(points.getPlayed()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
+        tr1.addView(addTextView(String.valueOf(points.getWon()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
+        tr1.addView(addTextView(String.valueOf(points.getPlayed() - (points.getWon() + points.getLost())), isRoyal,
+                Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
+        tr1.addView(addTextView(String.valueOf(points.getLost()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
+        tr1.addView(addTextView(String.valueOf(points.getPoints()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(2));
 
         return tr1;
+    }
+
+    private TableRow.LayoutParams getLayoutParams(int weight) {
+        TableRow.LayoutParams params = new TableRow.LayoutParams(
+                TableLayout.LayoutParams.WRAP_CONTENT,
+                TableLayout.LayoutParams.WRAP_CONTENT);
+        params.weight = weight;
+        return params;
     }
 
     private TextView addTextView(String data, boolean isRoyal, int gravity) {

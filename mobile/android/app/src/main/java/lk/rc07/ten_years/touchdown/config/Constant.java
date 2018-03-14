@@ -35,6 +35,7 @@ public class Constant {
     public static final String JSON_OBJECT_EXPRESS_REDIRECT = "bradex_link";
     public static final String JSON_OBJECT_PLAYER_TEAM = "playersTeams";
     public static final String JSON_OBJECT_RESET_DATA = "reset_data";
+    public static final String JSON_OBJECT_POINTS_STATUS = "point_release_status";
 
     //Preferences params
     public static final String MY_PREFERENCES = "my_preferences";
@@ -46,6 +47,7 @@ public class Constant {
     public static final String SHEARED_PREFEREANCE_KEY_USER_NAME = "pref_fb_user_name";
     public static final String SHEARED_PREFEREANCE_SERVER_CHANGE_ACCEPTED = "pref_server_change";
     public static final String SHEARED_PREFEREANCE_LAST_REST = "pref_data_reset";
+    public static final String SHEARED_PREFEREANCE_PONITS_STATUS = "pref_points_status";
 
     public static final String SHARE_APP_PROM = " - Get Live update from ";
 

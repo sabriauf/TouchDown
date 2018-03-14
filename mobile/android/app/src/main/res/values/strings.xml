@@ -55,5 +55,10 @@
     <string name="school_rugby_league_2017">SCHOOL RUGBY LEAGUE 2017</string>
     <string name="_1st_round_matches">1ST ROUND MATCHES</string>
     <string name="dummy_time">22:30</string>
+    <string name="official">Official Points</string>
+    <string name="unofficial">Unofficial Points</string>
+    <string name="notification_messages">Messages</string>
+    <string name="notification_live">Live Link</string>
+    <string name="notification_score">Scores</string>
 
 </resources>

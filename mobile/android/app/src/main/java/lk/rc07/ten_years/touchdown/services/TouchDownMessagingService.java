@@ -1,5 +1,7 @@
 package lk.rc07.ten_years.touchdown.services;
 
+import android.annotation.TargetApi;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -7,8 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -99,7 +103,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                                 if (inserted) {
                                     msg.what = ScoreObserver.WHAT_NEW_SCORE;
                                     if (data.showNotification)
-                                        sendNotification(data);
+                                        sendNotification(data, remoteMessage.getFrom(), getString(R.string.notification_score));
                                 } else
                                     msg.what = ScoreObserver.WHAT_UPDATE_SCORE;
                             } else {
@@ -132,7 +136,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                             msg.obj = false;
                         editor.putString(Constant.PREFERENCES_LIVE_LINK, link);
                         if (data.showNotification)
-                            sendNotification(data);
+                            sendNotification(data, remoteMessage.getFrom(), getString(R.string.notification_live));
 
                         editor.apply();
                         msg.what = MainActivity.LIVE_STREAMING;
@@ -142,14 +146,14 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                     ex.printStackTrace();
                 }
             } else if (data.showNotification) {
-                sendNotification(data);
+                sendNotification(data, remoteMessage.getFrom(), getString(R.string.notification_messages));
             }
         }
         if (remoteMessage.getNotification() != null) {
             try {
                 Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
                 NotificationData data = new NotificationData(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), 0);
-                sendNotification(data);
+                sendNotification(data, remoteMessage.getFrom(), getString(R.string.notification_messages));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -161,7 +165,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
      *
      * @param data FCM message body received.
      */
-    private void sendNotification(NotificationData data) {
+    private void sendNotification(NotificationData data, String topic, String name) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(Constant.EXTRA_FRAGMENT_ID, data.fragment);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -169,9 +173,16 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setSound(defaultSoundUri);
+
+        NotificationCompat.Builder notificationBuilder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel(this, topic, name);
+            notificationBuilder = new NotificationCompat.Builder(this, topic);
+        } else
+            //noinspection deprecation
+            notificationBuilder = new NotificationCompat.Builder(this);
+
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher).setSound(defaultSoundUri);
 
         if (data.thumb != null && !data.thumb.equals(""))
             notificationBuilder.setLargeIcon(AppHandler.getImageBitmap(this, data.thumb));
@@ -183,10 +194,24 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setAutoCancel(true);
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(data.id, notificationBuilder.build());
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void createChannel(Context context, String channelId, String name) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager != null) {
+            if (notificationManager.getNotificationChannel(channelId) == null) {
+                NotificationChannel channel = new NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_DEFAULT);
+                channel.setDescription("");
+
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     private void setDefaultSmallView(NotificationCompat.Builder notificationBuilder, String title, String message) {
