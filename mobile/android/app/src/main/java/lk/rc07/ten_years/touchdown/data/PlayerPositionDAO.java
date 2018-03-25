@@ -18,14 +18,14 @@ import lk.rc07.ten_years.touchdown.models.Position;
 
 public class PlayerPositionDAO extends DBManager {
 
-    private static int getPlayerPosId(int playerId, int matchId) {
+    private static int getPlayerPosId(int posId, int matchId) {
 
         int playerPosId = -1;
 
-        String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_PLAYER_ID + " =? AND "
+        String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_POS_ID + " =? AND "
                 + DBContact.PlayerPositionTable.COLUMN_MATCH_ID + " =?";
 
-        String[] WHERE_ARGS = new String[]{String.valueOf(playerId), String.valueOf(matchId)};
+        String[] WHERE_ARGS = new String[]{String.valueOf(posId), String.valueOf(matchId)};
 
         Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME, null, WHERE_CLAUSE
                 , WHERE_ARGS, null, null, null);
@@ -39,7 +39,7 @@ public class PlayerPositionDAO extends DBManager {
 
         ContentValues values = new ContentValues();
 
-        int playerPosId = getPlayerPosId(playerPos.getIdPlayer(), playerPos.getIdMatch());
+        int playerPosId = getPlayerPosId(playerPos.getIdPosition(), playerPos.getIdMatch());
 
         if (playerPosId == -1) {
             values.put(DBContact.PlayerPositionTable.COLUMN_MATCH_ID, playerPos.getIdMatch());
@@ -126,7 +126,7 @@ public class PlayerPositionDAO extends DBManager {
         int matchId = 0;
 
         Match match = MatchDAO.getDisplayMatch();
-        if (match != null && match.getStatus() != Match.Status.PENDING)
+        if (match != null)
             matchId = match.getIdmatch();
 
         if (matchId == 0) {

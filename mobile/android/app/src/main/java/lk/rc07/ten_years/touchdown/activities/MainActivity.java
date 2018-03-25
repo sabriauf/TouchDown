@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txt_tab_title = null;
     private ImageView img_live;
     public Spinner spnSelector;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle(TAB_TITLES[0]);
 
         spnSelector = findViewById(R.id.spn_selector_toolbar);
-        ViewPager viewPager = setTabView();
-
-        //on Push notification go to request tab
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constant.EXTRA_FRAGMENT_ID)) {
-            int fragmentId = getIntent().getExtras().getInt(Constant.EXTRA_FRAGMENT_ID);
-            if (adapter.getCount() > fragmentId)
-                viewPager.setCurrentItem(fragmentId, true);
-        }
+        viewPager = setTabView();
 
         mHandler = new Handler(new Handler.Callback() {
             @Override
@@ -112,10 +107,28 @@ public class MainActivity extends AppCompatActivity {
         });
         setLiveLink(!link.equals(""));
 
-        if (BuildConfig.BUILD_TYPE.equals("debug"))
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             FirebaseMessaging.getInstance().subscribeToTopic("test2");
+            Toast.makeText(this, "Developer Build", Toast.LENGTH_LONG).show();
+        }
 
         syncData();
+        readExtras(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        readExtras(getIntent());
+    }
+
+    private void readExtras(Intent intent) {
+        //on Push notification go to request tab
+        if (intent.getExtras() != null && intent.getExtras().containsKey(Constant.EXTRA_FRAGMENT_ID)) {
+            int fragmentId = intent.getExtras().getInt(Constant.EXTRA_FRAGMENT_ID);
+            if (adapter.getCount() > fragmentId)
+                viewPager.setCurrentItem(fragmentId, true);
+        }
     }
 
     private void setLiveLink(boolean isLive) {
@@ -187,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 List<String> yearArray = new ArrayList<>();
                 String lastYear = "";
-                for (String year: years) {
-                    if(!lastYear.equals(year)) {
+                for (String year : years) {
+                    if (!lastYear.equals(year)) {
                         lastYear = year;
                         yearArray.add(year);
                     }

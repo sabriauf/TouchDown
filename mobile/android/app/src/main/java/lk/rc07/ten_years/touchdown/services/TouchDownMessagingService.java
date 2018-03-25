@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +22,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.MainActivity;
@@ -51,6 +55,8 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
     private static final String PARAM_PUSH_COVER = "cover";
     private static final String PARAM_PUSH_THUMB = "thumb";
     private static final String PARAM_PUSH_ID = "id";
+    private static final String PARAM_PUSH_ACTIVITY = "activity";
+    private static final String PARAM_PUSH_URL = "url";
     private static final String PARAM_OBJECT_SCORE = "score";
     private static final String PARAM_OBJECT_LIVE = "live";
     private static final String PARAM_LIVE_LINK = "link";
@@ -135,8 +141,8 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                         } else
                             msg.obj = false;
                         editor.putString(Constant.PREFERENCES_LIVE_LINK, link);
-                        if (data.showNotification)
-                            sendNotification(data, remoteMessage.getFrom(), getString(R.string.notification_live));
+//                        if (data.showNotification)
+//                            sendNotification(data, remoteMessage.getFrom(), getString(R.string.notification_live));
 
                         editor.apply();
                         msg.what = MainActivity.LIVE_STREAMING;
@@ -166,7 +172,8 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
      * @param data FCM message body received.
      */
     private void sendNotification(NotificationData data, String topic, String name) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = createIntent(this, data.activity, data.url);
+
         intent.putExtra(Constant.EXTRA_FRAGMENT_ID, data.fragment);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
@@ -255,10 +262,12 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         String title = "";
         String message = "";
         String summary;
+        String activity = "";
         String desc;
         String thumb;
         String cover;
         String object = "";
+        String url = "";
         boolean showNotification = true;
         int fragment = 0;
 
@@ -300,9 +309,42 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 if (remoteMessage.getData().containsKey(PARAM_PUSH_ID))
                     id = Integer.parseInt(remoteMessage.getData().get(PARAM_PUSH_ID));
 
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_ACTIVITY))
+                    activity = remoteMessage.getData().get(PARAM_PUSH_ACTIVITY);
+
+                if (remoteMessage.getData().containsKey(PARAM_PUSH_URL))
+                    url = remoteMessage.getData().get(PARAM_PUSH_URL);
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private Intent createIntent(Context context, String activity, String url) {
+        Class targetClass;
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(context.getApplicationContext().getPackageName());
+
+        if (url.equals("")) {
+            try {
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URLDecoder.decode(url, "UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        } else if (activity.equals("")) {
+            try {
+                targetClass = Class.forName(activity);
+                intent = new Intent(context, targetClass);
+                intent.setAction(Intent.ACTION_SEND);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            intent = new Intent(this, MainActivity.class);
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
     }
 }

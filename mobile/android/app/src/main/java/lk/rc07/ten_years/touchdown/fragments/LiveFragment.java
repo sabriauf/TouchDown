@@ -158,6 +158,7 @@ public class LiveFragment extends Fragment {
                     dbManager.openDatabase();
 
                     String message = AppHandler.getResultString(parentView.getContext(), match);
+                    message += Constant.SHARE_APP_TAGS;
                     message += Constant.SHARE_APP_PROM + AppConfig.APP_DOWNLOAD_LINK;
 
                     Log.d(LiveFragment.class.getSimpleName(), message);
@@ -261,9 +262,10 @@ public class LiveFragment extends Fragment {
             public void run() {
                 if (match != null && (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF)
                         && matchStartTime != 0) {
-                    if(System.currentTimeMillis() - matchStartTime > AppConfig.SECOND_HALF_START_TIME)
+                    if ((match.getStatus() == Match.Status.FIRST_HALF && System.currentTimeMillis() - matchStartTime > AppConfig.SECOND_HALF_START_TIME) ||
+                            (match.getStatus() == Match.Status.SECOND_HALF && System.currentTimeMillis() - matchStartTime > AppConfig.SECOND_HALF_START_TIME * 2))
                         holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.live_back));
-                     else
+                    else
                         holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.timer_clock));
                     holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
                     timer.postDelayed(this, 1000);

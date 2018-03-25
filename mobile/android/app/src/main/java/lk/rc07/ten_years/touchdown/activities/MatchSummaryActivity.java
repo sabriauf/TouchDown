@@ -1,5 +1,6 @@
 package lk.rc07.ten_years.touchdown.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -12,6 +13,7 @@ import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.adapters.PageAdapter;
+import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
@@ -30,6 +32,9 @@ public class MatchSummaryActivity extends AppCompatActivity {
     private final String[] TAB_TITLES = {"Summary", "Timeline", "Team", "Images"};
     public static final String EXTRA_MATCH_OBJECT = "match_extra";
 
+    //instance
+    private ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +42,27 @@ public class MatchSummaryActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Match match = getIntent().getExtras().getParcelable(EXTRA_MATCH_OBJECT);
+        readExtras(getIntent());
+    }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        readExtras(intent);
+    }
+
+    private void readExtras(Intent intent) {
+        if(intent.getExtras() != null) {
+            Match match = intent.getExtras().getParcelable(EXTRA_MATCH_OBJECT);
+            initView(match);
+            if(intent.getExtras().containsKey(Constant.EXTRA_FRAGMENT_ID)) {
+                int pos = intent.getExtras().getInt(Constant.EXTRA_FRAGMENT_ID);
+                viewPager.setCurrentItem(pos, true);
+            }
+        }
+    }
+
+    private void initView(Match match) {
         if (match != null) {
             DBManager dbManager = DBManager.initializeInstance(
                     DBHelper.getInstance(this));
@@ -76,12 +100,11 @@ public class MatchSummaryActivity extends AppCompatActivity {
         PageAdapter adapter = new PageAdapter(
                 getSupportFragmentManager(), pageBuilder);
 
-        ViewPager viewPager = findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
 
         SmartTabLayout viewPagerTab = findViewById(R.id.viewpager_tab);
         viewPagerTab.setViewPager(viewPager);
     }
-
 
 }

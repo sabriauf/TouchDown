@@ -50,6 +50,7 @@ public class Constant {
     public static final String SHEARED_PREFEREANCE_PONITS_STATUS = "pref_points_status";
 
     public static final String SHARE_APP_PROM = " - Get Live update from ";
+    public static final String SHARE_APP_TAGS = " #RoyalRugby #TouchDown #RoyalCollege #SchoolRugbyLeague #Rugby #Tuskers ";
 
     public static final String SERVER_ERROR_MESSAGE = "Server error: Code - %d : Message - %s";
 }
