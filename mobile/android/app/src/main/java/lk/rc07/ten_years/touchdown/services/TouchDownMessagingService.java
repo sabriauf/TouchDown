@@ -203,6 +203,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         notificationBuilder.setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationBuilder.setColor(getColor(R.color.colorAccent));
         notificationManager.notify(data.id, notificationBuilder.build());
     }
 

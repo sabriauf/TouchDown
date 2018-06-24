@@ -25,5 +25,8 @@ public class TouchDownInstanceIDService extends FirebaseInstanceIdService {
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
         FirebaseMessaging.getInstance().subscribeToTopic("score");
+        FirebaseMessaging.getInstance().subscribeToTopic("other_matches");
+        FirebaseMessaging.getInstance().subscribeToTopic("general");
+        FirebaseMessaging.getInstance().subscribeToTopic("settings");
     }
 }

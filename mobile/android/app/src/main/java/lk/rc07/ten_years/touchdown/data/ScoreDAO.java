@@ -31,6 +31,9 @@ public class ScoreDAO extends DBManager {
 
     public static boolean addScore(Score score) {
 
+        if(score.getAction() == null)
+            return false;
+
         ContentValues values = new ContentValues();
 
         boolean isScoreAlreadyExist = checkIfScoreAvailable(score.getIdscore());
