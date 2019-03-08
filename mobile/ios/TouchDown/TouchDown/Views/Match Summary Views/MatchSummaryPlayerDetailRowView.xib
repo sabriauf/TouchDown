@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MatchSummaryPlayerDetailRowView" customModule="Touchdown" customModuleProvider="target">
+            <connections>
+                <outlet property="playerImage" destination="zxj-hm-dds" id="ZfV-z4-dxJ"/>
+                <outlet property="playerName" destination="anJ-0m-Bgb" id="P2F-1x-S0E"/>
+                <outlet property="scoreActionsCollectionView" destination="nIp-sK-HdY" id="iUL-RE-bdp"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="85"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="School Image Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="zxj-hm-dds">
+                    <rect key="frame" x="5" y="5" width="60" height="75"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="SiG-eM-inR"/>
+                        <constraint firstAttribute="height" constant="75" id="cBB-5L-GdE"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Player Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="anJ-0m-Bgb">
+                    <rect key="frame" x="73" y="5" width="297" height="17"/>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="nIp-sK-HdY">
+                    <rect key="frame" x="73" y="30" width="297" height="50"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="U7u-3L-pce">
+                        <size key="itemSize" width="50" height="50"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+            </subviews>
+            <color key="backgroundColor" red="0.051020790839999997" green="0.13164389300000001" blue="0.24810694429999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="anJ-0m-Bgb" firstAttribute="leading" secondItem="zxj-hm-dds" secondAttribute="trailing" constant="8" id="0bD-10-e0z"/>
+                <constraint firstItem="zxj-hm-dds" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="KeF-Fk-trW"/>
+                <constraint firstItem="anJ-0m-Bgb" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="5" id="S73-oe-rYs"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="nIp-sK-HdY" secondAttribute="bottom" id="SZg-fu-QC7"/>
+                <constraint firstItem="nIp-sK-HdY" firstAttribute="top" secondItem="anJ-0m-Bgb" secondAttribute="bottom" constant="8" id="Skj-hO-T3L"/>
+                <constraint firstItem="zxj-hm-dds" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="5" id="UPB-oL-9Sn"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="anJ-0m-Bgb" secondAttribute="trailing" constant="5" id="qkq-ty-mib"/>
+                <constraint firstItem="nIp-sK-HdY" firstAttribute="bottom" secondItem="zxj-hm-dds" secondAttribute="bottom" id="r8N-RK-dEE"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="nIp-sK-HdY" secondAttribute="trailing" constant="5" id="uaa-a7-RMY"/>
+                <constraint firstItem="nIp-sK-HdY" firstAttribute="leading" secondItem="zxj-hm-dds" secondAttribute="trailing" constant="8" id="wFY-Hu-XYH"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="132" y="-113.79310344827587"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="School Image Placeholder" width="300" height="300"/>
+    </resources>
+</document>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="EggLetterTimeLineCell" rowHeight="226" id="KGk-i7-Jjw" customClass="EggLetterTimeLineCell" customModule="Touchdown" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="578" height="226"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="578" height="225.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mZ5-PF-on9">
+                        <rect key="frame" x="287" y="0.0" width="4" height="226"/>
+                        <color key="backgroundColor" red="0.92184865474700928" green="0.89272505044937134" blue="0.67459821701049805" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="4" id="AWp-Ca-v4p"/>
+                        </constraints>
+                    </view>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Egg" translatesAutoresizingMaskIntoConstraints="NO" id="A0L-07-iiW">
+                        <rect key="frame" x="271.5" y="98" width="35.5" height="29.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="A0L-07-iiW" secondAttribute="height" multiplier="37:30" id="Q7k-ch-d3e"/>
+                            <constraint firstAttribute="height" constant="29" id="eqO-Zo-S5i"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="T" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OE0-RS-2QM">
+                        <rect key="frame" x="271.5" y="98" width="35.5" height="29.5"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                        <color key="textColor" red="0.94032555819999997" green="0.76357150080000002" blue="0.061166629200000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Royal College 324:43" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lhR-sc-wuv">
+                        <rect key="frame" x="5" y="98" width="199" height="29.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="500" verticalHuggingPriority="251" horizontalCompressionResistancePriority="800" text="324:43" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OGt-xn-Jhj">
+                        <rect key="frame" x="214" y="105" width="47.5" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="St. Peter's College" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Mr-ag-X3f">
+                        <rect key="frame" x="374.5" y="98" width="198.5" height="29.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="500" verticalHuggingPriority="251" horizontalCompressionResistancePriority="800" text="324:43" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Tr-k4-mli">
+                        <rect key="frame" x="317" y="105" width="47.5" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="9Mr-ag-X3f" secondAttribute="trailing" constant="5" id="0Ug-jJ-sdn"/>
+                    <constraint firstItem="mZ5-PF-on9" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="1Wc-VN-qaG"/>
+                    <constraint firstItem="9Mr-ag-X3f" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="2f7-jY-bKR"/>
+                    <constraint firstItem="9Mr-ag-X3f" firstAttribute="height" relation="greaterThanOrEqual" secondItem="A0L-07-iiW" secondAttribute="height" id="4a7-3n-eAl"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="leading" secondItem="OE0-RS-2QM" secondAttribute="leading" id="4iS-KV-2j4"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="5fD-tW-OQf"/>
+                    <constraint firstItem="OGt-xn-Jhj" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="9Qa-Fd-7wK"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="leading" secondItem="OGt-xn-Jhj" secondAttribute="trailing" constant="10" id="EkI-1c-Rxe"/>
+                    <constraint firstItem="9Mr-ag-X3f" firstAttribute="leading" secondItem="3Tr-k4-mli" secondAttribute="trailing" constant="10" id="HUy-Sn-dwS"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="bottom" secondItem="OE0-RS-2QM" secondAttribute="bottom" id="KAH-AE-XpG"/>
+                    <constraint firstItem="3Tr-k4-mli" firstAttribute="leading" secondItem="A0L-07-iiW" secondAttribute="trailing" constant="10" id="LU7-kl-fv0"/>
+                    <constraint firstItem="lhR-sc-wuv" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="UIY-lx-9Bt"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="XLd-gV-a4T"/>
+                    <constraint firstItem="3Tr-k4-mli" firstAttribute="centerY" secondItem="A0L-07-iiW" secondAttribute="centerY" id="c5Y-Av-bmN"/>
+                    <constraint firstAttribute="bottom" secondItem="mZ5-PF-on9" secondAttribute="bottom" constant="-0.5" id="cIs-7Q-glK"/>
+                    <constraint firstItem="9Mr-ag-X3f" firstAttribute="height" secondItem="lhR-sc-wuv" secondAttribute="height" id="esi-pp-0Hz"/>
+                    <constraint firstItem="OGt-xn-Jhj" firstAttribute="leading" secondItem="lhR-sc-wuv" secondAttribute="trailing" constant="10" id="hSL-fR-hWg"/>
+                    <constraint firstItem="lhR-sc-wuv" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ha4-KM-EfP"/>
+                    <constraint firstItem="mZ5-PF-on9" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="jEh-3S-5OT"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="top" secondItem="OE0-RS-2QM" secondAttribute="top" id="nx3-H6-GiB"/>
+                    <constraint firstItem="lhR-sc-wuv" firstAttribute="top" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="r4p-Aa-heC"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="sIN-Ej-55L"/>
+                    <constraint firstItem="A0L-07-iiW" firstAttribute="trailing" secondItem="OE0-RS-2QM" secondAttribute="trailing" id="wZb-80-bCP"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="collegeLabel" destination="lhR-sc-wuv" id="c5q-Jz-WU3"/>
+                <outlet property="collegeTimeLabel" destination="OGt-xn-Jhj" id="Kwu-pV-Mc3"/>
+                <outlet property="indicatorLabel" destination="OE0-RS-2QM" id="mT4-36-kRi"/>
+                <outlet property="opponentLabel" destination="9Mr-ag-X3f" id="Zky-Bx-0gZ"/>
+                <outlet property="opponentTimeLabel" destination="3Tr-k4-mli" id="WeT-54-cpd"/>
+            </connections>
+            <point key="canvasLocation" x="17" y="73"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="Egg" width="100" height="66"/>
+    </resources>
+</document>

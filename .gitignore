@@ -16,7 +16,7 @@ DerivedData/
 *.ipa
 *.dSYM.zip
 *.dSYM
-mobile/ios/TouchDown/*.DS_Store
-mobile/ios/TouchDown/*.xcworkspace
-mobile/ios/TouchDown/Pods/**
-mobile/ios/TouchDown/*.lock
+mobile/ios/TouchDown/Touchdown/*.DS_Store
+mobile/ios/TouchDown/Touchdown/*.xcworkspace
+mobile/ios/TouchDown/Touchdown/Pods/**
+mobile/ios/TouchDown/Touchdown/*.lock
