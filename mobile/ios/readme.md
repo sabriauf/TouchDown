@@ -11,7 +11,7 @@ Note that some of the features from the Android version are not fully implemente
 - [x] Team screen with some player details
 - [x] Manual data synchronization 
 - [x] Network state handling
-- [ ] Live score updates via Firebase Messaging
+- [x] Live score updates via Firebase Messaging
 - [ ] Match photos in the match summary section
 - [ ] Count of score actions and position name in the player detail
 - [ ] Points screen
