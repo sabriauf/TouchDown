@@ -31,12 +31,20 @@ class CardTimeLineCell: UITableViewCell {
         timeLabel.text = time
         
         if(isOpposingTeam){
-            let team = TeamDAO.getTeam(withId: with.teamId)!
-            detailsLabel.text = "to " + team.name
+            if let team = TeamDAO.getTeam(withId: with.teamId){
+                detailsLabel.text = "to " + team.name
+            }
+            else{
+                detailsLabel.text = " "
+            }
         }
         else{
-            let player = PlayerDAO.getPlayer(withId: with.player)!
-            detailsLabel.text = "to " + player.name
+            if let player = PlayerDAO.getPlayer(withId: with.player){
+                detailsLabel.text = "to " + player.name
+            }
+            else{
+                detailsLabel.text = " "
+            }
         }
         
         if(action == .YELLOW_CARD){

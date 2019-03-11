@@ -161,6 +161,8 @@ extension Constant{
 
 extension Constant{
     
+    static let SECOND_HALF_START_TIME_SECONDS: Double = 2100
+    
     static let TEXT_BASE_URL = "http://usrawahada.xyz/touchdown"
     
     static func getRequestUrl() -> String{

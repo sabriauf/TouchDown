@@ -23,6 +23,7 @@
 		EE1C67BF222FFED1001134EC /* AboutUsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1C67BE222FFED1001134EC /* AboutUsController.swift */; };
 		EE1C67C1223002C9001134EC /* NoNetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1C67C0223002C9001134EC /* NoNetworkController.swift */; };
 		EE1C67C32230130D001134EC /* SyncNowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1C67C22230130D001134EC /* SyncNowController.swift */; };
+		EE200B4C2235398800164C9B /* ScoreMessageDatabaseAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE200B4B2235398800164C9B /* ScoreMessageDatabaseAction.swift */; };
 		EE20F5582042FB8F00B9BE33 /* BradbyExpress.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE20F5572042FB8F00B9BE33 /* BradbyExpress.swift */; };
 		EE20F55A2042FC0100B9BE33 /* MetaDataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE20F5592042FC0100B9BE33 /* MetaDataItem.swift */; };
 		EE5A188B20414734006EE409 /* TeamCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A188920414734006EE409 /* TeamCollectionCell.swift */; };
@@ -58,6 +59,9 @@
 		EE82C2B720556824001C64C7 /* EpochTimeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82C2B620556824001C64C7 /* EpochTimeHelper.swift */; };
 		EE82C2B920556A49001C64C7 /* String+ZeroInfix.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82C2B820556A49001C64C7 /* String+ZeroInfix.swift */; };
 		EE82C2BB20556CAE001C64C7 /* String+ToSeconds.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82C2BA20556CAE001C64C7 /* String+ToSeconds.swift */; };
+		EEB3FC3922337AB1003AA28C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EEB3FC3822337AB1003AA28C /* GoogleService-Info.plist */; };
+		EEBFDCA02233B2EE008BA985 /* SettingsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBFDC9F2233B2EE008BA985 /* SettingsHelper.swift */; };
+		EEBFDCA32233B904008BA985 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBFDCA22233B904008BA985 /* NotificationHelper.swift */; };
 		EECCFA76222C302800C0CF50 /* LoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EECCFA75222C302800C0CF50 /* LoadingView.xib */; };
 		EECCFA78222C303200C0CF50 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECCFA77222C303200C0CF50 /* LoadingView.swift */; };
 		EECCFA7C222CE8AB00C0CF50 /* FixtureResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECCFA7A222CE8AB00C0CF50 /* FixtureResultCell.swift */; };
@@ -123,6 +127,7 @@
 		EE1C67BE222FFED1001134EC /* AboutUsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUsController.swift; sourceTree = "<group>"; };
 		EE1C67C0223002C9001134EC /* NoNetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoNetworkController.swift; sourceTree = "<group>"; };
 		EE1C67C22230130D001134EC /* SyncNowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncNowController.swift; sourceTree = "<group>"; };
+		EE200B4B2235398800164C9B /* ScoreMessageDatabaseAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreMessageDatabaseAction.swift; sourceTree = "<group>"; };
 		EE20F5572042FB8F00B9BE33 /* BradbyExpress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BradbyExpress.swift; sourceTree = "<group>"; };
 		EE20F5592042FC0100B9BE33 /* MetaDataItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataItem.swift; sourceTree = "<group>"; };
 		EE5A188920414734006EE409 /* TeamCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCollectionCell.swift; sourceTree = "<group>"; };
@@ -160,6 +165,10 @@
 		EE82C2B620556824001C64C7 /* EpochTimeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpochTimeHelper.swift; sourceTree = "<group>"; };
 		EE82C2B820556A49001C64C7 /* String+ZeroInfix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ZeroInfix.swift"; sourceTree = "<group>"; };
 		EE82C2BA20556CAE001C64C7 /* String+ToSeconds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ToSeconds.swift"; sourceTree = "<group>"; };
+		EE9775E722337DB2004F4E0D /* Touchdown.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Touchdown.entitlements; sourceTree = "<group>"; };
+		EEB3FC3822337AB1003AA28C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EEBFDC9F2233B2EE008BA985 /* SettingsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHelper.swift; sourceTree = "<group>"; };
+		EEBFDCA22233B904008BA985 /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		EECCFA75222C302800C0CF50 /* LoadingView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingView.xib; sourceTree = "<group>"; };
 		EECCFA77222C303200C0CF50 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		EECCFA7A222CE8AB00C0CF50 /* FixtureResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureResultCell.swift; sourceTree = "<group>"; };
@@ -364,6 +373,8 @@
 				EE82C29F2055006F001C64C7 /* DbHelper.swift */,
 				EE82C2B620556824001C64C7 /* EpochTimeHelper.swift */,
 				EE0BCF7E22305EE400158EE0 /* ReminderHelper.swift */,
+				EEBFDC9F2233B2EE008BA985 /* SettingsHelper.swift */,
+				EEBFDCA22233B904008BA985 /* NotificationHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -377,6 +388,7 @@
 				EE5A18A320428A1D006EE409 /* Match.swift */,
 				EE5A18A520429304006EE409 /* Point.swift */,
 				EE5A18A72042970E006EE409 /* Score.swift */,
+				EE200B4B2235398800164C9B /* ScoreMessageDatabaseAction.swift */,
 				EE5A18A920429F8A006EE409 /* Player.swift */,
 				EE5A18AB2042A23E006EE409 /* Team.swift */,
 				EECCFA9D222D68AB00C0CF50 /* PlayerTeam.swift */,
@@ -411,6 +423,8 @@
 		EE5A621F20390EC100D62536 /* Touchdown */ = {
 			isa = PBXGroup;
 			children = (
+				EE9775E722337DB2004F4E0D /* Touchdown.entitlements */,
+				EEB3FC3822337AB1003AA28C /* GoogleService-Info.plist */,
 				EE82C2B320555EF7001C64C7 /* GlobalData */,
 				EE5A18A020428984006EE409 /* Model */,
 				EE5A189D204286C4006EE409 /* Helpers */,
@@ -706,6 +720,14 @@
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 0920;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -751,6 +773,7 @@
 				EECCFA90222D211100C0CF50 /* MatchSummaryDetailRowView.xib in Resources */,
 				EECCFA76222C302800C0CF50 /* LoadingView.xib in Resources */,
 				EECCFA9A222D24BE00C0CF50 /* MatchSummaryScoreCell.xib in Resources */,
+				EEB3FC3922337AB1003AA28C /* GoogleService-Info.plist in Resources */,
 				EE82C2AD20551385001C64C7 /* DetailTimeLineCell.xib in Resources */,
 				EEEE6F0420396057005D1D0B /* PointsTableCell.xib in Resources */,
 			);
@@ -771,10 +794,13 @@
 				"${BUILT_PRODUCTS_DIR}/AutoInsetter/AutoInsetter.framework",
 				"${BUILT_PRODUCTS_DIR}/DropDown/DropDown.framework",
 				"${BUILT_PRODUCTS_DIR}/GRDB.swift/GRDB.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/ImageLoader/ImageLoader.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/Pageboy/Pageboy.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Tabman/Tabman.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -783,10 +809,13 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AutoInsetter.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DropDown.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImageLoader.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Pageboy.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Tabman.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -860,6 +889,7 @@
 				EE82C2A220550283001C64C7 /* ModelProtocols.swift in Sources */,
 				EE11F91D222C1AC200EF4E8A /* ScoreDAO.swift in Sources */,
 				EE82C2AC20551385001C64C7 /* DetailTimeLineCell.swift in Sources */,
+				EE200B4C2235398800164C9B /* ScoreMessageDatabaseAction.swift in Sources */,
 				EE82C2B520555F10001C64C7 /* GlobalData.swift in Sources */,
 				EE5A18AC2042A23E006EE409 /* Team.swift in Sources */,
 				EECCFA89222D146500C0CF50 /* MatchSummaryController.swift in Sources */,
@@ -884,6 +914,8 @@
 				EECCFA87222D111100C0CF50 /* MatchSummaryTabsController.swift in Sources */,
 				EE5A188F20414AFE006EE409 /* TeamsController.swift in Sources */,
 				EEEE6F0320396057005D1D0B /* PointsTableCell.swift in Sources */,
+				EEBFDCA32233B904008BA985 /* NotificationHelper.swift in Sources */,
+				EEBFDCA02233B2EE008BA985 /* SettingsHelper.swift in Sources */,
 				EE82C2B920556A49001C64C7 /* String+ZeroInfix.swift in Sources */,
 				EE82C2A02055006F001C64C7 /* DbHelper.swift in Sources */,
 				EEE856A4220AE9E40059B84B /* FixtureYearSelectorView.swift in Sources */,
@@ -1029,6 +1061,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Touchdown/Touchdown.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sabri Rauf (7945XF2ZW5)";
 				CODE_SIGN_STYLE = Manual;
@@ -1037,7 +1070,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = lk.rc7.touchdown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Sabri Rauf - Touchdown - Development Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "Sabri Rauf - Touchdown - Dev Profile w Push";
 				SWIFT_OBJC_BRIDGING_HEADER = "Touchdown/Touchdown-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -1051,6 +1084,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Touchdown/Touchdown.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Sabri Rauf (2V544D2KYJ)";
 				CODE_SIGN_STYLE = Manual;
@@ -1059,7 +1093,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = lk.rc7.touchdown;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Sabri Rauf - Touchdown - Distribution Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "Sabri Rauf - Touchdown - Des Profile w Push";
 				SWIFT_OBJC_BRIDGING_HEADER = "Touchdown/Touchdown-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

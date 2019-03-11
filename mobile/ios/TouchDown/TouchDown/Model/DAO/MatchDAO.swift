@@ -135,8 +135,8 @@ class MatchDAO{
     
     static func getCalendarMatch() -> Match?{
         let today = Date()
-        let fromDate = Calendar.current.date(byAdding: .month, value: -5, to: today)!.toSqliteDateTime()
-        let toDate = Calendar.current.date(byAdding: .month, value: 3, to: today)!.toSqliteDateTime()
+        let fromDate = Calendar.current.date(byAdding: .day, value: -5, to: today)!.toSqliteDateTime()
+        let toDate = Calendar.current.date(byAdding: .day, value: 3, to: today)!.toSqliteDateTime()
         var sql = "SELECT * FROM " + Constant.TEXT_MATCHES_TABLE + " M"
         sql += " WHERE M." + Match.PropertyKey.date + " > '" + fromDate
         sql += "' AND M." + Match.PropertyKey.date + " < '" + toDate + "'"
@@ -185,5 +185,20 @@ class MatchDAO{
         }
         
         return matches
+    }
+    
+    static func updateMatchStatus(matchId: String, status: Match.MatchStatus){
+        var sql = "UPDATE " + Constant.TEXT_MATCHES_TABLE + " "
+        sql += "SET " + Match.PropertyKey.status + " = " + status.rawValue.description
+        sql += " WHERE " + Match.PropertyKey.idMatch + " = " + matchId
+        
+        dbQueue.inDatabase { (db) in
+            do{
+                try db.execute(sql)
+            }
+            catch(let error){
+                print("MatchDAO.updateMatchStatus - ", error.localizedDescription)
+            }
+        }
     }
 }

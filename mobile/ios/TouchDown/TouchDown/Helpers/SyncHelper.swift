@@ -84,4 +84,23 @@ class SyncHelper{
         }
     }
     
+    static func handleScoreNotification(_ score: Score) -> ScoreMessageDatabaseAction{
+        let action = score.action
+        if action == .UNDEFINED{
+            if score.idScore == "0"{
+                ScoreDAO.deleteScoresWithMatchId(score.matchId)
+                MatchDAO.updateMatchStatus(matchId: score.matchId, status: .PENDING)
+                return .RemoveMatch
+            }
+            else{
+                ScoreDAO.deleteScoreWithId(score.idScore)
+                return .RemoveScore(score)
+            }
+        }
+        else{
+            let inserted = ScoreDAO.addScore(score)
+            return inserted ? .NewScore(score) : .UpdateScore(score)
+        }
+    }
+    
 }

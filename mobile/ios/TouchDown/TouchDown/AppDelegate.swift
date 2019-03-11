@@ -7,6 +7,9 @@
 
 import UIKit
 import DropDown
+import Firebase
+import UserNotifications
+import ObjectMapper
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,36 +20,59 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         DropDown.startListeningToKeyboard()
         DbHelper.initialize()
+        FirebaseApp.configure()
+        
+        if #available(iOS 10.0, *) {
+            // For iOS 10 display notification (sent via APNS)
+            UNUserNotificationCenter.current().delegate = self
+            
+            var authOptions: UNAuthorizationOptions!
+            if SettinsHelper.shouldRegisterWithSound(){
+                authOptions = [.alert, .badge, .sound]
+            }
+            else{
+                authOptions = [.alert, .badge]
+            }
+                
+            UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (status, error) in
+                print("Registered for notifications:", status, error?.localizedDescription ?? "No error")
+            }
+        } else {
+            let settings: UIUserNotificationSettings =
+                UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            application.registerUserNotificationSettings(settings)
+        }
+        
+        application.registerForRemoteNotifications()
+        
+        Messaging.messaging().delegate = self
+        
+        application.applicationIconBadgeNumber = 0
         
         return true
     }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        print("❇️ Registered for Notifications", token)
+        Messaging.messaging().apnsToken = deviceToken
+        
+        // Subscribe to topics set 2 based on app environment
+        // TODO
+    }
     
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.portrait
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("🔔 Recieved remote notification: ", userInfo)
+        completionHandler(.newData)
     }
-
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
-    }
-
+    
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        print("Gone background")
     }
-
+    
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        print("Going foreground")
     }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-
 
 }
 
@@ -57,4 +83,92 @@ extension UINavigationController{
         navigationBar.shadowImage = UIImage()
     }
     
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate{
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let data = response.notification.request.content.userInfo
+        print("Recieved notification.", data)
+        
+        if let score = dataAsScoreObject(data){
+            print("DIDRECEIVE: ⭐️ Handling notification as score object")
+            handleScoreNotification(score)
+        }
+        completionHandler()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let data = notification.request.content.userInfo
+        print("Will present notification.", data)
+        
+        // TODO
+        // Show the notification if it doesn't have
+        // an "object" key
+        
+        if let score = dataAsScoreObject(data){
+            print("WILLRECEIVE: ⭐️ Handling notification as score object")
+            handleScoreNotification(score)
+        }
+        else{
+            print("WILLRECEIVE: ⭐️ Handling notification as ... notification")
+            if SettinsHelper.shouldRegisterWithSound(){
+                completionHandler([.sound, .alert, .badge])
+            }
+            else{
+                completionHandler([.alert, .badge])
+            }
+        }
+    }
+    
+    private func dataAsScoreObject(_ data: [AnyHashable: Any]) -> Score?{
+        if let s = data["score"] as? String{
+            let scoreObject = Score(JSONString: s)
+            return scoreObject
+        }
+        return nil
+    }
+    
+    private func handleScoreNotification(_ score: Score){
+        DispatchQueue.global().async {
+            let msg = SyncHelper.handleScoreNotification(score)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: NSNotification.Name.recievedScoreNotification,
+                    object: nil,
+                    userInfo: ["message": msg])
+            }
+        }
+    }
+    
+}
+
+extension AppDelegate: MessagingDelegate{
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        print("🎃 Firebase registration token: \(fcmToken)")
+        
+        // Re-register for topics
+        subToTopic("score")
+        subToTopic("other_matches")
+        subToTopic("general")
+        subToTopic("Other_matches")
+        subToTopic("General")
+        subToTopic("settings")
+    }
+    
+    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+        print("⭐️ Recieved Notification: ")
+    }
+    
+    private func subToTopic(_ topic: String){
+        Messaging.messaging().subscribe(toTopic: topic) { (error) in
+            if let e = error{
+                print("Error while subscribing to topic \"\(topic)\". Error:", e.localizedDescription)
+            }
+            else{
+                print("Successfully subscribed to topic \"\(topic)\"")
+            }
+        }
+    }
 }

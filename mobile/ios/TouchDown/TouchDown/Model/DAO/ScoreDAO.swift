@@ -10,6 +10,28 @@ import GRDB
 
 class ScoreDAO{
     
+    static func addScore(_ score: Score) -> Bool{
+        var addScoreSuccessful = true
+        dbQueue.inDatabase { (db) in
+            do{
+                var sql = "SELECT COUNT() AS C FROM " + Constant.TEXT_SCORES_TABLE + " S "
+                sql += "WHERE S." + Score.PropertyKey.idScore + " = " + score.idScore
+                let count = (try Row.fetchOne(db, sql)?["C"] as? Int64) ?? 0
+                if count == 0{
+                    try score.insert(db)
+                }
+                else{
+                    addScoreSuccessful = false
+                }
+            }
+            catch(let error){
+                print("ScoreDAO.addScore - ", error.localizedDescription)
+                addScoreSuccessful = false
+            }
+        }
+        return addScoreSuccessful
+    }
+    
     static func getScores(forMatch: Match, timeAscending: Bool = false) -> [Score]?{
         
         let orderingMethod = timeAscending ? "ASC" : "DESC"
@@ -163,5 +185,33 @@ class ScoreDAO{
         }
         
         return (players: scorers, data: scorerData)
+    }
+    
+    static func deleteScoresWithMatchId(_ matchId: String){
+        var sql = "DELETE FROM " + Constant.TEXT_SCORES_TABLE + " "
+        sql += " WHERE " + Score.PropertyKey.matchId + " = " + matchId
+        
+        dbQueue.inDatabase { (db) in
+            do{
+                try db.execute(sql)
+            }
+            catch(let error){
+                print("ScoreDAO.deleteScoresWithMatchId - ", error.localizedDescription)
+            }
+        }
+    }
+    
+    static func deleteScoreWithId(_ scoreId: String){
+        var sql = "DELETE FROM " + Constant.TEXT_SCORES_TABLE
+        sql += " WHERE " + Score.PropertyKey.idScore + " = " + scoreId
+        
+        dbQueue.inDatabase { (db) in
+            do{
+                try db.execute(sql)
+            }
+            catch(let error){
+                print("ScoreDAO.deleteScoreWithId - ", error.localizedDescription)
+            }
+        }
     }
 }

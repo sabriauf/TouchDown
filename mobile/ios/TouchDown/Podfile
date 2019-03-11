@@ -14,4 +14,6 @@ target 'Touchdown' do
   pod 'GRDB.swift'
   pod 'ImageLoader'
   pod 'DropDown', '~> 2.3.2'
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
 end

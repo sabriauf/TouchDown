@@ -2,10 +2,11 @@ extension LiveController: UITableViewDataSource{
     
     private func closestPreviousStartTime(to: String) -> String{
         
-        if !secondHalfStartTime.isEmpty{
+        if !secondHalfStartTime.isEmpty && secondHalfStartTime != "0"{
             let shst = Double(secondHalfStartTime.toSeconds())!
             if shst < Double(to.toSeconds())!{
-                let returnValue = String(format: "%f", shst - (35.0 * 60.0)) + "000" // to milliseconds
+                let _shst = max(0, shst - (35.0 * 60.0))
+                let returnValue = String(format: "%f", _shst) + "000" // to milliseconds
                 return returnValue
             }
         }

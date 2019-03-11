@@ -74,10 +74,12 @@ class Score: Record, Mappable, ModelProtocol{
         
         static func initFromServerMapping(_ value: String) -> Action{
             let map = Action(rawValue: 15)!.getInternalMap()
-            let id = map.first { (kvp) -> Bool in
+            if let id = (map.first { (kvp) -> Bool in
                 return kvp.value[0] == value
-            }!.key
-            return Action(rawValue: id)!
+            }?.key){
+                return Action(rawValue: id)!
+            }
+            return .UNDEFINED
         }
         
         static func squareTypes() -> [Action]{

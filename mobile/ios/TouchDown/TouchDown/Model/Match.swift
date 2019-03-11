@@ -70,10 +70,12 @@ class Match: Record, Mappable, ModelProtocol{
         static func initFromServerMapping(_ value: String) -> MatchStatus{
             let map = MatchStatus(rawValue: 8)!.getInternalMap()
             
-            let id = map.first { (kvp) -> Bool in
+            if let id = (map.first { (kvp) -> Bool in
                 return kvp.value[0] == value
-                }!.key
-            return MatchStatus(rawValue: id)!
+            }?.key){
+                return MatchStatus(rawValue: id)!
+            }
+            return .UNDEFINED
         }
     }
     

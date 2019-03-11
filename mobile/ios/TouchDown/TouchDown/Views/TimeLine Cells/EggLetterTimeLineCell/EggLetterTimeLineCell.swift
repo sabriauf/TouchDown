@@ -38,7 +38,7 @@ class EggLetterTimeLineCell: UITableViewCell {
         let otherLabel = isOpponentTeam ? collegeLabel! : opponentLabel!
         let otherTimeLabel = isOpponentTeam ? collegeTimeLabel! : opponentTimeLabel!
         
-        let referenceLabelText = details.isEmpty ? ( isOpponentTeam ? TeamDAO.getTeam(withId: with.teamId)!.name : PlayerDAO.getPlayer(withId: with.player)!.name ) : details
+        let referenceLabelText = details.isEmpty ? ( isOpponentTeam ? TeamDAO.getTeam(withId: with.teamId)?.name ?? "" : PlayerDAO.getPlayer(withId: with.player)?.name ?? "" ) : details
         
         refernceTimeLabel.text = time
         referenceLabel.text = referenceLabelText

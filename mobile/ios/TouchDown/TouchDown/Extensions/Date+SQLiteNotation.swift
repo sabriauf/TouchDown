@@ -11,8 +11,8 @@ extension Date{
     
     func toSqliteDateTime() -> String{
         let f = DateFormatter()
-        f.dateFormat = "yyyyMMdd HH:mm:ss"
-        return f.string(from: self)
+        f.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return f.string(from: self) + ".000"
     }
     
 }

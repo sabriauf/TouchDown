@@ -16,8 +16,9 @@ extension NSNotification.Name{
     public static let userWillScrollToNewPage = NSNotification.Name("main-nav-scr-n-page")
     public static let userDidScrollToNewPage = NSNotification.Name("main-nav-scr-d-page")
     public static let startInitialResync = NSNotification.Name("main-sync-will-start")
-    //public static let startManualResync = NSNotification.Name("main-start-manual-resync")
+    //public static let startManualResyncAfterEnteringForeground = NSNotification.Name("main-start-manual-resync")
     public static let manualResyncStarted = NSNotification.Name("main-manual-sync-will-start")
+    public static let recievedScoreNotification = NSNotification.Name("main-rec-score-notif")
     
 }
 
@@ -84,7 +85,7 @@ class TabsController: TabmanViewController{
         let bar = TMBar.ButtonBar()
         
         self.dataSource = self
-        //self.delegate = self
+        self.delegate = self
         
         bar.buttons.customize { (barButton) in
             barButton.font = UIFont.boldSystemFont(ofSize: Constant.SIZE_TAB_FONT_SIZE)
@@ -95,6 +96,7 @@ class TabsController: TabmanViewController{
         bar.indicator.tintColor = Constant.Colors.RC_BLUE
         bar.backgroundView.style = TMBarBackgroundView.Style.flat(color: Constant.Colors.RC_YELLOW)
         bar.layout.contentMode = .fit
+        bar.layout.transitionStyle = .snap
         
         self.addBar(bar, dataSource: self, at: .bottom)
     }

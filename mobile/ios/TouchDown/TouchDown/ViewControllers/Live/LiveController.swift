@@ -85,6 +85,12 @@ class LiveController: UIViewController{
             selector: #selector(self.toggleLoadingMode),
             name: NSNotification.Name.manualResyncStarted,
             object: nil)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScoreNotificationReceived(_:)),
+            name: NSNotification.Name.recievedScoreNotification,
+            object: nil)
     }
     
     private func setupTableView(){
@@ -132,14 +138,23 @@ class LiveController: UIViewController{
     }
     
     private func timeForGame() -> String{
-        let matchStartTimeInMS = Double(gameStartTime)! / 1000.0
-        if matchStartTimeInMS == 0.0{
-            return "00:00"
+        let secondHalf = ScoreDAO.getScores(forMatch: match!, thatAre: .SECOND_HALF)
+        
+        if secondHalf.count > 0{
+            let secondHalfTimeInS = (Double(secondHalfStartTime) ?? 0.0) / 1000.0
+            if secondHalfTimeInS != 0.0{
+                let diff = abs(abs(secondHalfTimeInS - Constant.SECOND_HALF_START_TIME_SECONDS) - Date().timeIntervalSince1970)
+                return diff.toGameTimeString()
+            }
         }
         else{
-            let diff = abs(matchStartTimeInMS - Date().timeIntervalSince1970)
-            return diff.toGameTimeString()
+            let startTimeInS = (Double(gameStartTime) ?? 0.0) / 1000.0
+            if startTimeInS != 0.0{
+                let diff = abs(startTimeInS - Date().timeIntervalSince1970)
+                return diff.toGameTimeString()
+            }
         }
+        return "00:00"
     }
     
     /// if timerMode is true, will set the font
@@ -160,18 +175,20 @@ class LiveController: UIViewController{
         timer?.invalidate()
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](t) in
-            
             if let s = self{
                 if let match = s.match{
                     let status = match.status
                     let c1 = status == Match.MatchStatus.FIRST_HALF || status == Match.MatchStatus.SECOND_HALF
                     let c2 = s.gameStartTime != "0" && !s.gameStartTime.isEmpty
                     
+                    // DEBUG TESTING CODE
+                    // s.setTimerFont(timerMode: true)
+                    // s.gameStartTime = (Int(1552144819.0 * 1000).description)
+                    // DEBUG REMOVED
                     if c1 && c2{
-                        
-                        let secondHalfTime: Double = 2100
+                        let secondHalfTime = Constant.SECOND_HALF_START_TIME_SECONDS
                         let diff = abs(
-                            s.gameStartTime.toSeconds().toDate().timeIntervalSince1970
+                            s.gameStartTime.toDate().timeIntervalSince1970
                                 -
                                 Date().timeIntervalSince1970
                         )
@@ -205,6 +222,133 @@ class LiveController: UIViewController{
         }
     }
     
+    @objc private func handleScoreNotificationReceived(_ notification: NSNotification){
+        if let userInfo = notification.userInfo{
+            if let message = userInfo["message"] as? ScoreMessageDatabaseAction{
+                switch(message){
+                case .NewScore(let score):
+                    if match == nil || (score.matchId != match?.idMatch){
+                        loadData()
+                    }
+                    else{
+                        DispatchQueue.global().async { [weak self] in
+                            if let s = self{
+                                if let newMatch = MatchDAO.getMatchForId(Int(score.matchId)!){
+                                    DispatchQueue.main.async {
+                                        s.match = newMatch
+                                        s.updateScore(score: score, match: newMatch)
+                                    }
+                                }
+                                else{
+                                    assertionFailure("Could not find match for provided score id")
+                                }
+                            }
+                        }
+                    }
+                    
+                case .UpdateScore(let score):
+                    DispatchQueue.global().async { [weak self] in
+                        if let s = self{
+                            if score.matchId == s.match!.idMatch{
+                                if let newMatch = MatchDAO.getMatchForId(Int(score.matchId)!){
+                                    s.match = newMatch
+                                    DispatchQueue.main.async {
+                                        s.setupTimer()
+                                    }
+                                }
+                            }
+                            
+                            DispatchQueue.main.async {
+                                let index = s.scoresArr.firstIndex(where: { (testingScore) -> Bool in
+                                    return testingScore.idScore == score.idScore
+                                })
+                                if let i = index{
+                                    let ip = IndexPath(row: i, section: 0)
+                                    s.scoresArr[i] = score
+                                    s.tableView.beginUpdates()
+                                    s.tableView.reloadRows(at: [ip], with: .automatic)
+                                    s.tableView.endUpdates()
+                                    
+                                    let result = s.calculateCumulativeScores()
+                                    s.royalScoreLabel.text = result.HomeTeam.description
+                                    s.opposingTeamScoreLabel.text = result.OpposingTeam.description
+                                }
+                            }
+                            
+                        }
+                    }
+                    
+                case .RemoveScore(let score):
+                    if match.idMatch == score.matchId{
+                        let index = scoresArr.firstIndex { (testingScore) -> Bool in
+                            return testingScore.idScore == score.idScore
+                        }
+                        if let i = index{
+                            let ip = IndexPath(row: i, section: 0)
+                            scoresArr.remove(at: i)
+                            tableView.beginUpdates()
+                            tableView.deleteRows(at: [ip], with: .automatic)
+                            tableView.endUpdates()
+                            
+                            let result = calculateCumulativeScores()
+                            royalScoreLabel.text = result.HomeTeam.description
+                            opposingTeamScoreLabel.text = result.OpposingTeam.description
+                        }
+                    }
+                    
+                case .RemoveMatch:
+                    gameStartTime = "0"
+                    loadData()
+                }
+            }
+            else{
+                assertionFailure("Could not find message information in score notification")
+            }
+        }
+        else{
+            print("🛑 Could not handle score notification. userInfo was null.")
+        }
+    }
+    
+    private func updateScore(score s: Score, match m: Match){
+        let appendingIndexPath = IndexPath(row: scoresArr.count, section: 0)
+        scoresArr.append(s)
+        tableView.beginUpdates()
+        tableView.insertRows(at: [appendingIndexPath], with: .automatic)
+        tableView.endUpdates()
+        tableView.scrollToRow(at: appendingIndexPath, at: .bottom, animated: true)
+        
+        switch(s.action){
+        case .START:
+            gameStartTime = s.time.toSeconds()
+            liveIndicator.isHidden = true
+            setTimerFont(timerMode: true)
+            setupTimer()
+        case .HALF_TIME:
+            gameStartTime = "0"
+        case .SECOND_HALF:
+            gameStartTime = (TimeInterval(s.time.toSeconds())! - Constant.SECOND_HALF_START_TIME_SECONDS).description
+            liveIndicator.isHidden = false
+            setTimerFont(timerMode: true)
+            setupTimer()
+        case .FULL_TIME:
+            gameStartTime = "0"
+        default:
+            if s.teamId == "1"{
+                // Increase royal score
+                var eScore = Int(royalScoreLabel.text ?? "0")!
+                eScore += Int(Double(s.score)!.rounded())
+                royalScoreLabel.text = eScore.description
+            }
+            else{
+                // Increase opponent score
+                var eScore = Int(opposingTeamScoreLabel.text ?? "0")!
+                eScore += Int(Double(s.score)!.rounded())
+                opposingTeamScoreLabel.text = eScore.description
+            }
+        }
+    }
+    
     private func loadData(){
         
         stopTimerAndResetTimerText()
@@ -229,8 +373,8 @@ class LiveController: UIViewController{
                     let teamOne = TeamDAO.getTeam(withId: match.teamOne)
                     let teamTwo = TeamDAO.getTeam(withId: match.teamTwo)
                     
-                    s.gameStartTime = MatchDAO.getStartTime(forMatch: match) ?? ""
-                    s.secondHalfStartTime = MatchDAO.getSecondHalfStartTime(forMatch: match) ?? ""
+                    s.gameStartTime = MatchDAO.getStartTime(forMatch: match) ?? "0"
+                    s.secondHalfStartTime = MatchDAO.getSecondHalfStartTime(forMatch: match) ?? "0"
                     
                     DispatchQueue.main.async {
                         
