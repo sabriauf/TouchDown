@@ -17,7 +17,7 @@ Note that some of the features from the Android version are not fully implemente
 - [ ] Points screen
 - [ ] Bradby Express screen
 
-##📱Build requirements
+## 📱Build requirements
 
 - XCODE 10.1
 - MacOS Mojave (10.14.1)
