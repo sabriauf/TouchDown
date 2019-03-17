@@ -33,8 +33,16 @@ class LiveController: UIViewController{
     var match: Match!
     var scoresArr: [Score] = []
     /// gameStartTime in a millisecond string
-    var gameStartTime: String = ""
-    var secondHalfStartTime: String = ""
+    var gameStartTime: Int = 0{
+        didSet{
+            gameStartTime = max(0, gameStartTime)
+        }
+    }
+    var secondHalfStartTime: Int = 0{
+        didSet{
+            gameStartTime = max(0, gameStartTime)
+        }
+    }
     var isFirstTime: Bool = true
     var timer: Timer?
     
@@ -141,14 +149,14 @@ class LiveController: UIViewController{
         let secondHalf = ScoreDAO.getScores(forMatch: match!, thatAre: .SECOND_HALF)
         
         if secondHalf.count > 0{
-            let secondHalfTimeInS = (Double(secondHalfStartTime) ?? 0.0) / 1000.0
+            let secondHalfTimeInS = (Double(secondHalfStartTime)) / 1000.0
             if secondHalfTimeInS != 0.0{
                 let diff = abs(abs(secondHalfTimeInS - Constant.SECOND_HALF_START_TIME_SECONDS) - Date().timeIntervalSince1970)
                 return diff.toGameTimeString()
             }
         }
         else{
-            let startTimeInS = (Double(gameStartTime) ?? 0.0) / 1000.0
+            let startTimeInS = (Double(gameStartTime)) / 1000.0
             if startTimeInS != 0.0{
                 let diff = abs(startTimeInS - Date().timeIntervalSince1970)
                 return diff.toGameTimeString()
@@ -179,7 +187,7 @@ class LiveController: UIViewController{
                 if let match = s.match{
                     let status = match.status
                     let c1 = status == Match.MatchStatus.FIRST_HALF || status == Match.MatchStatus.SECOND_HALF
-                    let c2 = s.gameStartTime != "0" && !s.gameStartTime.isEmpty
+                    let c2 = s.gameStartTime != 0
                     
                     // DEBUG TESTING CODE
                     // s.setTimerFont(timerMode: true)
@@ -228,6 +236,10 @@ class LiveController: UIViewController{
                 switch(message){
                 case .NewScore(let score):
                     if match == nil || (score.matchId != match?.idMatch){
+                        // Do a load data instead of updating the match
+                        // if the current match is nil
+                        // or
+                        // the score's matchId doesn't match with the current match id
                         loadData()
                     }
                     else{
@@ -297,7 +309,7 @@ class LiveController: UIViewController{
                     }
                     
                 case .RemoveMatch:
-                    gameStartTime = "0"
+                    gameStartTime = 0
                     loadData()
                 }
             }
@@ -320,19 +332,19 @@ class LiveController: UIViewController{
         
         switch(s.action){
         case .START:
-            gameStartTime = s.time.toSeconds()
+            gameStartTime = Int(s.time.toSeconds())!
             liveIndicator.isHidden = true
             setTimerFont(timerMode: true)
             setupTimer()
         case .HALF_TIME:
-            gameStartTime = "0"
+            gameStartTime = 0
         case .SECOND_HALF:
-            gameStartTime = (TimeInterval(s.time.toSeconds())! - Constant.SECOND_HALF_START_TIME_SECONDS).description
+            gameStartTime = Int((TimeInterval(s.time.toSeconds())! - Constant.SECOND_HALF_START_TIME_SECONDS))
             liveIndicator.isHidden = false
             setTimerFont(timerMode: true)
             setupTimer()
         case .FULL_TIME:
-            gameStartTime = "0"
+            gameStartTime = 0
         default:
             if s.teamId == "1"{
                 // Increase royal score
@@ -373,8 +385,8 @@ class LiveController: UIViewController{
                     let teamOne = TeamDAO.getTeam(withId: match.teamOne)
                     let teamTwo = TeamDAO.getTeam(withId: match.teamTwo)
                     
-                    s.gameStartTime = MatchDAO.getStartTime(forMatch: match) ?? "0"
-                    s.secondHalfStartTime = MatchDAO.getSecondHalfStartTime(forMatch: match) ?? "0"
+                    s.gameStartTime = Int(MatchDAO.getStartTime(forMatch: match) ?? "0")!
+                    s.secondHalfStartTime = Int(MatchDAO.getSecondHalfStartTime(forMatch: match) ?? "0")!
                     
                     DispatchQueue.main.async {
                         
@@ -405,7 +417,7 @@ class LiveController: UIViewController{
                         else{
                             s.liveIndicator.isHidden = true
                             s.setTimerFont(timerMode: false)
-                            s.gameStartTime = "0"
+                            // s.gameStartTime = 0
                             
                             if match.status == .PENDING{
                                 let date = match.date!

@@ -38,6 +38,8 @@ class MatchSummaryTabsController: TabmanViewController{
     // Delegate overriding
     
     override func pageboyViewController(_ pageboyViewController: PageboyViewController, didScrollToPageAt index: Int, direction: PageboyViewController.NavigationDirection, animated: Bool) {
+        super.pageboyViewController(pageboyViewController, didScrollToPageAt: index, direction: direction
+            , animated: animated)
         self.navigationItem.title = Constant.MATCH_SUMMARY_TAB_NAMES[index]
     }
     

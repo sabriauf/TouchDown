@@ -88,7 +88,7 @@
                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="370:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BLH-H9-wDr">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="370:00" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BLH-H9-wDr">
                                                         <rect key="frame" x="98.5" y="0.0" width="99" height="50"/>
                                                         <fontDescription key="fontDescription" name="DSEG7Classic-Bold" family="DSEG7 Classic" pointSize="21"/>
                                                         <color key="textColor" red="0.23137254901960785" green="0.71764705882352942" blue="0.24313725490196078" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -226,6 +226,11 @@
                             <constraint firstItem="oBj-VX-HXx" firstAttribute="bottom" secondItem="Tpe-H2-86I" secondAttribute="bottom" id="vnC-8z-bYT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="oBj-VX-HXx"/>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="faj-1i-FKb"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="defaultView" destination="faj-1i-FKb" id="Zf3-vN-aAV"/>
@@ -258,7 +263,7 @@
                                 <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bcf-dg-yqe">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bcf-dg-yqe">
                                 <rect key="frame" x="10" y="40" width="300" height="518"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="5" id="x8G-M8-JEF">
@@ -622,6 +627,85 @@
             </objects>
             <point key="canvasLocation" x="1475.625" y="1549.6478873239437"/>
         </scene>
+        <!--Bradex Controller-->
+        <scene sceneID="Nqu-0J-YZB">
+            <objects>
+                <viewController storyboardIdentifier="BradexController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mdI-xK-ZAA" customClass="BradexController" customModule="Touchdown" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="bSo-E9-ScY">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XqD-VN-U8V" customClass="LoadingView" customModule="Touchdown" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="DII-f0-kpe">
+                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="BTe-iG-2eE" appends="YES" id="THR-Ud-4qJ"/>
+                                </connections>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Faw-IP-yAB">
+                                <rect key="frame" x="245" y="493" width="75" height="75"/>
+                                <subviews>
+                                    <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="qmark" translatesAutoresizingMaskIntoConstraints="NO" id="Rgr-bq-Q2q">
+                                        <rect key="frame" x="20" y="20" width="35" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="Rgr-bq-Q2q" secondAttribute="height" id="Sef-Qi-2xU"/>
+                                            <constraint firstAttribute="height" constant="35" id="hYV-nw-JzH"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Rgr-bq-Q2q" secondAttribute="bottom" constant="20" id="SdQ-bW-NrM"/>
+                                    <constraint firstItem="Rgr-bq-Q2q" firstAttribute="top" secondItem="Faw-IP-yAB" secondAttribute="top" constant="20" id="Wzl-iC-QgM"/>
+                                    <constraint firstAttribute="trailing" secondItem="Rgr-bq-Q2q" secondAttribute="trailing" constant="20" id="amp-Gl-jRP"/>
+                                    <constraint firstItem="Rgr-bq-Q2q" firstAttribute="leading" secondItem="Faw-IP-yAB" secondAttribute="leading" constant="20" id="cMQ-oM-NQN"/>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="4SJ-dB-Lbz" appends="YES" id="bqI-T5-1N9"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.074509803920000006" green="0.18823529410000001" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="MiM-lb-sSs" firstAttribute="bottom" secondItem="Faw-IP-yAB" secondAttribute="bottom" id="K9l-Yq-Jns"/>
+                            <constraint firstItem="MiM-lb-sSs" firstAttribute="trailing" secondItem="DII-f0-kpe" secondAttribute="trailing" id="S1X-IY-HsF"/>
+                            <constraint firstItem="XqD-VN-U8V" firstAttribute="top" secondItem="MiM-lb-sSs" secondAttribute="top" id="X0Y-Lc-LD5"/>
+                            <constraint firstItem="MiM-lb-sSs" firstAttribute="trailing" secondItem="Faw-IP-yAB" secondAttribute="trailing" id="XS5-Oq-DUp"/>
+                            <constraint firstItem="MiM-lb-sSs" firstAttribute="trailing" secondItem="XqD-VN-U8V" secondAttribute="trailing" id="b85-NF-Adg"/>
+                            <constraint firstItem="DII-f0-kpe" firstAttribute="top" secondItem="MiM-lb-sSs" secondAttribute="top" id="fgC-P4-pPJ"/>
+                            <constraint firstItem="MiM-lb-sSs" firstAttribute="bottom" secondItem="DII-f0-kpe" secondAttribute="bottom" id="qOd-Ez-W82"/>
+                            <constraint firstItem="DII-f0-kpe" firstAttribute="leading" secondItem="MiM-lb-sSs" secondAttribute="leading" id="qba-5R-NeU"/>
+                            <constraint firstItem="XqD-VN-U8V" firstAttribute="leading" secondItem="MiM-lb-sSs" secondAttribute="leading" id="rKL-QG-dV6"/>
+                            <constraint firstItem="MiM-lb-sSs" firstAttribute="bottom" secondItem="XqD-VN-U8V" secondAttribute="bottom" id="vOx-lz-dua"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="MiM-lb-sSs"/>
+                    </view>
+                    <connections>
+                        <outlet property="bradExImgTap" destination="BTe-iG-2eE" id="ori-eI-bha"/>
+                        <outlet property="bradexImage" destination="DII-f0-kpe" id="3Tz-Xz-7c4"/>
+                        <outlet property="helpButton" destination="Faw-IP-yAB" id="f65-RB-Ya3"/>
+                        <outlet property="helpImgTap" destination="4SJ-dB-Lbz" id="dSd-l3-j2t"/>
+                        <outlet property="loadingView" destination="XqD-VN-U8V" id="TrX-Pa-NxG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="STn-vy-NhW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="BTe-iG-2eE" userLabel="Bradex Img Tap">
+                    <connections>
+                        <action selector="bradexImagePressed:" destination="mdI-xK-ZAA" id="lOs-kL-dyc"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="4SJ-dB-Lbz" userLabel="Help Img Tap">
+                    <connections>
+                        <action selector="helpImagePressed:" destination="mdI-xK-ZAA" id="Ejs-dr-jVD"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="2235" y="1550"/>
+        </scene>
         <!--Points Controller-->
         <scene sceneID="X4y-QP-4QF">
             <objects>
@@ -636,23 +720,35 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v3E-e5-j2n" customClass="LoadingView" customModule="Touchdown" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="34.5" width="320" height="533.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="30" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Tof-Ub-jJG">
                                 <rect key="frame" x="10" y="44.5" width="300" height="513.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="0.073163084690000005" green="0.18682566289999999" blue="0.35445198420000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="B2f-5i-bgm" firstAttribute="bottom" secondItem="v3E-e5-j2n" secondAttribute="bottom" id="26T-Wd-QKv"/>
                             <constraint firstItem="Tof-Ub-jJG" firstAttribute="centerX" secondItem="eOc-SD-cji" secondAttribute="centerX" id="EU0-1H-pP8"/>
+                            <constraint firstItem="B2f-5i-bgm" firstAttribute="trailing" secondItem="v3E-e5-j2n" secondAttribute="trailing" id="KbQ-Vg-N5f"/>
+                            <constraint firstItem="v3E-e5-j2n" firstAttribute="leading" secondItem="B2f-5i-bgm" secondAttribute="leading" id="QBA-Gu-y1v"/>
                             <constraint firstItem="P19-Wg-IGD" firstAttribute="top" secondItem="B2f-5i-bgm" secondAttribute="top" id="X1I-RJ-ftv"/>
                             <constraint firstItem="B2f-5i-bgm" firstAttribute="bottom" secondItem="Tof-Ub-jJG" secondAttribute="bottom" constant="10" id="Z5F-fc-q3U"/>
                             <constraint firstItem="Tof-Ub-jJG" firstAttribute="leading" secondItem="B2f-5i-bgm" secondAttribute="leading" constant="10" id="d79-Rt-p34"/>
+                            <constraint firstItem="v3E-e5-j2n" firstAttribute="top" secondItem="P19-Wg-IGD" secondAttribute="bottom" id="e6d-Sa-ft5"/>
                             <constraint firstItem="Tof-Ub-jJG" firstAttribute="top" secondItem="P19-Wg-IGD" secondAttribute="bottom" constant="10" id="itK-v7-wE7"/>
                             <constraint firstItem="B2f-5i-bgm" firstAttribute="trailing" secondItem="P19-Wg-IGD" secondAttribute="trailing" constant="5" id="mTJ-oY-5sa"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="B2f-5i-bgm"/>
                     </view>
                     <connections>
+                        <outlet property="loadingView" destination="v3E-e5-j2n" id="GF8-hK-a5J"/>
+                        <outlet property="statusLabel" destination="P19-Wg-IGD" id="9u3-cO-cDV"/>
                         <outlet property="tableView" destination="Tof-Ub-jJG" id="CRi-oK-uEv"/>
                     </connections>
                 </viewController>
@@ -691,5 +787,6 @@
         <image name="EggYellow" width="65" height="100"/>
         <image name="OverflowIcon" width="21" height="21"/>
         <image name="School Image Placeholder" width="300" height="300"/>
+        <image name="qmark" width="300" height="300"/>
     </resources>
 </document>

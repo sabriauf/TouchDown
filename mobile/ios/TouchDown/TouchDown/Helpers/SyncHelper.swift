@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import GRDB
 import Alamofire
 
 class SyncHelper{
@@ -42,15 +43,19 @@ class SyncHelper{
         return internalSyncState == .Running || internalSyncState == .Initial
     }
     
-    static func syncNow(completionHandler: @escaping () -> ()){
+    static func syncNow(completeSync: Bool, completionHandler: @escaping () -> ()){
         let reachability = NetworkReachabilityManager()!
         
         if(reachability.isReachable){
             
             internalSyncState = .Running
             
+            if completeSync{
+                DbHelper.clearDb()
+            }
+            
             let params = [
-                "last_updated": getLastUpdatedTime() ?? "00"
+                "last_updated": completeSync ? "00" : (getLastUpdatedTime() ?? "00")
             ]
             let headers = Constant.getHeaderParams()
             let url = Constant.getRequestUrl()
@@ -98,6 +103,8 @@ class SyncHelper{
             }
         }
         else{
+            // Insertion will fail if there is already a score
+            // with the ID as same as score.idScore
             let inserted = ScoreDAO.addScore(score)
             return inserted ? .NewScore(score) : .UpdateScore(score)
         }

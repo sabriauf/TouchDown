@@ -73,7 +73,7 @@ class PlayerDAO{
         outerSql += "(" + innerSql + ") "
         outerSql += "ORDER BY " + PlayerPosition.PropertyKey.idPosition + " ASC"
         
-        print("🥺 +", outerSql)
+        // print("🥺 +", outerSql)
         
         dbQueue.inDatabase { (db) in
             do{
@@ -115,8 +115,8 @@ class PlayerDAO{
         
         dbQueue.inDatabase { (db) in
             do{
-                let value = (try Row.fetchOne(db, sql)?["_max_"] as? Int) ?? 0
-                lastMatchId = value
+                let value = (try Row.fetchOne(db, sql)?["_max_"] as? Int64) ?? 0
+                lastMatchId = Int(truncatingIfNeeded: value)
             }
             catch(let error){
                 print("PlayerDAO.getLastMatchIdWithPlayers() -", error.localizedDescription)

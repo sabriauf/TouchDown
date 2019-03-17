@@ -23,6 +23,7 @@ class TeamsController: UIViewController{
     let listenerId = TeamsController.identifer
     var optionalMatch: Match? = nil
     var players: [CompositePlayer] = []
+    var staff: [SupportStaff] = []
     var yearOfLastMatch: Int!
     
     override func viewDidLoad() {
@@ -103,6 +104,8 @@ class TeamsController: UIViewController{
                     s.yearOfLastMatch = Int(GroupDAO.getGroupInfo(forMatch: MatchDAO.getMatchForId(matchId)!)!.year)!
                 }
                 
+                s.staff = SupportStaffDAO.getStaffOrderedByOrder()
+                
                 DispatchQueue.main.async {
                     s.collectionView.reloadData()
                     s.loadingView.hide {
@@ -116,8 +119,9 @@ class TeamsController: UIViewController{
     // private func getCurrentYear()
     
     private func setupCollectionView(){
-        self.collectionView.delegate = self
-        self.collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        TeamCollectionStaffCell.register(collectionView)
     }
     
     internal func presentPlayerDetails(player: Player, position: Position){

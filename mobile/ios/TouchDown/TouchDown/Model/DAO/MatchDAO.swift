@@ -140,14 +140,24 @@ class MatchDAO{
         var sql = "SELECT * FROM " + Constant.TEXT_MATCHES_TABLE + " M"
         sql += " WHERE M." + Match.PropertyKey.date + " > '" + fromDate
         sql += "' AND M." + Match.PropertyKey.date + " < '" + toDate + "'"
+         sql += " ORDER BY M." + Match.PropertyKey.date + " DESC"
         
         var match: Match? = nil
         
         dbQueue.inDatabase { (db) in
             do{
-                match = try Row.fetchAll(db, sql).map({ (row) -> Match in
+                let matches = try Row.fetchAll(db, sql).map({ (row) -> Match in
                     return Match(row: row)
-                }).first
+                })
+                
+                if matches.count > 1{
+                    match = matches.first(where: { (m1) -> Bool in
+                        return m1.status == .PENDING
+                    })
+                }
+                else{
+                    match = matches.first
+                }
             }
             catch(let error){
                 print("MatchDAO.getCalendarMatch - ", error.localizedDescription)

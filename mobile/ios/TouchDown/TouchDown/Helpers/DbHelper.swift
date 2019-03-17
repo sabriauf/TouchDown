@@ -69,7 +69,27 @@ class DbHelper{
                 })
             }
             catch(let error){
-                print("Error at registering migrator:", error.localizedDescription)
+                print("Error at registering migrator v1:", error.localizedDescription)
+            }
+        }
+        
+        // Database migrator V2
+        migrator.registerMigration("ver2") { (db) in
+            do{
+                try db.create(table: Constant.TEXT_META_DATA_TABLE, body: { (t) in
+                    MetaDataItem.setColumnDefinitions(t: t)
+                })
+                
+                try db.create(table: Constant.TEXT_SUPPORT_STAFF_TABLE, body: { (t) in
+                    SupportStaff.setColumnDefinitions(t: t)
+                })
+                
+                try db.create(table: Constant.TEXT_POINTS_TABLE, body: { (t) in
+                    Point.setColumnDefinitions(t: t)
+                })
+            }
+            catch(let error){
+                print("Error at registering migrator v2: ", error.localizedDescription)
             }
         }
         
@@ -78,6 +98,25 @@ class DbHelper{
         }
         catch(let error){
             print("Error at migrating", error.localizedDescription)
+        }
+    }
+    
+    static func clearDb(){
+        let tables = Constant.ALL_TABLES()
+        for table in tables{
+            deleteContentOfTable(table)
+        }
+    }
+    
+    private static func deleteContentOfTable(_ tableName: String){
+        let sql = "DELETE FROM " + tableName + " WHERE 1 = 1"
+        dbQueue.inDatabase { (db) in
+            do{
+                try db.execute(sql)
+            }
+            catch(let error){
+                print("DbHelper.deleteContentOfTable -", error.localizedDescription)
+            }
         }
     }
     
@@ -169,6 +208,39 @@ class DbHelper{
                     }
                     catch(let error){
                         print("Error while inserting position", error.localizedDescription)
+                    }
+                }
+            }
+            
+            if let metaData = serverResponse.metaData{
+                for metaDataItem in metaData{
+                    do{
+                        try metaDataItem.insert(db)
+                    }
+                    catch(let error){
+                        print("Error while inserting meta data", error.localizedDescription)
+                    }
+                }
+            }
+            
+            if let staff = serverResponse.staff{
+                for staffItem in staff{
+                    do{
+                        try staffItem.insert(db)
+                    }
+                    catch(let error){
+                        print("Error while inserting staff", error.localizedDescription)
+                    }
+                }
+            }
+            
+            if let points = serverResponse.points{
+                for point in points{
+                    do{
+                        try point.insert(db)
+                    }
+                    catch(let error){
+                        print("Error while inserting point", error.localizedDescription)
                     }
                 }
             }

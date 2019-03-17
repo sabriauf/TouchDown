@@ -3,11 +3,11 @@ import UIKit
 extension PointsController: UITableViewDataSource, UITableViewDelegate{
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return pointsToView.count > 0 ? 1 : 0
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return pointsToView.count
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -20,7 +20,8 @@ extension PointsController: UITableViewDataSource, UITableViewDelegate{
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = PointsTableCell.dequeue(withTable: tableView)
+        let model = pointsToView[indexPath.row]
+        let cell = PointsTableCell.dequeue(withTable: tableView, model)
         return cell
     }
     

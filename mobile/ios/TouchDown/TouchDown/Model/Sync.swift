@@ -39,6 +39,7 @@ class ServerResponseSync: Mappable{
     var groups: [Group]!
     var playerTeams: [PlayerTeam]!
     var metaData: [MetaDataItem]!
+    var staff: [SupportStaff]!
     
     struct PropertyKey{
         static let jsonStatus = "JsonStatus"
@@ -53,6 +54,7 @@ class ServerResponseSync: Mappable{
         static let groups = "groups"
         static let playerTeams = "playersTeams"
         static let metaData = "meta_data"
+        static let staff = "supportStaff"
     }
     
     required init?(map: Map) {
@@ -69,8 +71,9 @@ class ServerResponseSync: Mappable{
         self.playerPosition <- map[PropertyKey.playerPosition]
         self.points <- map[PropertyKey.points]
         self.groups <- map[PropertyKey.groups]
-        self.playerTeams <- map[PropertyKey.playerTeams] // NOTE: Check whether this maps properly
+        self.playerTeams <- map[PropertyKey.playerTeams] 
         self.metaData <- map[PropertyKey.metaData]
+        self.staff <- map[PropertyKey.staff]
     }
     
 }

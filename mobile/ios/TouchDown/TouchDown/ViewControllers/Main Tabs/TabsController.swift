@@ -39,7 +39,7 @@ class TabsController: TabmanViewController{
         }
         
         if !loadNoNetworkController{
-            SyncHelper.syncNow {
+            SyncHelper.syncNow(completeSync: false) {
                 GlobalData.callAllSyncListeners()
             }
         }
@@ -70,11 +70,14 @@ class TabsController: TabmanViewController{
     // Delegate overriding
     
     override func pageboyViewController(_ pageboyViewController: PageboyViewController, didScrollToPageAt index: Int, direction: PageboyViewController.NavigationDirection, animated: Bool) {
+        super.pageboyViewController(pageboyViewController, didScrollToPageAt: index, direction: direction
+            , animated: animated)
         self.navigationItem.title = Constant.TEXT_TAB_NAMES[index]
         NotificationCenter.default.post(name: .userDidScrollToNewPage, object: nil)
     }
     
     override func pageboyViewController(_ pageboyViewController: PageboyViewController, willScrollToPageAt index: Int, direction: PageboyViewController.NavigationDirection, animated: Bool) {
+        super.pageboyViewController(pageboyViewController, willScrollToPageAt: index, direction: direction, animated: animated)
         NotificationCenter.default.post(name: .userWillScrollToNewPage, object: nil)
     }
     
@@ -95,8 +98,11 @@ class TabsController: TabmanViewController{
         
         bar.indicator.tintColor = Constant.Colors.RC_BLUE
         bar.backgroundView.style = TMBarBackgroundView.Style.flat(color: Constant.Colors.RC_YELLOW)
-        bar.layout.contentMode = .fit
-        bar.layout.transitionStyle = .snap
+        //bar.layout.contentMode = .intrinsic
+        bar.layout.interButtonSpacing = 20.0
+        bar.layout.contentInset = UIEdgeInsetsMake(0.0, 10.0, 0.0, 10.0)
+
+        //bar.layout.transitionStyle = .snap
         
         self.addBar(bar, dataSource: self, at: .bottom)
     }
@@ -130,7 +136,7 @@ class TabsController: TabmanViewController{
                     NoNetworkController.present(s.navigationController!)
                 }
                 else{
-                    SyncHelper.syncNow {
+                    SyncHelper.syncNow(completeSync: true) {
                         GlobalData.callAllSyncListeners()
                     }
                     s.reloadData()
@@ -141,7 +147,7 @@ class TabsController: TabmanViewController{
     
     /*@objc */func startManualResync(){
         NotificationCenter.default.post(name: NSNotification.Name.manualResyncStarted, object: nil)
-        SyncHelper.syncNow {
+        SyncHelper.syncNow(completeSync: true) {
             GlobalData.callAllSyncListeners()
         }
     }
@@ -157,6 +163,7 @@ extension TabsController: PageboyViewControllerDataSource, TMBarDataSource{
     // Datasource
     
     func numberOfViewControllers(in pageboyViewController: PageboyViewController) -> Int {
+        
         return Constant.NUM_MAIN_TABS
     }
     
@@ -194,8 +201,14 @@ extension TabsController: PageboyViewControllerDataSource, TMBarDataSource{
             else if(index == 1){
                 vc = FixtureController.getInstance(currentNavItem: self.navigationItem)
             }
-            else{
+            else if (index == 2){
+                vc = PointsController.getInstance()
+            }
+            else if (index == 3){
                 vc = TeamsController.getInstance()
+            }
+            else if (index == 4){
+                vc = BradexController.getInstance()
             }
             viewDictionary[index] = vc
         }

@@ -14,6 +14,8 @@ class ScoreDAO{
         var addScoreSuccessful = true
         dbQueue.inDatabase { (db) in
             do{
+                // Get the count of scores who's ID match  this score ID
+                // If the count is > 0, Then we skip adding it to the database
                 var sql = "SELECT COUNT() AS C FROM " + Constant.TEXT_SCORES_TABLE + " S "
                 sql += "WHERE S." + Score.PropertyKey.idScore + " = " + score.idScore
                 let count = (try Row.fetchOne(db, sql)?["C"] as? Int64) ?? 0

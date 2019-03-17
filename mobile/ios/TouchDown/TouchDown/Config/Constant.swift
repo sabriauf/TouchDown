@@ -16,12 +16,17 @@ class Constant{
     
     static var NUM_MAIN_TABS: Int{
         get{
-            return self.TEXT_TAB_NAMES.count
+            if BradexController.shouldShowBradexTab(){
+                return self.TEXT_TAB_NAMES.count
+            }
+            else{
+                return self.TEXT_TAB_NAMES.count - 1
+            }
         }
     }
     
     static let TEXT_TAB_NAMES = [
-        "LIVE", "FIXTURE"/*, "POINTS"*/, "TEAM"/*, "BRADBY EXPRESS"*/
+        "LIVE", "FIXTURE", "POINTS", "TEAM", "BRADEX"
     ]
     
     // Used by MatchSummaryTabsController
@@ -46,7 +51,30 @@ class Constant{
     static let TEXT_TEAMS_TABLE = "teams"
     static let TEXT_PLAYERS_TABLE = "players"
     static let TEXT_PLAYER_TEAM_TABLE = "playerteam"
+    static let TEXT_META_DATA_TABLE = "metadata"
+    static let TEXT_SUPPORT_STAFF_TABLE = "staff"
     
+    static func ALL_TABLES() -> [String]{
+        return [
+            TEXT_MATCHES_TABLE,
+            TEXT_GROUPS_TABLE,
+            TEXT_POSITION_TABLE,
+            TEXT_SCORES_TABLE,
+            TEXT_POINTS_TABLE,
+            TEXT_PLAYER_POSITION_TABLE,
+            TEXT_TEAMS_TABLE,
+            TEXT_PLAYERS_TABLE,
+            TEXT_PLAYER_TEAM_TABLE,
+            TEXT_META_DATA_TABLE,
+            TEXT_SUPPORT_STAFF_TABLE
+        ]
+    }
+    
+    struct META_DATA_KEYS{
+        static let BRADEX_IMAGE = "bradex_img"
+        static let BRADEX_LINK = "bradex_link"
+        static let POINTS_UPDATED = "points_updated"
+    }
     
     /*
     // Match Status
