@@ -12,10 +12,10 @@ Note that some of the features from the Android version are not fully implemente
 - [x] Manual data synchronization 
 - [x] Network state handling
 - [x] Live score updates via Firebase Messaging
+- [x] Points screen
+- [x] Bradby Express screen
 - [ ] Match photos in the match summary section
 - [ ] Count of score actions and position name in the player detail
-- [ ] Points screen
-- [ ] Bradby Express screen
 
 ## 📱Build requirements
 

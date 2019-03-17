@@ -1,0 +1,60 @@
+{
+    "aps" : {
+        "alert" : {
+            "title" : "Game Request",
+            "body" : "Bob wants to play poker",
+            "action-loc-key" : "PLAY"
+        },
+        "badge" : 5
+    },
+    "score": {
+        "idscore": "169",
+        "matchid": "1",
+        "score": "0.00",
+        "details": "PENALTY",
+        "player": "0",
+        "teamId": "0",
+        "action": "START",
+        "time": "1488020637000",
+        "last_updated": "1551519012000"
+    }
+}
+
+// Score Notification Sample 3 (with no object, root level score object)
+{ "aps" : { "alert" : { "title" : "Game Request", "body" : "Bob wants to play poker", "action-loc-key" : "PLAY" }, "badge" : 5 }, "object": { "idscore": "0", "matchid": "23", "score": "3.00", "details": "kick off", "player": "1", "teamId": "1", "action": "", "time": "1551527797000", "last_updated": "1551519012000" } }
+
+// Score Notification Sample 1
+{ "aps" : { "alert" : { "title" : "Game Request", "body" : "Bob wants to play poker", "action-loc-key" : "PLAY" }, "badge" : 5 }, "object": { "score": { "idscore": "169", "matchid": "1", "score": "0.00", "details": "kick off", "player": "0", "teamId": "0", "action": "ASDKAOJSIDJUASd", "time": "1488020637000", "last_updated": "1551519012000" } } }
+
+// Score Notification Sample 2
+{ "aps" : { "alert" : { "title" : "Game Request", "body" : "Bob wants to play poker", "action-loc-key" : "PLAY" }, "badge" : 5 }, "object": { "score": { "idscore": "777", "matchid": "22", "score": "3.00", "details": "kick off", "player": "0", "teamId": "17", "action": "PENALTY", "time": "1488020637000", "last_updated": "1551519012000" } } }
+
+// Non Score Notification
+{ "aps" : { "alert" : { "title" : "Game Request", "body" : "Bob wants to play poker", "action-loc-key" : "PLAY" }, "badge" : 5 }, "object": {} }
+
+///////////////////////
+///////////////////////
+
+if score.action == .UNDEFINED{
+    if (score.getIdscore() == 0) {
+        ScoreDAO.deleteAllScores(score.getMatchid());
+        MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.PENDING);
+        msg.what = ScoreObserver.WHAT_REMOVE_MATCH;
+    } else {
+        ScoreDAO.deleteScore(score.getIdscore());
+        msg.what = ScoreObserver.WHAT_REMOVE_SCORE;
+    }
+}
+else{
+
+    // ScoreDAO.addScore() returns false if a score object
+    // with an equivalent id already exists in the database
+    boolean inserted = ScoreDAO.addScore(score);
+
+    if (inserted) {
+        msg.what = ScoreObserver.WHAT_NEW_SCORE;
+        if (data.showNotification)
+            sendNotification(data, remoteMessage.getFrom(), getString(R.string.notification_score));
+    } else
+        msg.what = ScoreObserver.WHAT_UPDATE_SCORE;
+}
