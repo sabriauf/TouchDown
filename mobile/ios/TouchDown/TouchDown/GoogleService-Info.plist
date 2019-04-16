@@ -7,34 +7,36 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>782799472423-d7ehcsj0j4g0i23mmhp3bbru7a9hkrv6.apps.googleusercontent.com</string>
+	<string>959794019019-c25cpeuim6vvfnds7jtihr2n5ksapcs6.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.782799472423-d7ehcsj0j4g0i23mmhp3bbru7a9hkrv6</string>
+	<string>com.googleusercontent.apps.959794019019-c25cpeuim6vvfnds7jtihr2n5ksapcs6</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>959794019019-cnga03kchd5e95iln7d6mfebtmlqk907.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAXcb7wuC5kTIESnFgEjOnk6STpCDQ9u8g</string>
+	<string>AIzaSyCq6R-KHoNOo1fpUGyV-DXko6vrASfPdpI</string>
 	<key>GCM_SENDER_ID</key>
-	<string>782799472423</string>
+	<string>959794019019</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>lk.rc07.TouchDown</string>
+	<string>lk.rc7.touchdown</string>
 	<key>PROJECT_ID</key>
-	<string>touchdown-dbd81</string>
+	<string>touchdown-95eb9</string>
 	<key>STORAGE_BUCKET</key>
-	<string>touchdown-dbd81.appspot.com</string>
+	<string>touchdown-95eb9.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:782799472423:ios:47acbaae94322a85</string>
+	<string>1:959794019019:ios:239942fb2be02c28</string>
 	<key>DATABASE_URL</key>
-	<string>https://touchdown-dbd81.firebaseio.com</string>
+	<string>https://touchdown-95eb9.firebaseio.com</string>
 </dict>
 </plist>

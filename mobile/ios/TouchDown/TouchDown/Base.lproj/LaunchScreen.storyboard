@@ -1,7 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_0" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -9,19 +14,98 @@
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Llm-lL-Icb"/>
-                        <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TDBox1" translatesAutoresizingMaskIntoConstraints="NO" id="GAt-Iu-dWr">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="125"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="125" id="ySd-U3-heV"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TDTag" translatesAutoresizingMaskIntoConstraints="NO" id="sgD-Wp-MmH">
+                                <rect key="frame" x="16" y="209" width="288" height="150"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="4ge-hj-nCw"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TDBox2" translatesAutoresizingMaskIntoConstraints="NO" id="fOQ-OL-4GN">
+                                <rect key="frame" x="0.0" y="443" width="320" height="125"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aAG-l4-yhL">
+                                <rect key="frame" x="88.5" y="439" width="143" height="45"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Powered By" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CCS-Dd-UVT">
+                                        <rect key="frame" x="33" y="0.0" width="77" height="17"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <color key="textColor" white="0.93828481740000003" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bradby Express" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0gv-5n-suR">
+                                        <rect key="frame" x="0.0" y="22" width="143" height="23"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                        <color key="textColor" red="0.94901960780000005" green="0.76470588240000004" blue="0.066666666669999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="0gv-5n-suR" secondAttribute="bottom" id="042-0O-gOS"/>
+                                    <constraint firstItem="CCS-Dd-UVT" firstAttribute="centerX" secondItem="aAG-l4-yhL" secondAttribute="centerX" id="1ZY-ig-XGN"/>
+                                    <constraint firstItem="0gv-5n-suR" firstAttribute="leading" secondItem="aAG-l4-yhL" secondAttribute="leading" id="eQy-Dx-Rvk"/>
+                                    <constraint firstItem="0gv-5n-suR" firstAttribute="centerX" secondItem="aAG-l4-yhL" secondAttribute="centerX" id="lwN-QZ-Jkr"/>
+                                    <constraint firstItem="0gv-5n-suR" firstAttribute="top" secondItem="CCS-Dd-UVT" secondAttribute="bottom" constant="5" id="r0a-dF-PB3"/>
+                                    <constraint firstItem="CCS-Dd-UVT" firstAttribute="top" secondItem="aAG-l4-yhL" secondAttribute="top" id="vku-0N-4mb"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.074509803920000006" green="0.18823529410000001" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="sgD-Wp-MmH" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.9" id="2lm-7f-yOX"/>
+                            <constraint firstItem="sgD-Wp-MmH" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="7OC-7w-jKo"/>
+                            <constraint firstItem="sgD-Wp-MmH" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="87w-ts-aIF"/>
+                            <constraint firstItem="fOQ-OL-4GN" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="8dX-26-zyc"/>
+                            <constraint firstItem="GAt-Iu-dWr" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="A0U-pu-P5z"/>
+                            <constraint firstItem="fOQ-OL-4GN" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="EzQ-WD-oEW"/>
+                            <constraint firstItem="aAG-l4-yhL" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Jyy-ug-DKI"/>
+                            <constraint firstItem="fOQ-OL-4GN" firstAttribute="height" secondItem="GAt-Iu-dWr" secondAttribute="height" id="NHo-2q-dpA"/>
+                            <constraint firstItem="fOQ-OL-4GN" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Qre-86-2T5"/>
+                            <constraint firstItem="GAt-Iu-dWr" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="oWo-pN-K3m"/>
+                            <constraint firstItem="GAt-Iu-dWr" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="whf-n5-by7"/>
+                            <constraint firstItem="aAG-l4-yhL" firstAttribute="top" secondItem="sgD-Wp-MmH" secondAttribute="bottom" constant="80" id="xYc-AL-Pvl"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="xYc-AL-Pvl"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="xYc-AL-Pvl"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="xYc-AL-Pvl"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="constraints">
+                                <include reference="xYc-AL-Pvl"/>
+                            </mask>
+                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="TDBox1" width="400" height="100"/>
+        <image name="TDBox2" width="400" height="100"/>
+        <image name="TDTag" width="512" height="348"/>
+    </resources>
 </document>

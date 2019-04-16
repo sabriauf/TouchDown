@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FixtureYearSelectorView" customModule="Touchdown" customModuleProvider="target">
+            <connections>
+                <outlet property="yearLabel" destination="Fvg-rk-Mau" id="pK4-k0-jE3"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="90" height="49"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2018" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fvg-rk-Mau">
+                    <rect key="frame" x="16" y="15.5" width="50" height="18"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" red="0.070588235289999995" green="0.18823529410000001" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="YearSelectorDropDown" translatesAutoresizingMaskIntoConstraints="NO" id="37y-Qr-2oC">
+                    <rect key="frame" x="72" y="21" width="13" height="7"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="37y-Qr-2oC" secondAttribute="height" multiplier="13:7" id="BtR-9i-Qjb"/>
+                        <constraint firstAttribute="height" constant="7" id="fbC-Ek-Jnu"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="37y-Qr-2oC" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="AK6-XX-hZU"/>
+                <constraint firstItem="37y-Qr-2oC" firstAttribute="leading" secondItem="Fvg-rk-Mau" secondAttribute="trailing" constant="6" id="ENM-AX-9g5"/>
+                <constraint firstItem="Fvg-rk-Mau" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="l8d-j8-SbM"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="37y-Qr-2oC" secondAttribute="trailing" constant="5" id="nlI-ll-XTa"/>
+                <constraint firstItem="Fvg-rk-Mau" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="xKS-Db-Vap"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="-93.599999999999994" y="-124.58770614692655"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="YearSelectorDropDown" width="203.66850280761719" height="101.83425140380859"/>
+    </resources>
+</document>

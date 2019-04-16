@@ -82,15 +82,23 @@ public class PlayerPositionDAO extends DBManager {
 
         String ORDER_BY = " %s ASC";
 
+        // tables1 = PlayerTable P, PlayerPositionTable O
         String tables1 = String.format(Locale.getDefault(), TABLE_1, DBContact.PlayerTable.TABLE_NAME,
                 DBContact.PlayerPositionTable.TABLE_NAME);
+        
+        // tables2 = PlayerPositionTable B inner join PlayerTeamTable A
         String tables2 = String.format(Locale.getDefault(), TABLE_2, DBContact.PlayerPositionTable.TABLE_NAME,
                 DBContact.PlayerTeamTable.TABLE_NAME);
 
+        // select = A.PlayerId
         String select = String.format(Locale.getDefault(), SELECT, DBContact.PlayerTeamTable.COLUMN_PLAYER_ID);
+
+        // where_clause_1 = O.PlayerId = P.Id AND O.MatchId = ? AND P.Id
         String where_clause_1 = String.format(Locale.getDefault(), WHERE1, DBContact.PlayerPositionTable.COLUMN_PLAYER_ID,
                 DBContact.PlayerTable.COLUMN_ID, DBContact.PlayerPositionTable.COLUMN_MATCH_ID,
                 DBContact.PlayerTable.COLUMN_ID);
+
+        // where_clause_2 = A.PlayerId = B.PlayerId AND B.MatchId = ? AND A.TeamId = ?
         String where_clause_2 = String.format(Locale.getDefault(), WHERE2, DBContact.PlayerTeamTable.COLUMN_PLAYER_ID,
                 DBContact.PlayerPositionTable.COLUMN_PLAYER_ID, DBContact.PlayerPositionTable.COLUMN_MATCH_ID,
                 DBContact.PlayerTeamTable.COLUMN_TEAM_ID);
@@ -99,6 +107,14 @@ public class PlayerPositionDAO extends DBManager {
 
         String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(matchId), String.valueOf(teamId)};
 
+        /**
+            SELECT * from PlayerTable P, PlayerPositionTable O 
+            WHERE O.PlayerId = P.Id AND O.MatchId = <matchId> AND P.Id
+            IN (SELECT DISTINCT A.PlayerId from PlayerPositionTable B 
+                INNER JOIN PlayerTeamTable A 
+                WHERE A.PlayerId = B.PlayerId AND B.MatchId = <matchId> AND A.TeamId = <teamId>) 
+            ORDER BY PositionId ASC
+         */
         String rawQuery = String.format(Locale.getDefault(), QUERY, tables1, where_clause_1, select, tables2, where_clause_2, order);
 
         Cursor cursor = mDatabase.rawQuery(rawQuery, WHERE_ARGS);
