@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TouchDown</string>
+    <!--<string name="app_name">TouchDown</string>-->
     <string name="actionbar_name">TOUCHDOWN - ROYAL RUGBY</string>
     <string name="live">LIVE</string>
     <string name="topic">HALF TIME</string>
@@ -13,7 +13,6 @@
 
     <string name="google_calendar_api_key">959794019019-cnga03kchd5e95iln7d6mfebtmlqk907.apps.googleusercontent.com</string>
     <string name="facebook_api_key">175608982950353</string>
-
 
     <string name="score">Score</string>
     <string name="time_12_05">Time - 12:05</string>
@@ -35,6 +34,8 @@
     <string name="ovin_askey">Ovin Askey Some Other</string>
     <string name="title_activity_match_summary">Match Details</string>
     <string name="vs">VS</string>
+    <string name="powered_by">Powered By</string>
+    <string name="group_of_2007">Bradby Express</string>
 
     <!-- Match Summary Details-->
     <string name="penalty_title">PENALTIES</string>

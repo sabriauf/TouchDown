@@ -14,9 +14,10 @@ public class AppConfig {
     public static final long DEFAULT_TIME_STAMP = 1486307570;
     public static final String DEVELOPER_KEY = "AIzaSyDx_svQDRRdqGkJXnnKe7E30nxthgC0HgI";
 
-    public static final String TOUCHDOWN_BASE_URL = "http://usrawahada.xyz/touchdown";
-    public static final String SYNCHRONIZE_URL = TOUCHDOWN_BASE_URL + "/sync.php";
-    public static final String LOGIN_URL = TOUCHDOWN_BASE_URL + "/admin/service.php";
+//    public static final String TOUCHDOWN_BASE_URL = "http://usrawahada.xyz/touchdown";
+//    public static final String TOUCHDOWN_TEST_URL = "http://usrawahada.xyz/touchdown_test";
+    public static final String SYNCHRONIZE_URL = "/sync.php";
+    public static final String LOGIN_URL = "/admin/service.php";
     public static final String BRADBY_EXPRESS_URL = "http://www.bradbyexpress.com/";
     public static final String MURC_WEB_LINK = "http://www.MurcLive.com";
 

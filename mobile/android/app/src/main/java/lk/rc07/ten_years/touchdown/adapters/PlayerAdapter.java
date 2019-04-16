@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -23,26 +22,31 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import java.util.List;
 import java.util.Locale;
 
+import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.PlayerDialogActivity;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.fragments.PlayersFragment;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
+import lk.rc07.ten_years.touchdown.models.Staff;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
 /**
  * Created by Sabri on 2/4/2017. Adapter for players
  */
 
-public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
+public class PlayerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    //constants
+    private static final int VIEW_PLAYER = 1;
+    private static final int VIEW_STAFF = 2;
     //instances
     private Activity activity;
-    private List<AdapterPlayer> players;
+    private List<Object> players;
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
 
-    public PlayerAdapter(Activity activity, List<AdapterPlayer> players) {
+    public PlayerAdapter(Activity activity, List<Object> players) {
         this.activity = activity;
         this.players = players;
 
@@ -51,15 +55,22 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     }
 
     @Override
-    public PlayerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(activity).inflate(R.layout.component_player, parent, false);
-        return new PlayerAdapter.ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+
+        if(viewType == VIEW_PLAYER) {
+            View view = inflater.inflate(R.layout.component_player, parent, false);
+            return new PlayerAdapter.PlayerViewHolder(view);
+        } else {
+            View view = inflater.inflate(R.layout.component_staff_player_row, parent, false);
+            return new PlayerAdapter.StaffViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(PlayerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
 
-        final int pos = holder.getAdapterPosition();
+        final int pos = viewHolder.getAdapterPosition();
 
 //        if(pos == 0) {
 //            holder.background.setBackgroundColor(AppHandler.getColor(activity, android.R.color.transparent));
@@ -69,57 +80,68 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 //            holder.txt_player_name.setTextColor(AppHandler.getColor(activity, android.R.color.black));
 //        }
 
-        holder.txt_player_name.setText(players.get(pos).getPlayer().getName().split(" ")[0]);
-        String no = "00";
-        if (players.get(pos).getPosition() != null)
-            no = String.format(Locale.getDefault(), "%02d", players.get(pos).getPosition().getPosNo());
-        holder.txt_player_no.setText(no);
+        if(viewHolder instanceof PlayerViewHolder) {
+            PlayerViewHolder holder = (PlayerViewHolder) viewHolder;
+            final AdapterPlayer adapterPlayer = (AdapterPlayer) players.get(pos);
 
-        try {
-            String img_link = players.get(pos).getPlayer().getImg_url();
-            if (!img_link.equals("/contents/players/")) {
-                img_link = AppConfig.TOUCHDOWN_BASE_URL + img_link;
-                holder.img_profile_pic.setImageDrawable(AppHandler.getDrawable(activity, R.drawable.default_profile_pic));
-                ImageAware imgAware = new ImageViewAware(holder.img_profile_pic);
-                imageLoader.displayImage(img_link, imgAware, options);
+            holder.txt_player_name.setText(adapterPlayer.getPlayer().getName().split(" ")[0]);
+            String no = "00";
+            if (adapterPlayer.getPosition() != null)
+                no = String.format(Locale.getDefault(), "%02d", adapterPlayer.getPosition().getPosNo());
+            holder.txt_player_no.setText(no);
+
+            try {
+                String img_link = adapterPlayer.getPlayer().getImg_url();
+                if (!img_link.equals("/contents/players/")) {
+                    img_link = BuildConfig.DEFAULT_URL + img_link;
+                    holder.img_profile_pic.setImageDrawable(AppHandler.getDrawable(activity, R.drawable.default_profile_pic));
+                    ImageAware imgAware = new ImageViewAware(holder.img_profile_pic);
+                    imageLoader.displayImage(img_link, imgAware, options);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
-        final View img_prof_pic = holder.img_profile_pic;
+            final View img_prof_pic = holder.img_profile_pic;
 //        final View txt_name = holder.txt_player_name;
 //        final View txt_no = holder.txt_player_no;
-        holder.parentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            holder.parentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    img_prof_pic.setTransitionName("profile_pic");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        img_prof_pic.setTransitionName("profile_pic");
 //                    txt_name.setTransitionName("name");
 //                    txt_no.setTransitionName("no");
-                }
+                    }
 
-                Intent intent = new Intent(activity, PlayerDialogActivity.class);
-                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_OBJECT, players.get(pos).getPlayer());
-                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_TEAM, PlayersFragment.team_id);
-                intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_YEAR, PlayersFragment.year);
-                if (players.get(pos).getPosition() != null)
-                    intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION, players.get(pos).getPosition().getPosNo());
-                else
-                    intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION, 0);
+                    Intent intent = new Intent(activity, PlayerDialogActivity.class);
+                    intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_OBJECT, adapterPlayer.getPlayer());
+                    intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_TEAM, PlayersFragment.team_id);
+                    intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_YEAR, PlayersFragment.year);
+                    if (adapterPlayer.getPosition() != null)
+                        intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION, adapterPlayer.getPosition().getPosNo());
+                    else
+                        intent.putExtra(PlayerDialogActivity.EXTRA_PLAYER_POSITION, 0);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
-                            Pair.create(img_prof_pic, "profile_pic"));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
+                                Pair.create(img_prof_pic, "profile_pic"));
 //                            Pair.create(txt_name, "name"),
 //                            Pair.create(txt_no, "no"));
-                    activity.startActivity(intent, options.toBundle());
-                } else {
-                    activity.startActivity(intent);
+                        activity.startActivity(intent, options.toBundle());
+                    } else {
+                        activity.startActivity(intent);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            StaffViewHolder holder = (StaffViewHolder) viewHolder;
+            Staff staff = (Staff) players.get(pos);
+
+            holder.txtName.setText(staff.getName());
+            holder.txtPosition.setText(staff.getPosition());
+        }
     }
 
     @Override
@@ -130,21 +152,41 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
             return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemViewType(int position) {
+        if(players.get(position) instanceof AdapterPlayer)
+            return VIEW_PLAYER;
+        else if(players.get(position) instanceof Staff)
+            return VIEW_STAFF;
+        return super.getItemViewType(position);
+    }
 
-        ConstraintLayout parentView;
-//        RelativeLayout background;
-        ImageView img_profile_pic;
-        TextView txt_player_no;
-        AppCompatTextView txt_player_name;
+    class PlayerViewHolder extends RecyclerView.ViewHolder {
 
-        ViewHolder(View itemView) {
+        private ConstraintLayout parentView;
+//      private RelativeLayout background;
+        private ImageView img_profile_pic;
+        private TextView txt_player_no;
+        private AppCompatTextView txt_player_name;
+
+        PlayerViewHolder(View itemView) {
             super(itemView);
 //            background = itemView.findViewById(R.id.layout_background);
             parentView = itemView.findViewById(R.id.layout_player_parent);
             img_profile_pic = itemView.findViewById(R.id.img_player_pic);
             txt_player_no = itemView.findViewById(R.id.txt_player_no);
             txt_player_name = itemView.findViewById(R.id.txt_player_name);
+        }
+    }
+
+    class StaffViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView txtName, txtPosition;
+
+        StaffViewHolder(View itemView) {
+            super(itemView);
+            txtName = itemView.findViewById(R.id.txt_name_staff_row);
+            txtPosition = itemView.findViewById(R.id.txt_position_staff_row);
         }
     }
 }

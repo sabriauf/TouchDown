@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.fragments.SummaryFragment;
@@ -83,7 +84,7 @@ public class SummaryPlayerAdapter extends RecyclerView.Adapter<SummaryPlayerAdap
         ImageAware imgAware = new ImageViewAware(holder.img_player);
         String img_link =scorer.getPlayer().getImg_url();
         if (!img_link.equals("") && !img_link.equals("/contents/players/")) {
-            img_link = AppConfig.TOUCHDOWN_BASE_URL + img_link;
+            img_link = BuildConfig.DEFAULT_URL + img_link;
             imageLoader.displayImage(img_link, imgAware, options);
         }
 

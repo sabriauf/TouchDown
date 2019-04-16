@@ -3,6 +3,7 @@ package lk.rc07.ten_years.touchdown.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
@@ -33,11 +35,10 @@ public class BradbyExpressFragment extends Fragment {
         String img_link = preferences.getString(Constant.PREFERENCES_EXPRESS_IMAGE, AppConfig.EXPRESS_DEFAULT_LINK);
         final String redirect_link = preferences.getString(Constant.PREFERENCES_EXPRESS_LINK, AppConfig.BRADBY_EXPRESS_URL);
 
-        ImageViewAutoHeight img_bradex = (ImageViewAutoHeight) view.findViewById(R.id.img_bardex);
+        ImageViewAutoHeight img_bradex = view.findViewById(R.id.img_bardex);
 
         ImageLoader imageLoader = ImageLoader.getInstance();
-        DisplayImageOptions options = AppHandler.getImageOption(imageLoader, getContext(), R.drawable.icon_book_placeholder);
-//        DisplayImageOptions options = new DisplayImageOptions.Builder().imageScaleType(ImageScaleType.NONE).bitmapConfig(Bitmap.Config.ARGB_8888).build();
+        DisplayImageOptions options = AppHandler.getImageOptionBestQuality();
 
         imageLoader.displayImage(img_link, img_bradex, options);
 

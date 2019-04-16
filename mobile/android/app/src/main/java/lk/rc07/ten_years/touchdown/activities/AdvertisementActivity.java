@@ -25,9 +25,9 @@ public class AdvertisementActivity extends AppCompatActivity {
         String link = getIntent().getExtras().getString(EXTRAS_IMAGE_LINK);
 
         ImageLoader imageLoader = ImageLoader.getInstance();
-        DisplayImageOptions options = AppHandler.getImageOption(imageLoader, getApplicationContext(), R.drawable.icon_book_placeholder);
+        DisplayImageOptions options = AppHandler.getImageOptionBestQuality();
 
-        ImageViewAutoHeight img_advertisement = (ImageViewAutoHeight) findViewById(R.id.img_advertisement);
+        ImageViewAutoHeight img_advertisement = findViewById(R.id.img_advertisement);
 
         imageLoader.displayImage(link, img_advertisement, options);
     }

@@ -43,7 +43,7 @@ import lk.rc07.ten_years.touchdown.utils.PageBuilder;
 public class MainActivity extends AppCompatActivity {
 
     //constants
-    private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "Bradby Express"};
+    private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "BradEx"};
     public static final int REFRESH_TABS = 1001;
     public static final int LIVE_STREAMING = 1002;
     public static final int FORCE_SYNC = 1003;
@@ -108,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
         setLiveLink(!link.equals(""));
 
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
-            FirebaseMessaging.getInstance().subscribeToTopic("test2");
             Toast.makeText(this, "Developer Build", Toast.LENGTH_LONG).show();
         } else {
+            FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.TOPIC);
             FirebaseMessaging.getInstance().subscribeToTopic("Other_matches");
             FirebaseMessaging.getInstance().subscribeToTopic("General");
             FirebaseMessaging.getInstance().subscribeToTopic("settings");

@@ -3,12 +3,13 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     buildToolsVersion '27.0.2'
+    flavorDimensions "default"
     defaultConfig {
         applicationId "lk.rc07.ten_years.touchdown"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 27
-        versionName "1.1.8"
+        versionCode 29
+        versionName "1.2.1"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "TouchDown-$versionCode")
@@ -17,6 +18,20 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        staging {
+            buildConfigField('String', 'DEFAULT_URL', '"http://usrawahada.xyz/touchdown_test"')
+            buildConfigField('String', 'TOPIC', '"test2"')
+//            applicationId = "lk.rc07.ten_years.touchdown.test"
+            resValue "string", "app_name", "TestTouchDown"
+        }
+        production {
+            buildConfigField('String', 'DEFAULT_URL', '"http://usrawahada.xyz/touchdown"')
+            buildConfigField('String', 'TOPIC', '"android"')
+//            applicationId = "lk.rc07.ten_years.touchdown.live"
+            resValue "string", "app_name", "TouchDown"
         }
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
@@ -55,6 +70,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.30.0'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:multidex:1.0.3'
+    compile "com.android.support:recyclerview-v7:27.1.1"
 }
 
 apply plugin: 'com.google.gms.google-services'

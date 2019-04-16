@@ -80,6 +80,10 @@ public class AppHandler {
         return options;
     }
 
+    public static DisplayImageOptions getImageOptionBestQuality() {
+        return new DisplayImageOptions.Builder().imageScaleType(ImageScaleType.NONE).bitmapConfig(Bitmap.Config.ARGB_8888).build();
+    }
+
     public static Drawable getDrawable(Context context, int resource) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return context.getResources().getDrawable(resource, context.getTheme());
@@ -246,7 +250,7 @@ public class AppHandler {
         dbManager.closeDatabase();
 
         DownloadMeta meta = new DownloadMeta();
-        meta.setUrl(AppConfig.SYNCHRONIZE_URL);
+        meta.setUrl(BuildConfig.DEFAULT_URL + AppConfig.SYNCHRONIZE_URL);
         meta.setRequestMethod(DownloadManager.GET_REQUEST);
         meta.setUrlParams(urlParams);
         meta.setHeaders(AppHandler.getHeaders(context));

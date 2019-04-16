@@ -18,6 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
 import java.util.Locale;
 
+import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
@@ -361,10 +362,10 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         dbManager.closeDatabase();
 
         if (player != null && !player.getImg_url().equals("")) {
-            imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url(), img_profile, options);
+            imageLoader.displayImage(BuildConfig.DEFAULT_URL + player.getImg_url(), img_profile, options);
             txt_player.setText(player.getName());
         } else {
-            imageLoader.displayImage(AppConfig.TOUCHDOWN_BASE_URL + team.getLogo_url(), img_profile, options);
+            imageLoader.displayImage(BuildConfig.DEFAULT_URL + team.getLogo_url(), img_profile, options);
             txt_player.setVisibility(View.GONE);
         }
 

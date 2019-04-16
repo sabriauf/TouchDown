@@ -187,7 +187,8 @@ public class StandingFragment extends Fragment {
         spinner.setAdapter(dataAdapter);
     }
 
-    private void loadTable(TableLayout table, List<Points> points) {
+    private void
+    loadTable(TableLayout table, List<Points> points) {
         table.removeAllViews();
         table.addView(addTitles());
         table.addView(addDivider());
@@ -229,7 +230,8 @@ public class StandingFragment extends Fragment {
         tr1.addView(addTextView(String.valueOf(points.getPlayed() - (points.getWon() + points.getLost())), isRoyal,
                 Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
         tr1.addView(addTextView(String.valueOf(points.getLost()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
-        tr1.addView(addTextView(String.valueOf(points.getPoints()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(2));
+        tr1.addView(addTextView(String.valueOf(String.format(Locale.getDefault(), "%.1f",
+                points.getPoints())), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(2));
 
         return tr1;
     }

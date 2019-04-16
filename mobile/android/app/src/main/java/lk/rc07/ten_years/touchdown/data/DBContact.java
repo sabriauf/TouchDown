@@ -106,4 +106,13 @@ public class DBContact {
         public static final String COLUMN_YEAR = "year";
         public static final String COLUMN_COLORS = "colors";
     }
+
+    public static abstract class PlayerStaffTable {
+        public static final String TABLE_NAME = "player_staff";
+        public static final String COLUMN_STAFF_ID = "staff_id";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_POSITION = "position";
+        public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_ORDER = "staff_order";
+    }
 }

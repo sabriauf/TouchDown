@@ -33,6 +33,7 @@ import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
 import lk.rc07.ten_years.touchdown.data.PointsDAO;
 import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.data.StaffDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.fragments.PlayerTeamDAO;
 import lk.rc07.ten_years.touchdown.models.Group;
@@ -43,6 +44,7 @@ import lk.rc07.ten_years.touchdown.models.PlayerTeam;
 import lk.rc07.ten_years.touchdown.models.Points;
 import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Score;
+import lk.rc07.ten_years.touchdown.models.Staff;
 import lk.rc07.ten_years.touchdown.models.Team;
 
 /**
@@ -114,11 +116,13 @@ class ReadSyncJson {
                 savePlayerTeam(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_PLAYER_TEAM).toString());
             }
 
+            if (jsonObject.has(Constant.JSON_OBJECT_STAFF)) {
+                savePlayerStaff(gson, jsonObject.getJSONArray(Constant.JSON_OBJECT_STAFF).toString());
+            }
+
 //            if (jsonObject.has(Constant.JSON_OBJECT_ADVERTISEMENT)) {
 //                JSONObject object = jsonObject.getJSONObject(Constant.JSON_OBJECT_ADVERTISEMENT);
 //                String img_url = object.getString(Constant.JSON_OBJECT_ADVERTISEMENT_IMAGE);
-//
-//
 //            }
 
 
@@ -141,95 +145,145 @@ class ReadSyncJson {
     }
 
     private void saveGroups(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Group>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<Group>>() {
+            }.getType();
 
-        List<Group> groups = gson.fromJson(response, messageType);
+            List<Group> groups = gson.fromJson(response, messageType);
 
-        for (Group group : groups)
-            GroupDAO.addGroup(group);
+            for (Group group : groups)
+                GroupDAO.addGroup(group);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void saveMatches(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Match>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<Match>>() {
+            }.getType();
 
-        List<Match> matches = gson.fromJson(response, messageType);
+            List<Match> matches = gson.fromJson(response, messageType);
 
-        for (Match match : matches)
-            MatchDAO.addMatch(match);
+            for (Match match : matches)
+                MatchDAO.addMatch(match);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void saveTeams(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Team>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<Team>>() {
+            }.getType();
 
-        List<Team> teams = gson.fromJson(response, messageType);
+            List<Team> teams = gson.fromJson(response, messageType);
 
-        for (Team team : teams)
-            TeamDAO.addTeam(team);
+            for (Team team : teams)
+                TeamDAO.addTeam(team);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void savePositions(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Position>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<Position>>() {
+            }.getType();
 
-        List<Position> positions = gson.fromJson(response, messageType);
+            List<Position> positions = gson.fromJson(response, messageType);
 
-        for (Position position : positions)
-            PositionDAO.addPosition(position);
+            for (Position position : positions)
+                PositionDAO.addPosition(position);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void savePoints(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Points>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<Points>>() {
+            }.getType();
 
-        List<Points> points = gson.fromJson(response, messageType);
+            List<Points> points = gson.fromJson(response, messageType);
 
-        for (Points point : points)
-            PointsDAO.addPoints(point);
+            for (Points point : points)
+                PointsDAO.addPoints(point);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void savePlayers(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Player>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<Player>>() {
+            }.getType();
 
-        List<Player> players = gson.fromJson(response, messageType);
+            List<Player> players = gson.fromJson(response, messageType);
 
-        for (Player player : players)
-            PlayerDAO.addPlayer(player);
+            for (Player player : players)
+                PlayerDAO.addPlayer(player);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void savePlayerPos(Gson gson, String response) {
-        Type messageType = new TypeToken<List<PlayerPosition>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<PlayerPosition>>() {
+            }.getType();
 
-        List<PlayerPosition> players = gson.fromJson(response, messageType);
+            List<PlayerPosition> players = gson.fromJson(response, messageType);
 
-        for (PlayerPosition player : players)
-            PlayerPositionDAO.addPlayerPosition(player);
+            for (PlayerPosition player : players)
+                PlayerPositionDAO.addPlayerPosition(player);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void saveScores(Gson gson, String response) {
-        Type messageType = new TypeToken<List<Score>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<Score>>() {
+            }.getType();
 
-        List<Score> scores = gson.fromJson(response, messageType);
+            List<Score> scores = gson.fromJson(response, messageType);
 
-        ScoreDAO.deleteScore(time);
+            ScoreDAO.deleteScore(time);
 
-        for (Score score : scores)
-            ScoreDAO.addScore(score);
+            for (Score score : scores)
+                ScoreDAO.addScore(score);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void savePlayerTeam(Gson gson, String response) {
-        Type messageType = new TypeToken<List<PlayerTeam>>() {
-        }.getType();
+        try {
+            Type messageType = new TypeToken<List<PlayerTeam>>() {
+            }.getType();
 
-        List<PlayerTeam> playerTeam = gson.fromJson(response, messageType);
+            List<PlayerTeam> playerTeam = gson.fromJson(response, messageType);
 
-        for (PlayerTeam pTeam : playerTeam)
-            PlayerTeamDAO.addPlayerTeam(pTeam);
+            for (PlayerTeam pTeam : playerTeam)
+                PlayerTeamDAO.addPlayerTeam(pTeam);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void savePlayerStaff(Gson gson, String response) {
+        try {
+            Type messageType = new TypeToken<List<Staff>>() {
+            }.getType();
+
+            List<Staff> staffs = gson.fromJson(response, messageType);
+
+            for (Staff staff : staffs)
+                StaffDAO.addStaff(staff);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private boolean readMetaData(Gson gson, String response) {

@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
@@ -108,7 +109,7 @@ public class PlayerDialogActivity extends AppCompatActivity {
 
             profilePic = findViewById(R.id.img_player_pic);
 
-            String img_link = AppConfig.TOUCHDOWN_BASE_URL + player.getImg_url();
+            String img_link = BuildConfig.DEFAULT_URL + player.getImg_url();
             imageLoader.displayImage(img_link, profilePic, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {

@@ -12,7 +12,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //configs
     private static final String DATABASE_NAME = "touchdown_database.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     //constants
     private static final String TEXT_TYPE = " TEXT";
@@ -129,6 +129,16 @@ public class DBHelper extends SQLiteOpenHelper {
             + DBContact.PlayerTeamTable.COLUMN_TEAM_ID + COMMA_SEP + DBContact.PlayerTeamTable.COLUMN_YEAR + ")"
             + ")";
 
+    //Player Team db create statement
+    private static final String CREATE_TABLE_PLAYER_STAFF = "CREATE TABLE " + DBContact.PlayerStaffTable.TABLE_NAME + "("
+            + DBContact.PlayerStaffTable.COLUMN_STAFF_ID + INTEGER_TYPE + COMMA_SEP
+            + DBContact.PlayerStaffTable.COLUMN_ORDER + INTEGER_TYPE + COMMA_SEP
+            + DBContact.PlayerStaffTable.COLUMN_NAME + TEXT_TYPE + COMMA_SEP
+            + DBContact.PlayerStaffTable.COLUMN_POSITION + TEXT_TYPE + COMMA_SEP
+            + DBContact.PlayerStaffTable.COLUMN_STATUS + TEXT_TYPE + COMMA_SEP
+            + PRIMARY_KEY + " (" + DBContact.PlayerStaffTable.COLUMN_STAFF_ID + ") "
+            + ")";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -152,6 +162,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_PLAYER_POSITION);
         sqLiteDatabase.execSQL(CREATE_TABLE_IMAGE);
         sqLiteDatabase.execSQL(CREATE_TABLE_PLAYER_TEAM);
+        sqLiteDatabase.execSQL(CREATE_TABLE_PLAYER_STAFF);
     }
 
     @Override
@@ -166,6 +177,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.GroupTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.ImageTable.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PlayerTeamTable.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DBContact.PlayerStaffTable.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

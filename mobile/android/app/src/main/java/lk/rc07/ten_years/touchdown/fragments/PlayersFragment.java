@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
+import lk.rc07.ten_years.touchdown.data.StaffDAO;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 
 /**
@@ -27,7 +29,7 @@ import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 
 public class PlayersFragment extends Fragment {
 
-    private static final int PLAYER_COLUMNS = 4;
+    private static final int PLAYER_COLUMNS = 3;
     public static final String MATCH_ID = "match_id";
 
     //primary data
@@ -40,23 +42,35 @@ public class PlayersFragment extends Fragment {
 
         DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(getContext()));
         dbManager.openDatabase();
-        List<AdapterPlayer> players;
+        List<Object> players;
         if (getArguments() == null || !getArguments().containsKey(MATCH_ID)) {
-            players = PlayerPositionDAO.getPlayersForMatch(team_id);
+            players = new ArrayList<Object>(PlayerPositionDAO.getPlayersForMatch(team_id));
             if (players.size() > 0) {
                 int matchId = PlayerPositionDAO.getAvailableLastMatch();
                 year = GroupDAO.getGroupForId(MatchDAO.getMatchForId(matchId).getGroup()).getYear();
             }
         } else {
-            players = PlayerPositionDAO.getAdapterPlayers(getArguments().getInt(MATCH_ID));
+            players = new ArrayList<Object>(PlayerPositionDAO.getAdapterPlayers(getArguments().getInt(MATCH_ID)));
             year = GroupDAO.getGroupForId(MatchDAO.getMatchForId(getArguments().getInt(MATCH_ID)).getGroup()).getYear();
         }
+        players.addAll(StaffDAO.getAll());
         dbManager.closeDatabase();
 
+        final List<Object> adapterPlayers = new ArrayList<>(players);
+
         RecyclerView recycler_fixture = view.findViewById(R.id.recycler_players);
-        if (players != null && players.size() > 0) {
+        if (players.size() > 0) {
             view.findViewById(R.id.txt_no_items).setVisibility(View.GONE);
             GridLayoutManager layoutManager = new GridLayoutManager(getContext(), PLAYER_COLUMNS);
+            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (adapterPlayers.get(position) instanceof AdapterPlayer)
+                        return 1;
+                    else
+                        return PLAYER_COLUMNS;
+                }
+            });
             recycler_fixture.setLayoutManager(layoutManager);
             recycler_fixture.setAdapter(new PlayerAdapter(getActivity(), players));
         } else

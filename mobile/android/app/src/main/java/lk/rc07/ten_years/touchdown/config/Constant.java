@@ -36,6 +36,7 @@ public class Constant {
     public static final String JSON_OBJECT_PLAYER_TEAM = "playersTeams";
     public static final String JSON_OBJECT_RESET_DATA = "reset_data";
     public static final String JSON_OBJECT_POINTS_STATUS = "point_release_status";
+    public static final String JSON_OBJECT_STAFF = "supportStaff";
 
     //Preferences params
     public static final String MY_PREFERENCES = "my_preferences";

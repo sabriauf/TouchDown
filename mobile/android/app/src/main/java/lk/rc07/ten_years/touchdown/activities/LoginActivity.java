@@ -29,6 +29,7 @@ import org.json.JSONException;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
@@ -190,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
         params.put(PARAM_USER_TOWN, hometown);
 
         DownloadMeta meta = new DownloadMeta();
-        meta.setUrl(AppConfig.LOGIN_URL);
+        meta.setUrl(BuildConfig.DEFAULT_URL + AppConfig.LOGIN_URL);
         meta.setRequestMethod(DownloadManager.POST_REQUEST);
         meta.setParams(params);
 
