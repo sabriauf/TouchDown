@@ -36,7 +36,7 @@ class GroupDAO{
     static func getLeagues() -> [String]{
         var leagues: [String] = []
         var sql = "SELECT DISTINCT G." + Group.PropertyKey.leagueName + " FROM "
-        sql += Constant.TEXT_GROUPS_TABLE + " G ORDER BY G." + Group.PropertyKey.idGroup + " ASC"
+        sql += Constant.TEXT_GROUPS_TABLE + " G ORDER BY G." + Group.PropertyKey.year + " DESC"
         
         dbQueue.inDatabase { (db) in
             do{

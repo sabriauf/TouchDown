@@ -161,22 +161,6 @@
                                     <constraint firstAttribute="trailing" secondItem="06j-gd-cGW" secondAttribute="trailing" constant="2" id="qnL-S7-gjo"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faj-1i-FKb">
-                                <rect key="frame" x="0.0" y="51" width="320" height="517"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No matches are live yet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z25-qW-7Oi">
-                                        <rect key="frame" x="71" y="248.5" width="178.5" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" red="0.074509803921568626" green="0.18823529411764706" blue="0.3529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstItem="z25-qW-7Oi" firstAttribute="centerX" secondItem="faj-1i-FKb" secondAttribute="centerX" id="99H-8x-Qhj"/>
-                                    <constraint firstItem="z25-qW-7Oi" firstAttribute="centerY" secondItem="faj-1i-FKb" secondAttribute="centerY" id="Qv0-hb-7o8"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tRN-cx-gra" userLabel="LIVE indicator">
                                 <rect key="frame" x="142" y="33" width="36.5" height="18"/>
                                 <subviews>
@@ -207,6 +191,26 @@
                                     <constraint firstItem="JC5-xY-kmP" firstAttribute="top" secondItem="tRN-cx-gra" secondAttribute="top" constant="1" id="vOp-Ak-Jld"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faj-1i-FKb" customClass="DefaultView" customModule="Touchdown" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No matches are live yet" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z25-qW-7Oi">
+                                        <rect key="frame" x="32" y="264" width="256" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.074509803921568626" green="0.18823529411764706" blue="0.3529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="z25-qW-7Oi" firstAttribute="centerX" secondItem="faj-1i-FKb" secondAttribute="centerX" id="99H-8x-Qhj"/>
+                                    <constraint firstItem="z25-qW-7Oi" firstAttribute="centerY" secondItem="faj-1i-FKb" secondAttribute="centerY" id="Qv0-hb-7o8"/>
+                                    <constraint firstItem="z25-qW-7Oi" firstAttribute="width" secondItem="faj-1i-FKb" secondAttribute="width" multiplier="0.8" id="XqP-yV-KQn"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="messageLabel" destination="z25-qW-7Oi" id="MHR-GY-QP9"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.074509803921568626" green="0.18823529411764706" blue="0.3529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -216,7 +220,7 @@
                             <constraint firstItem="oBj-VX-HXx" firstAttribute="trailing" secondItem="Tpe-H2-86I" secondAttribute="trailing" id="QUG-s3-a63"/>
                             <constraint firstItem="tRN-cx-gra" firstAttribute="centerX" secondItem="2lr-vH-Weh" secondAttribute="centerX" id="YAH-W7-BBN"/>
                             <constraint firstItem="2lr-vH-Weh" firstAttribute="leading" secondItem="oBj-VX-HXx" secondAttribute="leading" constant="10" id="Znh-2F-FKK"/>
-                            <constraint firstItem="faj-1i-FKb" firstAttribute="top" secondItem="tRN-cx-gra" secondAttribute="bottom" id="cRk-X4-XNT"/>
+                            <constraint firstItem="faj-1i-FKb" firstAttribute="top" secondItem="BKB-GZ-Uwn" secondAttribute="topMargin" id="cRk-X4-XNT"/>
                             <constraint firstItem="Tpe-H2-86I" firstAttribute="leading" secondItem="oBj-VX-HXx" secondAttribute="leading" id="chA-tG-S3G"/>
                             <constraint firstItem="faj-1i-FKb" firstAttribute="leading" secondItem="oBj-VX-HXx" secondAttribute="leading" id="gW9-3p-hgz"/>
                             <constraint firstItem="oBj-VX-HXx" firstAttribute="bottom" secondItem="faj-1i-FKb" secondAttribute="bottom" id="hdE-P7-cjq"/>
@@ -226,11 +230,6 @@
                             <constraint firstItem="oBj-VX-HXx" firstAttribute="bottom" secondItem="Tpe-H2-86I" secondAttribute="bottom" id="vnC-8z-bYT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="oBj-VX-HXx"/>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="faj-1i-FKb"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
                         <outlet property="defaultView" destination="faj-1i-FKb" id="Zf3-vN-aAV"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina4_0" orientation="portrait">
+    <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,26 +15,23 @@
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TDBox1" translatesAutoresizingMaskIntoConstraints="NO" id="GAt-Iu-dWr">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="125"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="125" id="ySd-U3-heV"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="153.5"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TDTag" translatesAutoresizingMaskIntoConstraints="NO" id="sgD-Wp-MmH">
-                                <rect key="frame" x="16" y="209" width="288" height="150"/>
+                                <rect key="frame" x="192" y="453.5" width="384" height="117"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="150" id="4ge-hj-nCw"/>
+                                    <constraint firstAttribute="height" constant="117" id="4ge-hj-nCw"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TDBox2" translatesAutoresizingMaskIntoConstraints="NO" id="fOQ-OL-4GN">
-                                <rect key="frame" x="0.0" y="443" width="320" height="125"/>
+                                <rect key="frame" x="0.0" y="870.5" width="768" height="153.5"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aAG-l4-yhL">
-                                <rect key="frame" x="88.5" y="439" width="143" height="45"/>
+                                <rect key="frame" x="312.5" y="610.5" width="143" height="45"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Powered By" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CCS-Dd-UVT">
                                         <rect key="frame" x="33" y="0.0" width="77" height="17"/>
@@ -45,7 +42,7 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bradby Express" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0gv-5n-suR">
                                         <rect key="frame" x="0.0" y="22" width="143" height="23"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
-                                        <color key="textColor" red="0.94901960780000005" green="0.76470588240000004" blue="0.066666666669999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="textColor" red="0.94901960780000005" green="0.89844591805752283" blue="0.066753391159993555" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -62,7 +59,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.074509803920000006" green="0.18823529410000001" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="sgD-Wp-MmH" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.9" id="2lm-7f-yOX"/>
+                            <constraint firstItem="sgD-Wp-MmH" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.9" priority="999" id="2lm-7f-yOX"/>
                             <constraint firstItem="sgD-Wp-MmH" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="7OC-7w-jKo"/>
                             <constraint firstItem="sgD-Wp-MmH" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="87w-ts-aIF"/>
                             <constraint firstItem="fOQ-OL-4GN" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="8dX-26-zyc"/>
@@ -71,29 +68,36 @@
                             <constraint firstItem="aAG-l4-yhL" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Jyy-ug-DKI"/>
                             <constraint firstItem="fOQ-OL-4GN" firstAttribute="height" secondItem="GAt-Iu-dWr" secondAttribute="height" id="NHo-2q-dpA"/>
                             <constraint firstItem="fOQ-OL-4GN" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Qre-86-2T5"/>
+                            <constraint firstItem="GAt-Iu-dWr" firstAttribute="height" secondItem="Ze5-6b-2t3" secondAttribute="height" multiplier="0.15" id="gKx-Ll-Sww"/>
                             <constraint firstItem="GAt-Iu-dWr" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="oWo-pN-K3m"/>
+                            <constraint firstItem="sgD-Wp-MmH" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.5" id="pJc-IX-eTG"/>
                             <constraint firstItem="GAt-Iu-dWr" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="whf-n5-by7"/>
-                            <constraint firstItem="aAG-l4-yhL" firstAttribute="top" secondItem="sgD-Wp-MmH" secondAttribute="bottom" constant="80" id="xYc-AL-Pvl"/>
+                            <constraint firstItem="aAG-l4-yhL" firstAttribute="top" secondItem="sgD-Wp-MmH" secondAttribute="bottom" constant="8" symbolic="YES" id="xYc-AL-Pvl">
+                                <variation key="heightClass=compact-widthClass=compact" constant="20"/>
+                                <variation key="heightClass=compact-widthClass=regular" constant="20"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="50"/>
+                                <variation key="heightClass=regular-widthClass=regular" constant="40"/>
+                            </constraint>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="xYc-AL-Pvl"/>
+                                <exclude reference="pJc-IX-eTG"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact-widthClass=compact">
                             <mask key="constraints">
-                                <include reference="xYc-AL-Pvl"/>
+                                <include reference="pJc-IX-eTG"/>
                             </mask>
                         </variation>
-                        <variation key="heightClass=regular-widthClass=compact">
+                        <variation key="heightClass=compact-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="xYc-AL-Pvl"/>
+                                <include reference="pJc-IX-eTG"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="xYc-AL-Pvl"/>
+                                <include reference="pJc-IX-eTG"/>
                             </mask>
                         </variation>
                     </view>

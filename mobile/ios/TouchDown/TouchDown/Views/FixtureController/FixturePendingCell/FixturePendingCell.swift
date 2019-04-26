@@ -39,7 +39,7 @@ class FixturePendingCell: UITableViewCell {
     private func initialize(with model: FixtureViewModel.FixturePendingDetails){
         self.model = model
         
-        oponentSchoolImage.load.request(with: URL(string: model.opCrestUrl)!, placeholder: Constant.IMAGE_PLACEHOLDER) { (_, _, _) in
+        oponentSchoolImage.load.request(with: URL(string: model.opCrestUrl), placeholder: Constant.IMAGE_PLACEHOLDER) { (_, _, _) in
             // No completion block stuff
             // ... for now.
         }

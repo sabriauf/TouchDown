@@ -191,7 +191,15 @@ extension Constant{
     
     static let SECOND_HALF_START_TIME_SECONDS: Double = 2100
     
-    static let TEXT_BASE_URL = "http://usrawahada.xyz/touchdown"
+    static var TEXT_BASE_URL: String{
+        get{
+            #if DEBUG
+                return "http://usrawahada.xyz/touchdown_test"
+            #else
+                return "http://usrawahada.xyz/touchdown"
+            #endif
+        }
+    }
     
     static func getRequestUrl() -> String{
         return TEXT_BASE_URL + "/sync.php"

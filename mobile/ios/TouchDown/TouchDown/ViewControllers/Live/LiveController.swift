@@ -13,7 +13,7 @@ class LiveController: UIViewController{
     @IBOutlet weak var loadingView: LoadingView!
     @IBOutlet weak var liveIndicator: UIView!
     @IBOutlet weak var mainContainerView: UIView!
-    @IBOutlet weak var defaultView: UIView!
+    @IBOutlet weak var defaultView: DefaultView!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -64,7 +64,7 @@ class LiveController: UIViewController{
             loadingView.show {
                 self.liveIndicator.isHidden = true
                 self.mainContainerView.isHidden = true
-                self.defaultView.isHidden = true
+                self.defaultView.hide()
             }
             
             // Start listening to sync calls.
@@ -226,7 +226,7 @@ class LiveController: UIViewController{
         self.loadingView!.show {
             self.liveIndicator.isHidden = true
             self.mainContainerView.isHidden = true
-            self.defaultView.isHidden = true
+            self.defaultView.hide()
         }
     }
     
@@ -368,12 +368,12 @@ class LiveController: UIViewController{
         loadingView.show {
             self.liveIndicator.isHidden = true
             self.mainContainerView.isHidden = true
-            self.defaultView.isHidden = true
+            self.defaultView.hide()
         }
         
         DispatchQueue.global().async { [weak self] in
             if let s = self{
-                if let match = MatchDAO.getCalendarMatch(){
+                if let match = MatchDAO.getDisplayMatch(){
             
                     s.match = match
                     
@@ -438,7 +438,7 @@ class LiveController: UIViewController{
                         s.tableView.reloadData()
                         
                         s.loadingView.hide {
-                            s.defaultView.isHidden = true
+                            s.defaultView.show()
                             s.mainContainerView.isHidden = false
                             s.setupTimer()
                         }
@@ -451,9 +451,9 @@ class LiveController: UIViewController{
                     DispatchQueue.main.async {
                         s.loadingView.hide {
                             s.setDefaultValuesInMainContainer()
-                            s.mainContainerView.isHidden = true
+                            s.mainContainerView.isHidden = false
                             s.liveIndicator.isHidden = true
-                            s.defaultView.isHidden = false
+                            s.defaultView.show()
                             s.setupTimer()
                         }
                     }

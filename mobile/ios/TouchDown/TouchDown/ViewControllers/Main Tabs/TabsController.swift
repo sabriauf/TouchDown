@@ -109,7 +109,7 @@ class TabsController: TabmanViewController{
     
     @IBAction func userTappedOverflowMenu(_ sender: UIBarButtonItem){
         let dd = DropDown(anchorView: sender)
-        dd.dataSource = ["Sync Now", "About Us"]
+        dd.dataSource = ["Refresh", "Sync Now", "About Us"]
         //dd.topOffset = 10.0
         dd.width = 120.0
         dd.bottomOffset = CGPoint(x: 0.0, y: 8.0)
@@ -121,7 +121,10 @@ class TabsController: TabmanViewController{
                     AboutUsController.presentFrom(s.navigationController!)
                 }
                 else if item == "Sync Now"{
-                    s.startManualResync()
+                    s.startManualResync(completeSync: true)
+                }
+                else if item == "Refresh"{
+                    s.startManualResync(completeSync: false)
                 }
             }
             
@@ -145,9 +148,9 @@ class TabsController: TabmanViewController{
         }
     }
     
-    /*@objc */func startManualResync(){
+    /*@objc */func startManualResync(completeSync shouldCompleteSync: Bool){
         NotificationCenter.default.post(name: NSNotification.Name.manualResyncStarted, object: nil)
-        SyncHelper.syncNow(completeSync: true) {
+        SyncHelper.syncNow(completeSync: shouldCompleteSync) {
             GlobalData.callAllSyncListeners()
         }
     }

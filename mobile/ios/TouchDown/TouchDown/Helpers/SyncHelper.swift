@@ -110,4 +110,12 @@ class SyncHelper{
         }
     }
     
+    static func handleSyncNotification(window: UIWindow, fullSync: Bool){
+        if let rc = window.rootViewController as? TabsNavigationController{
+            if let vc = rc.viewControllers.first as? TabsController{
+                vc.startManualResync(completeSync: fullSync)
+            }
+        }
+    }
+    
 }

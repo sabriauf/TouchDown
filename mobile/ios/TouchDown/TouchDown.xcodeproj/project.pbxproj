@@ -34,6 +34,7 @@
 		EE200B4C2235398800164C9B /* ScoreMessageDatabaseAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE200B4B2235398800164C9B /* ScoreMessageDatabaseAction.swift */; };
 		EE20F5582042FB8F00B9BE33 /* BradbyExpress.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE20F5572042FB8F00B9BE33 /* BradbyExpress.swift */; };
 		EE20F55A2042FC0100B9BE33 /* MetaDataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE20F5592042FC0100B9BE33 /* MetaDataItem.swift */; };
+		EE27800D2241FAEF00B9C722 /* AlertBoxHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE27800C2241FAEF00B9C722 /* AlertBoxHelper.swift */; };
 		EE5A188B20414734006EE409 /* TeamCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A188920414734006EE409 /* TeamCollectionCell.swift */; };
 		EE5A188F20414AFE006EE409 /* TeamsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A188E20414AFE006EE409 /* TeamsController.swift */; };
 		EE5A189120414B59006EE409 /* TeamsCollectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A189020414B59006EE409 /* TeamsCollectionDataSource.swift */; };
@@ -92,6 +93,8 @@
 		EECCFA9E222D68AB00C0CF50 /* PlayerTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECCFA9D222D68AB00C0CF50 /* PlayerTeam.swift */; };
 		EECCFAA0222D87CB00C0CF50 /* CompositePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECCFA9F222D87CB00C0CF50 /* CompositePlayer.swift */; };
 		EECCFAA2222D956F00C0CF50 /* Date+SQLiteNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECCFAA1222D956F00C0CF50 /* Date+SQLiteNotation.swift */; };
+		EED0E3FA22644D9C002923F2 /* URL+OptionalString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED0E3F922644D9C002923F2 /* URL+OptionalString.swift */; };
+		EED0E3FD22646472002923F2 /* DefaultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED0E3FC22646472002923F2 /* DefaultView.swift */; };
 		EED9288C220AFF4E00DAC863 /* FixtureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED9288B220AFF4E00DAC863 /* FixtureViewModel.swift */; };
 		EED9288E220AFF5C00DAC863 /* FixtureViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED9288D220AFF5C00DAC863 /* FixtureViewModelFactory.swift */; };
 		EED92890220B036000DAC863 /* String+EpochTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED9288F220B036000DAC863 /* String+EpochTime.swift */; };
@@ -148,6 +151,7 @@
 		EE200B4B2235398800164C9B /* ScoreMessageDatabaseAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreMessageDatabaseAction.swift; sourceTree = "<group>"; };
 		EE20F5572042FB8F00B9BE33 /* BradbyExpress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BradbyExpress.swift; sourceTree = "<group>"; };
 		EE20F5592042FC0100B9BE33 /* MetaDataItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataItem.swift; sourceTree = "<group>"; };
+		EE27800C2241FAEF00B9C722 /* AlertBoxHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBoxHelper.swift; sourceTree = "<group>"; };
 		EE5A188920414734006EE409 /* TeamCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCollectionCell.swift; sourceTree = "<group>"; };
 		EE5A188E20414AFE006EE409 /* TeamsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsController.swift; sourceTree = "<group>"; };
 		EE5A189020414B59006EE409 /* TeamsCollectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsCollectionDataSource.swift; sourceTree = "<group>"; };
@@ -209,6 +213,8 @@
 		EECCFA9D222D68AB00C0CF50 /* PlayerTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTeam.swift; sourceTree = "<group>"; };
 		EECCFA9F222D87CB00C0CF50 /* CompositePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositePlayer.swift; sourceTree = "<group>"; };
 		EECCFAA1222D956F00C0CF50 /* Date+SQLiteNotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+SQLiteNotation.swift"; sourceTree = "<group>"; };
+		EED0E3F922644D9C002923F2 /* URL+OptionalString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+OptionalString.swift"; sourceTree = "<group>"; };
+		EED0E3FC22646472002923F2 /* DefaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultView.swift; sourceTree = "<group>"; };
 		EED9288B220AFF4E00DAC863 /* FixtureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureViewModel.swift; sourceTree = "<group>"; };
 		EED9288D220AFF5C00DAC863 /* FixtureViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureViewModelFactory.swift; sourceTree = "<group>"; };
 		EED9288F220B036000DAC863 /* String+EpochTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EpochTime.swift"; sourceTree = "<group>"; };
@@ -416,6 +422,7 @@
 				EE0BCF7E22305EE400158EE0 /* ReminderHelper.swift */,
 				EEBFDC9F2233B2EE008BA985 /* SettingsHelper.swift */,
 				EEBFDCA22233B904008BA985 /* NotificationHelper.swift */,
+				EE27800C2241FAEF00B9C722 /* AlertBoxHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -586,6 +593,14 @@
 			path = "Match Summary Views";
 			sourceTree = "<group>";
 		};
+		EED0E3FB22646453002923F2 /* Live Tab Default View */ = {
+			isa = PBXGroup;
+			children = (
+				EED0E3FC22646472002923F2 /* DefaultView.swift */,
+			);
+			path = "Live Tab Default View";
+			sourceTree = "<group>";
+		};
 		EED92889220AFEED00DAC863 /* ViewModelFactories */ = {
 			isa = PBXGroup;
 			children = (
@@ -694,6 +709,7 @@
 		EEEE6EE820394D5A005D1D0B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EED0E3FB22646453002923F2 /* Live Tab Default View */,
 				EECCFA8E222D20E400C0CF50 /* Match Summary Views */,
 				EECCFA74222C301700C0CF50 /* LoadingView */,
 				EE82C2A320551265001C64C7 /* TimeLine Cells */,
@@ -727,6 +743,7 @@
 				EE1C67B3222FA279001134EC /* Double+GameTimeString.swift */,
 				EEBDE8A9223B303600ED87CE /* Int+ToSeconds.swift */,
 				EEBDE8AB223B311800ED87CE /* Int+EpochTime.swift */,
+				EED0E3F922644D9C002923F2 /* URL+OptionalString.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -928,6 +945,7 @@
 				EEEE6EFF20395F2A005D1D0B /* PointsSectionHeader.swift in Sources */,
 				EE11F91F222C1AED00EF4E8A /* GroupDAO.swift in Sources */,
 				EEEE6ED820391572005D1D0B /* SWRevealViewController.m in Sources */,
+				EED0E3FA22644D9C002923F2 /* URL+OptionalString.swift in Sources */,
 				EE20F5582042FB8F00B9BE33 /* BradbyExpress.swift in Sources */,
 				EEEE6EF620395951005D1D0B /* UIView+ReallySmallView.swift in Sources */,
 				EECCFA96222D222E00C0CF50 /* MatchSummaryPlayerDetailRowView.swift in Sources */,
@@ -945,9 +963,11 @@
 				EE5A18AC2042A23E006EE409 /* Team.swift in Sources */,
 				EECCFA89222D146500C0CF50 /* MatchSummaryController.swift in Sources */,
 				EECCFAA0222D87CB00C0CF50 /* CompositePlayer.swift in Sources */,
+				EED0E3FD22646472002923F2 /* DefaultView.swift in Sources */,
 				EEEE6EDA20391663005D1D0B /* TabsNavigationController.swift in Sources */,
 				EE5A18A220428994006EE409 /* Sync.swift in Sources */,
 				EE5A189A2041997D006EE409 /* FixtureController.swift in Sources */,
+				EE27800D2241FAEF00B9C722 /* AlertBoxHelper.swift in Sources */,
 				EECCFA78222C303200C0CF50 /* LoadingView.swift in Sources */,
 				EE5A189420415759006EE409 /* PlayerDetailsView.swift in Sources */,
 				EE1F6979223C412700A81B5F /* PointsDAO.swift in Sources */,

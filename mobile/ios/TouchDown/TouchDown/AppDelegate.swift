@@ -14,6 +14,13 @@ import ObjectMapper
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    private enum NotificationType{
+        case Generic
+        case Score
+        case Sync
+        case FullSync
+    }
+    
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -91,9 +98,18 @@ extension AppDelegate: UNUserNotificationCenterDelegate{
         let data = response.notification.request.content.userInfo
         print("Recieved notification.", data)
         
-        if let score = dataAsScoreObject(data){
-            print("DIDRECEIVE: ⭐️ Handling notification as score object")
-            handleScoreNotification(score)
+        let type = getNotificationType(data)
+        if type == .Score{
+            if let score = dataAsScoreObject(data){
+                print("DIDRECEIVE: ⭐️⭐️ Handling notification as score object")
+                handleScoreNotification(score)
+            }
+        }
+        else if type == .Sync{
+            SyncHelper.handleSyncNotification(window: window!, fullSync: false)
+        }
+        else if type == .FullSync{
+            SyncHelper.handleSyncNotification(window: window!, fullSync: true)
         }
         completionHandler()
     }
@@ -106,11 +122,25 @@ extension AppDelegate: UNUserNotificationCenterDelegate{
         // Show the notification if it doesn't have
         // an "object" key
         
-        if let score = dataAsScoreObject(data){
-            print("WILLRECEIVE: ⭐️ Handling notification as score object")
-            handleScoreNotification(score)
+        let type = getNotificationType(data)
+        var notificationWasHandled: Bool = false
+        if type == .Score{
+            if let score = dataAsScoreObject(data){
+                print("WILLRECEIVE: ⭐️⭐️ Handling notification as score object")
+                handleScoreNotification(score)
+                notificationWasHandled = true
+            }
         }
-        else{
+        else if type == .Sync{
+            SyncHelper.handleSyncNotification(window: window!, fullSync: false)
+            notificationWasHandled = true
+        }
+        else if type == .FullSync{
+            SyncHelper.handleSyncNotification(window: window!, fullSync: true)
+            notificationWasHandled = true
+        }
+        
+        if !notificationWasHandled{
             print("WILLRECEIVE: ⭐️ Handling notification as ... notification")
             if SettinsHelper.shouldRegisterWithSound(){
                 completionHandler([.sound, .alert, .badge])
@@ -119,12 +149,42 @@ extension AppDelegate: UNUserNotificationCenterDelegate{
                 completionHandler([.alert, .badge])
             }
         }
+        else{
+            completionHandler([])
+        }
+    }
+    
+    private func getNotificationType(_ data: [AnyHashable: Any]) -> NotificationType{
+        if data["score"] != nil{
+            return .Score
+        }
+        else if let o = data["object"] as? String{
+            if ScoreAsNotificationObject(JSONString: o) != nil{
+                return .Score
+            }
+        }
+        else if data["sync"] != nil{
+            return .Sync
+        }
+        else if data["full_sync"] != nil{
+            return .FullSync
+        }
+        return .Generic
     }
     
     private func dataAsScoreObject(_ data: [AnyHashable: Any]) -> Score?{
+        
+        // Tries two different methods of extracting the score
+        // object from the notification details
+        
         if let s = data["score"] as? String{
             let scoreObject = Score(JSONString: s)
             return scoreObject
+        }
+        else if let o = data["object"] as? String{
+            if let scoreFromNotificationObject = ScoreAsNotificationObject(JSONString: o){
+                return scoreFromNotificationObject.score ?? nil
+            }
         }
         return nil
     }
@@ -148,17 +208,54 @@ extension AppDelegate: MessagingDelegate{
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         print("🎃 Firebase registration token: \(fcmToken)")
         
+        // Unregister from legacy topics
+        // (ones without the .ios postfix)
+        
+        unSubFromLegacyTopics()
+        
         // Re-register for topics
-        subToTopic("score")
-        subToTopic("other_matches")
-        subToTopic("general")
-        subToTopic("Other_matches")
-        subToTopic("General")
-        subToTopic("settings")
+        
+        subToTopic("score.ios")
+        subToTopic("other_matches.ios")
+        subToTopic("general.ios")
+        subToTopic("Other_matches.ios")
+        subToTopic("General.ios")
+        subToTopic("settings.ios")
+        
+        #if DEBUG
+            print("🇱🇰 The app is in debug mode")
+            subToTopic("test2.ios")
+            AlertBoxHelper.showAlertBox(
+                from: window!.rootViewController!,
+                "Developer Mode",
+                "You are using a developer signed version of Touchdown")
+        #else
+            print("💃 The app is in release mode")
+        #endif
     }
     
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
         print("⭐️ Recieved Notification: ")
+    }
+    
+    private func unSubFromLegacyTopics(){
+        unSubFromTopic("score")
+        unSubFromTopic("other_matches")
+        unSubFromTopic("general")
+        unSubFromTopic("Other_matches")
+        unSubFromTopic("General")
+        unSubFromTopic("settings")
+    }
+    
+    private func unSubFromTopic(_ topic: String){
+        Messaging.messaging().unsubscribe(fromTopic: topic) { (error) in
+            if let e = error{
+                print("Error while unsubscribing from topic \"\(topic)\". Error:", e.localizedDescription)
+            }
+            else{
+                print("Successfully unsubscribed from topic \"\(topic)\"")
+            }
+        }
     }
     
     private func subToTopic(_ topic: String){

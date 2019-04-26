@@ -203,3 +203,19 @@ class Score: Record, Mappable, ModelProtocol{
     }
 }
 
+/**
+ Used as an object to map notification
+ details received from the touchdown server
+ */
+class ScoreAsNotificationObject: Mappable{
+    
+    var score: Score?
+    
+    required init?(map: Map) {
+    }
+    
+    func mapping(map: Map) {
+        score <- map["score"]
+    }
+    
+}
