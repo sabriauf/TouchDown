@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
             Toast.makeText(this, "Developer Build", Toast.LENGTH_LONG).show();
+            FirebaseMessaging.getInstance().subscribeToTopic("test2");
         } else {
             FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.TOPIC);
             FirebaseMessaging.getInstance().subscribeToTopic("Other_matches");

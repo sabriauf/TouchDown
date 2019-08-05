@@ -1,5 +1,6 @@
 package lk.rc07.ten_years.touchdown.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -130,20 +131,23 @@ public class LiveFragment extends Fragment {
 
             final Group finalGroup = group;
             final List<Score> temp_scores = scores;
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (match != null) {
-                        adapter = new ScoreAdapter(getContext(), temp_scores, match);
-                        recyclerView.setAdapter(adapter);
-                        setData(parentView, match, finalGroup, teamOne, teamTwo);
-                        if (temp_scores.size() > 0)
-                            mLayoutManager.scrollToPositionWithOffset(temp_scores.size() - 1, 0);
-                    } else {
-                        setData(parentView, null, null, null, null);
+            Activity activity = getActivity();
+            if(activity != null) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (match != null) {
+                            adapter = new ScoreAdapter(getContext(), temp_scores, match);
+                            recyclerView.setAdapter(adapter);
+                            setData(parentView, match, finalGroup, teamOne, teamTwo);
+                            if (temp_scores.size() > 0)
+                                mLayoutManager.scrollToPositionWithOffset(temp_scores.size() - 1, 0);
+                        } else {
+                            setData(parentView, null, null, null, null);
+                        }
                     }
-                }
-            });
+                });
+            }
 
         }
     });
@@ -206,7 +210,7 @@ public class LiveFragment extends Fragment {
 
             @Override
             public void OnScoreUpdate(Score score) {
-                if (score.getMatchid() == match.getIdmatch()) {
+                if (score != null && match != null && score.getMatchid() == match.getIdmatch()) {
                     if (score.getAction() == Score.Action.START)
                         setTimer(getUpdatedMatch(score, match));
                     adapter.updateItem(score);
@@ -349,7 +353,10 @@ public class LiveFragment extends Fragment {
                 return dateFormat.format(date);
             case DONE:
             case FULL_TIME:
+//                if(!match.getResult().equals("")) //TODO
                 return match.getResult();
+//                else
+//                    return
             default:
                 return match.getStatus().toStringValue();
         }

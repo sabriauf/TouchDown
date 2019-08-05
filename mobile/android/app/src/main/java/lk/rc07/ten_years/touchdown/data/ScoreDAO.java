@@ -172,9 +172,11 @@ public class ScoreDAO extends DBManager {
 
     private static void addScoreToScorers(ArrayList<Scorer> scorers, Score score) {
         for (Scorer scorer : scorers) {
-            if (score.getPlayer() == scorer.getPlayer().getIdPlayer()) {
-                scorer.getScores().add(score);
-                return;
+            if(scorer != null && scorer.getPlayer() != null) {
+                if (score.getPlayer() == scorer.getPlayer().getIdPlayer()) {
+                    scorer.getScores().add(score);
+                    return;
+                }
             }
         }
         Scorer scorer = new Scorer();

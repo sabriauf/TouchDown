@@ -7,6 +7,7 @@ import android.os.Message;
 import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_RESULT = 2;
     private static final String LAST_RESULT = "Last match : %s";
     private static final String NEW_RESULT = " RC -<span style=\"color:#F2C311\"> %d : %d </span>- %s";
+    private static final String RESULT_SUMMARY = " %s won by %d points.";
 
     //instances
     private Context context;
@@ -85,13 +87,15 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         Date date = new Date(match.getMatchDate());
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        String opponentTeam;
 
         ImageView img_crest;
         if (viewHolder instanceof PendingViewHolder) {
             PendingViewHolder holder = (PendingViewHolder) viewHolder;
 
             dbManager.openDatabase();
-            holder.txt_team.setText(getTeamName(match));
+            opponentTeam = getTeamName(match);
+            holder.txt_team.setText(opponentTeam);
             Group group = GroupDAO.getGroupForId(match.getGroup());
             Match lastMatch = MatchDAO.getMatchForTheYear(group.getYear() - 1, match.getTeamOne(), match.getTeamTwo());
             dbManager.closeDatabase();
@@ -129,16 +133,28 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ResultViewHolder holder = (ResultViewHolder) viewHolder;
 
             dbManager.openDatabase();
+            int homeTotal;
+            int opponentTotal;
+            if (match.getTeamOne() == AppConfig.HOME_TEAM_ID) {
+                homeTotal = getTeamTotal(match.getIdmatch(), match.getTeamOne());
+                opponentTotal = getTeamTotal(match.getIdmatch(), match.getTeamTwo());
+                opponentTeam = getTeamShortName(match.getTeamTwo());
+            } else {
+                homeTotal = getTeamTotal(match.getIdmatch(), match.getTeamTwo());
+                opponentTotal = getTeamTotal(match.getIdmatch(), match.getTeamOne());
+                opponentTeam = getTeamShortName(match.getTeamOne());
+            }
+
             holder.txt_team.setText(getTeamName(match));
             holder.txt_date.setText(dateFormat.format(date));
             holder.txt_time.setText(match.getStatus().toStringValue());
-            if (match.getResult() != null)
-                holder.txt_final.setText(match.getResult());
-            else
-                holder.txt_final.setText("");
+//            if (match.getResult() != null)
+//                holder.txt_final.setText(match.getResult());
+//            else
+            holder.txt_final.setText(getMatchResult(opponentTeam, homeTotal, opponentTotal));
 
 
-            holder.txt_result.setText(getResultString(match));
+            holder.txt_result.setText(getResultString(opponentTeam, homeTotal, opponentTotal));
             dbManager.closeDatabase();
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -156,9 +172,14 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), img_crest, options);
     }
 
+    private String getMatchResult(String opponentTeam, int homeTotal, int opponentTotal) {
+        return String.format(Locale.getDefault(), RESULT_SUMMARY, homeTotal > opponentTotal ?
+                "Royal" : opponentTeam, (homeTotal > opponentTotal) ? (homeTotal - opponentTotal) : (opponentTotal - homeTotal));
+    }
+
     private String getTeamName(Match match) {
         int teamId;
-        if(match != null) {
+        if (match != null) {
             if (match.getTeamOne() == AppConfig.HOME_TEAM_ID)
                 teamId = match.getTeamTwo();
             else
@@ -171,19 +192,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return "";
     }
 
-    private Spanned getResultString(Match match) {
-        int homeTotal;
-        int opponentTotal;
-        String opponentTeam;
-        if (match.getTeamOne() == AppConfig.HOME_TEAM_ID) {
-            homeTotal = getTeamTotal(match.getIdmatch(), match.getTeamOne());
-            opponentTotal = getTeamTotal(match.getIdmatch(), match.getTeamTwo());
-            opponentTeam = getTeamShortName(match.getTeamTwo());
-        } else {
-            homeTotal = getTeamTotal(match.getIdmatch(), match.getTeamTwo());
-            opponentTotal = getTeamTotal(match.getIdmatch(), match.getTeamOne());
-            opponentTeam = getTeamShortName(match.getTeamOne());
-        }
+    private Spanned getResultString(String opponentTeam, int homeTotal, int opponentTotal) {
         return AppHandler.getHtmlString(String.format(Locale.getDefault(), NEW_RESULT, homeTotal, opponentTotal, opponentTeam));
     }
 

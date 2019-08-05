@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '27.0.2'
     flavorDimensions "default"
     defaultConfig {
         applicationId "lk.rc07.ten_years.touchdown"
         minSdkVersion 15
-        targetSdkVersion 27
-        versionCode 29
-        versionName "1.2.1"
+        targetSdkVersion 28
+        versionCode 32
+        versionName "1.2.3"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "TouchDown-$versionCode")

@@ -80,7 +80,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
             if (!remoteMessage.getData().containsKey(PARAM_PUSH_TITLE)) {
                 String title = remoteMessage.getData().get(PARAM_PUSH_TITLE);
-                if (title.equals(PARAM_SYNC_VALUE)) {
+                if (title != null && title.equals(PARAM_SYNC_VALUE)) {
                     MainActivity.mHandler.sendEmptyMessage(MainActivity.FORCE_SYNC);
                     return;
                 }
@@ -203,7 +203,9 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         notificationBuilder.setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationBuilder.setColor(getColor(R.color.colorAccent));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            notificationBuilder.setColor(getColor(R.color.colorAccent));
+        }
         notificationManager.notify(data.id, notificationBuilder.build());
     }
 
@@ -327,13 +329,13 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         PackageManager pm = context.getPackageManager();
         Intent intent = pm.getLaunchIntentForPackage(context.getApplicationContext().getPackageName());
 
-        if (url.equals("")) {
+        if (!url.equals("")) {
             try {
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URLDecoder.decode(url, "UTF-8")));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        } else if (activity.equals("")) {
+        } else if (!activity.equals("")) {
             try {
                 targetClass = Class.forName(activity);
                 intent = new Intent(context, targetClass);

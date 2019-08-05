@@ -20,3 +20,5 @@ mobile/ios/TouchDown/Touchdown/*.DS_Store
 mobile/ios/TouchDown/Touchdown/*.xcworkspace
 mobile/ios/TouchDown/Touchdown/Pods/**
 mobile/ios/TouchDown/Touchdown/*.lock
+mobile/android/.idea/*
+mobile/android/app/production

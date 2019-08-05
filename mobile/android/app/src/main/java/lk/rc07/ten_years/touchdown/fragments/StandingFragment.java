@@ -144,8 +144,8 @@ public class StandingFragment extends Fragment {
 
             }
         });
-        if (rounds.size() > 1)
-            spn_rounds.setSelection(rounds.size() - 1);
+//        if (rounds.size() > 0)
+//            spn_rounds.setSelection(0);
 
     }
 

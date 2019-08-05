@@ -1,5 +1,7 @@
 package lk.rc07.ten_years.touchdown.fragments;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,8 +47,14 @@ public class BradbyExpressFragment extends Fragment {
         img_bradex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(redirect_link));
-                getActivity().startActivity(intent);
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(redirect_link));
+                    Activity activity = getActivity();
+                    if (activity != null)
+                        activity.startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         return view;

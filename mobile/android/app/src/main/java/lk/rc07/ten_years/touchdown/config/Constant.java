@@ -27,7 +27,7 @@ public class Constant {
     public static final String JSON_OBJECT_PLAYERS = "players";
     public static final String JSON_OBJECT_PLAYER_POS = "playerPosition";
     public static final String JSON_OBJECT_META = "meta_data";
-    public static final String JSON_OBJECT_ADVERTISEMENT = "advertisement";
+    public static final String JSON_OBJECT_ADVERTISEMENT = "advertisement_with_link";
     public static final String JSON_OBJECT_VERSION = "version";
     public static final String JSON_OBJECT_SCORES = "scores";
     public static final String JSON_OBJECT_POINTS_UPDATED = "points_updated";

@@ -329,7 +329,7 @@ class ReadSyncJson {
 
                 case Constant.JSON_OBJECT_ADVERTISEMENT:
                     if (!data.getMeta_value().equals(""))
-                        showAdvertisement(data.getMeta_value());
+                        showAdvertisement(data.getMeta_value().split(":")[0], data.getMeta_value().split(":")[1]);
                     break;
                 case Constant.JSON_OBJECT_POINTS_STATUS:
                     if (!data.getMeta_value().equals(""))
@@ -357,9 +357,10 @@ class ReadSyncJson {
         editor.apply();
     }
 
-    private void showAdvertisement(String img_url) {
+    private void showAdvertisement(String img_url, String link) {
         Intent intent = new Intent(context, AdvertisementActivity.class);
         intent.putExtra(AdvertisementActivity.EXTRAS_IMAGE_LINK, img_url);
+        intent.putExtra(AdvertisementActivity.EXTRAS_REDIRECT_LINK, link);
 
         context.startActivity(intent);
     }
