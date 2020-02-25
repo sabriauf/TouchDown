@@ -2,6 +2,7 @@ package lk.rc07.ten_years.touchdown.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.media.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,17 @@ public class ImageDAO extends DBManager {
         cursor.close();
         return images;
     }
+
+//    public static List<Image> getAllImages() {
+//        List<Image> groups = new ArrayList<>();
+//
+//        Cursor cursor = mDatabase.query(DBContact.ImageTable.TABLE_NAME, null, null, null, null, null, null);
+//        while (cursor.moveToNext()) {
+//            groups.add(cursorToImage(cursor));
+//        }
+//        cursor.close();
+//        return groups;
+//    }
 
     private static FBImage cursorToImage(Cursor cursor) {
         FBImage image = new FBImage();

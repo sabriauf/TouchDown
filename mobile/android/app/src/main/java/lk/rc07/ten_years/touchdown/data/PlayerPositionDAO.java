@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
 import lk.rc07.ten_years.touchdown.models.Match;
+import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.PlayerPosition;
 import lk.rc07.ten_years.touchdown.models.Position;
 
@@ -184,6 +186,17 @@ public class PlayerPositionDAO extends DBManager {
         return position;
     }
 
+    public static List<PlayerPosition> getAllPositions() {
+        List<PlayerPosition> positions = new ArrayList<>();
+
+        Cursor cursor = mDatabase.query(DBContact.PlayerPositionTable.TABLE_NAME, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            positions.add(cursorToPositions(cursor));
+        }
+        cursor.close();
+        return positions;
+    }
+
 //    public static List<Position> getPlayerPosition(int matchId) {
 //        List<Position> position = new ArrayList<>();
 //
@@ -243,5 +256,14 @@ public class PlayerPositionDAO extends DBManager {
 
     public static boolean deleteAll() {
         return mDatabase.delete(DBContact.PlayerPositionTable.TABLE_NAME, null, null) == 1;
+    }
+
+    static PlayerPosition cursorToPositions(Cursor cursor) {
+        PlayerPosition position = new PlayerPosition();
+        int id = cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_MATCH_ID));
+        position.setIdMatch(id);
+        position.setIdPlayer(cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_PLAYER_ID)));
+        position.setIdPosition(cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_POS_ID)));
+        return position;
     }
 }

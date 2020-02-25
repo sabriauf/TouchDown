@@ -232,6 +232,17 @@ public class ScoreDAO extends DBManager {
         return mDatabase.delete(DBContact.ScoreTable.TABLE_NAME, WHERE_CLAUSE, WHERE_ARGS) == 1;
     }
 
+    public static List<Score> getAllScores() {
+        List<Score> scores = new ArrayList<>();
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            scores.add(cursorToScore(cursor));
+        }
+        cursor.close();
+        return scores;
+    }
+
     public static boolean deleteAll() {
         return mDatabase.delete(DBContact.ScoreTable.TABLE_NAME, null, null) == 1;
     }

@@ -3,6 +3,9 @@ package lk.rc07.ten_years.touchdown.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lk.rc07.ten_years.touchdown.models.Team;
 
 /**
@@ -60,6 +63,17 @@ public class TeamDAO extends DBManager {
         }
         cursor.close();
         return team;
+    }
+
+    public static List<Team> getAllTeams() {
+        List<Team> teams = new ArrayList<>();
+
+        Cursor cursor = mDatabase.query(DBContact.TeamTable.TABLE_NAME, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            teams.add(cursorToTeam(cursor));
+        }
+        cursor.close();
+        return teams;
     }
 
     private static Team cursorToTeam(Cursor cursor) {

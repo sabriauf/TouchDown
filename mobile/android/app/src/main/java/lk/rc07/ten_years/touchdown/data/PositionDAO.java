@@ -3,6 +3,9 @@ package lk.rc07.ten_years.touchdown.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lk.rc07.ten_years.touchdown.models.Position;
 
 /**
@@ -59,6 +62,17 @@ public class PositionDAO extends DBManager {
         }
         cursor.close();
         return position;
+    }
+
+    public static List<Position> getAllPositions() {
+        List<Position> positions = new ArrayList<>();
+
+        Cursor cursor = mDatabase.query(DBContact.PositionTable.TABLE_NAME, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            positions.add(cursorToPosition(cursor));
+        }
+        cursor.close();
+        return positions;
     }
 
     public static Position getPositionForNo(int posNo) {

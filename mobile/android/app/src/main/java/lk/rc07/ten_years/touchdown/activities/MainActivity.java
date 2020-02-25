@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
         syncData();
         readExtras(getIntent());
+
+//        AppHandler.readData(this);
     }
 
     @Override

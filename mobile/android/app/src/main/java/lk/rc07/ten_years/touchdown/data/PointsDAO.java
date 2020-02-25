@@ -56,16 +56,16 @@ public class PointsDAO extends DBManager {
         }
     }
 
-//    public static List<Points> getAllPointTable() {
-//        List<Points> points = new ArrayList<>();
-//
-//        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, null, null, null, null, null, null);
-//        while (cursor.moveToNext()) {
-//            points.add(cursorToPoints(cursor));
-//        }
-//        cursor.close();
-//        return points;
-//    }
+    public static List<Points> getAllPointTable() {
+        List<Points> points = new ArrayList<>();
+
+        Cursor cursor = mDatabase.query(DBContact.PointsTable.TABLE_NAME, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            points.add(cursorToPoints(cursor));
+        }
+        cursor.close();
+        return points;
+    }
 
     public static List<Points> getPointTable(int groupId) {
         List<Points> points = new ArrayList<>();

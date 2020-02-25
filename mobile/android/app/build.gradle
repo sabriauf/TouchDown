@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '27.0.2'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.1'
     flavorDimensions "default"
     defaultConfig {
         applicationId "lk.rc07.ten_years.touchdown"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 16
+        targetSdkVersion 29
         versionCode 32
         versionName "1.2.3"
         multiDexEnabled true
@@ -46,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -57,20 +58,24 @@ dependencies {
     compile('com.google.apis:google-api-services-calendar:v3-rev233-1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    compile 'com.android.support:appcompat-v7:27.1.0'
-    compile 'com.android.support:design:27.1.0'
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
-    compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
-    compile 'com.google.code.gson:gson:2.8.1'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
-    compile 'pub.devrel:easypermissions:0.2.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.facebook.android:facebook-android-sdk:4.30.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
+    implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation 'pub.devrel:easypermissions:0.2.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.facebook.android:facebook-android-sdk:4.30.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:multidex:1.0.3'
-    compile "com.android.support:recyclerview-v7:27.1.1"
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation "com.android.support:recyclerview-v7:27.1.1"
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+
+    // Add the Firebase Crashlytics dependency.
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
