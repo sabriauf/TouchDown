@@ -2,7 +2,7 @@ package lk.rc07.ten_years.touchdown.adapters;
 
 import android.content.Context;
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
-import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.fragments.SummaryFragment;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Scorer;

@@ -12,7 +12,7 @@ android {
         versionCode 32
         versionName "1.2.3"
         multiDexEnabled true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "TouchDown-$versionCode")
     }
     buildTypes {
@@ -23,13 +23,13 @@ android {
     }
     productFlavors {
         staging {
-            buildConfigField('String', 'DEFAULT_URL', '"http://usrawahada.xyz/touchdown_test"')
+            buildConfigField('String', 'DEFAULT_URL', '"http://touchdownroyal.com/touchdown_test"')
             buildConfigField('String', 'TOPIC', '"test2"')
 //            applicationId = "lk.rc07.ten_years.touchdown.test"
             resValue "string", "app_name", "TestTouchDown"
         }
         production {
-            buildConfigField('String', 'DEFAULT_URL', '"http://usrawahada.xyz/touchdown"')
+            buildConfigField('String', 'DEFAULT_URL', '"http://touchdownroyal.com/touchdown"')
             buildConfigField('String', 'TOPIC', '"android"')
 //            applicationId = "lk.rc07.ten_years.touchdown.live"
             resValue "string", "app_name", "TouchDown"
@@ -48,30 +48,30 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile files('libs/YouTubeAndroidPlayerApi.jar')
-    compile('com.google.api-client:google-api-client-android:1.22.0') {
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation('com.google.api-client:google-api-client-android:1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    compile('com.google.apis:google-api-services-calendar:v3-rev233-1.22.0') {
+    implementation('com.google.apis:google-api-services-calendar:v3-rev233-1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
-    implementation 'com.google.firebase:firebase-core:11.8.0'
-    implementation 'com.google.firebase:firebase-messaging:11.8.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
-    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'pub.devrel:easypermissions:0.2.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.facebook.android:facebook-android-sdk:4.30.0'
-    testCompile 'junit:junit:4.12'
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation "com.android.support:recyclerview-v7:27.1.1"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.facebook.android:facebook-android-sdk:4.33.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
 
     // Add the Firebase Crashlytics dependency.

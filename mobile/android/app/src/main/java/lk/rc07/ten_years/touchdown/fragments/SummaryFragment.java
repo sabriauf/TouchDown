@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +35,6 @@ import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
-import lk.rc07.ten_years.touchdown.utils.AutoScaleTextView;
 
 /**
  * Created by Sabri on 3/27/2017. Summary fragment

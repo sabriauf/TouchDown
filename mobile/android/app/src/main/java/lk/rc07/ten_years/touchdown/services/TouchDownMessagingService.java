@@ -12,10 +12,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -164,6 +167,17 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onNewToken(@NonNull String refreshedToken) {
+        super.onNewToken(refreshedToken);
+        Log.d(TAG, "Refreshed token: " + refreshedToken);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("score");
+        FirebaseMessaging.getInstance().subscribeToTopic("other_matches");
+        FirebaseMessaging.getInstance().subscribeToTopic("general");
+        FirebaseMessaging.getInstance().subscribeToTopic("settings");
     }
 
     /**

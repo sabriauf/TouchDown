@@ -2,7 +2,7 @@ package lk.rc07.ten_years.touchdown.utils;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Gravity;

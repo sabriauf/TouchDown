@@ -9,14 +9,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -33,7 +32,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -52,7 +50,6 @@ import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.GroupDAO;
-import lk.rc07.ten_years.touchdown.data.ImageDAO;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerDAO;
 import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
@@ -62,15 +59,8 @@ import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.StaffDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
-import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
-import lk.rc07.ten_years.touchdown.models.Player;
-import lk.rc07.ten_years.touchdown.models.PlayerPosition;
-import lk.rc07.ten_years.touchdown.models.Points;
-import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Score;
-import lk.rc07.ten_years.touchdown.models.Staff;
-import lk.rc07.ten_years.touchdown.models.Team;
 
 /**
  * Created by Sabri on 1/13/2017. application general methods

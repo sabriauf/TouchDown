@@ -60,7 +60,7 @@
             android:text="@string/scoreres_title"
             android:textColor="@android:color/white" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_scoreres"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             android:text="@string/penalized_title"
             android:textColor="@android:color/white" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_penalized"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

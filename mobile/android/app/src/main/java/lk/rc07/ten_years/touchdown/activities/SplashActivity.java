@@ -2,14 +2,11 @@ package lk.rc07.ten_years.touchdown.activities;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import lk.rc07.ten_years.touchdown.R;
-import lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight;
 
 public class SplashActivity extends AppCompatActivity {
 

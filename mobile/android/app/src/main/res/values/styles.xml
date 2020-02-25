@@ -8,15 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="autoScaleTextView">
-        <!-- some graphical improvements just for the demo. feel free to remove -->
-        <item name="android:attr/background">@drawable/border</item>
-        <item name="android:attr/padding">5dp</item>
-        <item name="android:attr/gravity">center</item>
+<!--    <style name="autoScaleTextView">-->
+<!--        &lt;!&ndash; some graphical improvements just for the demo. feel free to remove &ndash;&gt;-->
+<!--        <item name="android:attr/background">@drawable/border</item>-->
+<!--        <item name="android:attr/padding">5dp</item>-->
+<!--        <item name="android:attr/gravity">center</item>-->
 
-        <!-- use the next line to alter the minimum text size (uncomment first)-->
-        <!-- <item name="@attr/minTextSize">10dp</item> -->
-    </style>
+<!--        &lt;!&ndash; use the next line to alter the minimum text size (uncomment first)&ndash;&gt;-->
+<!--        &lt;!&ndash; <item name="@attr/minTextSize">10dp</item> &ndash;&gt;-->
+<!--    </style>-->
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:background">@android:color/transparent</item>
