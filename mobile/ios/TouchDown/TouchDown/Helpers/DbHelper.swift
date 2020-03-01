@@ -93,6 +93,84 @@ class DbHelper{
             }
         }
         
+        // Database migrator V3
+        // Domain changed. Drop all tables
+        // and create them.
+        
+        migrator.registerMigration("ver3") { (db) in
+            do{
+                
+                try db.drop(table: Constant.TEXT_MATCHES_TABLE)
+                
+                try db.create(table: Constant.TEXT_MATCHES_TABLE, body: { (t) in
+                    Match.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_SCORES_TABLE)
+                
+                try db.create(table: Constant.TEXT_SCORES_TABLE, body: { (t) in
+                    Score.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_GROUPS_TABLE)
+                
+                try db.create(table: Constant.TEXT_GROUPS_TABLE, body: { (t) in
+                    Group.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_TEAMS_TABLE)
+                
+                try db.create(table: Constant.TEXT_TEAMS_TABLE, body: { (t) in
+                    Team.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_PLAYERS_TABLE)
+                
+                try db.create(table: Constant.TEXT_PLAYERS_TABLE, body: { (t) in
+                    Player.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_PLAYER_TEAM_TABLE)
+                
+                try db.create(table: Constant.TEXT_PLAYER_TEAM_TABLE, body: { (t) in
+                    PlayerTeam.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_PLAYER_POSITION_TABLE)
+                
+                try db.create(table: Constant.TEXT_PLAYER_POSITION_TABLE, body: { (t) in
+                    PlayerPosition.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_POSITION_TABLE)
+                
+                try db.create(table: Constant.TEXT_POSITION_TABLE, body: { (t) in
+                    Position.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_META_DATA_TABLE)
+                
+                try db.create(table: Constant.TEXT_META_DATA_TABLE, body: { (t) in
+                    MetaDataItem.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_SUPPORT_STAFF_TABLE)
+                
+                try db.create(table: Constant.TEXT_SUPPORT_STAFF_TABLE, body: { (t) in
+                    SupportStaff.setColumnDefinitions(t: t)
+                })
+                
+                try db.drop(table: Constant.TEXT_POINTS_TABLE)
+                
+                try db.create(table: Constant.TEXT_POINTS_TABLE, body: { (t) in
+                    Point.setColumnDefinitions(t: t)
+                })
+            }
+            catch(let error){
+                print("Error at registering migrator v3:", error.localizedDescription)
+            }
+        }
+        
         do{
             try migrator.migrate(dbQueue)
         }

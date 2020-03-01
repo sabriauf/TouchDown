@@ -194,9 +194,11 @@ extension Constant{
     static var TEXT_BASE_URL: String{
         get{
             #if DEBUG
-                return "http://usrawahada.xyz/touchdown_test"
+                //return "http://usrawahada.xyz/touchdown_test"
+                return "http://touchdownroyal.com"
             #else
-                return "http://usrawahada.xyz/touchdown"
+                //return "http://usrawahada.xyz/touchdown"
+                return "http://touchdownroyal.com"
             #endif
         }
     }

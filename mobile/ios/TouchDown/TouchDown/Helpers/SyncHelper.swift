@@ -79,6 +79,9 @@ class SyncHelper{
                         }
                         
                     }
+                    else{
+                        print("Sync failed - Response was nil")
+                    }
                 })
             
         }
