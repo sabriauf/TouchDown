@@ -67,6 +67,7 @@ public class DownloadManager {
                 statusCode = urlConnection.getResponseCode();
             } catch (IOException e) {
                 e.printStackTrace();
+                jsonStr = e.getLocalizedMessage();
             }
 
             if (statusCode == HttpURLConnection.HTTP_OK || statusCode == HttpURLConnection.HTTP_CREATED || statusCode == HttpURLConnection.HTTP_ACCEPTED) {
@@ -79,7 +80,7 @@ public class DownloadManager {
 
                 InputStream inputStream = urlConnection.getErrorStream();
                 if (inputStream == null) {
-                    return null;
+                    return jsonStr;
                 }
                 jsonStr = convertInputStreamToString(inputStream);
             }

@@ -27,7 +27,7 @@ import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
-import lk.rc07.ten_years.touchdown.fragments.PlayerTeamDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerTeamDAO;
 import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.Position;
 import lk.rc07.ten_years.touchdown.models.Score;

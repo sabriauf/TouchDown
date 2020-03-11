@@ -35,7 +35,7 @@ import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.StaffDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
-import lk.rc07.ten_years.touchdown.fragments.PlayerTeamDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerTeamDAO;
 import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Player;

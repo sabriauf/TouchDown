@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.CalendarContract;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,10 +103,11 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             holder.txt_time.setText(dateFormat.format(date));
             holder.txt_venue.setText(AppHandler.getLinkText(match.getVenue()));
-            if (lastMatch == null)
+            if (match.getLastMatch() != null && !match.getLastMatch().equals(""))
                 holder.txt_last.setText(String.format(LAST_RESULT, match.getLastMatch()));
-            else
+            else if (lastMatch != null) {
                 holder.txt_last.setText(String.format(LAST_RESULT, lastMatch.getResult()));
+            }
 
             holder.txt_venue.setOnClickListener(new View.OnClickListener() {
                 @Override

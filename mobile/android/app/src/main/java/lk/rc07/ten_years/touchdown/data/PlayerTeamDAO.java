@@ -1,4 +1,4 @@
-package lk.rc07.ten_years.touchdown.fragments;
+package lk.rc07.ten_years.touchdown.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
