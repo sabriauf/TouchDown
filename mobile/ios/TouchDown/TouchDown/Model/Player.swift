@@ -90,6 +90,7 @@ class Player: Record, Mappable, ModelProtocol{
     func getBirthday() -> Date{
         let format1 = "M/d/yyyy"
         let format2 = "MM/dd/yyyy"
+        let format3 = "dd/MM/yyyy"
         let firstPart = String(birthDay.split(separator: " ").first!)
         let df = DateFormatter()
         
@@ -99,7 +100,13 @@ class Player: Record, Mappable, ModelProtocol{
         }
         else{
             df.dateFormat = format1
-            return df.date(from: firstPart)!
+            if let _d = df.date(from: firstPart){
+                return _d
+            }
+            else{
+                df.dateFormat = format3
+                return df.date(from: firstPart)!
+            }
         }
     }
     
