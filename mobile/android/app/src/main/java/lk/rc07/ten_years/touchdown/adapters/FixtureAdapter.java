@@ -50,6 +50,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final String LAST_RESULT = "Last match : %s";
     private static final String NEW_RESULT = " RC -<span style=\"color:#F2C311\"> %d : %d </span>- %s";
     private static final String RESULT_SUMMARY = " %s won by %d points.";
+    private static final String TO_BE_ANNOUNCED = "TBA";
 
     //instances
     private Context context;
@@ -84,7 +85,10 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final Match match = matches.get(position);
 
-        Date date = new Date(match.getMatchDate());
+        Date date = null;
+        if (match.getMatchDate() != 0)
+            date = new Date(match.getMatchDate());
+
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         String opponentTeam;
 
@@ -98,10 +102,16 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             Group group = GroupDAO.getGroupForId(match.getGroup());
             Match lastMatch = MatchDAO.getMatchForTheYear(group.getYear() - 1, match.getTeamOne(), match.getTeamTwo());
             dbManager.closeDatabase();
-            holder.txt_date.setText(AppHandler.getLinkText(dateFormat.format(date)));
 
-            dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-            holder.txt_time.setText(dateFormat.format(date));
+            if (date != null) {
+                holder.txt_date.setText(AppHandler.getLinkText(dateFormat.format(date)));
+                dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                holder.txt_time.setText(dateFormat.format(date));
+            } else {
+                holder.txt_date.setText(TO_BE_ANNOUNCED);
+                holder.txt_time.setText("");
+            }
+
             holder.txt_venue.setText(AppHandler.getLinkText(match.getVenue()));
             if (match.getLastMatch() != null && !match.getLastMatch().equals(""))
                 holder.txt_last.setText(String.format(LAST_RESULT, match.getLastMatch()));
@@ -146,7 +156,10 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
             holder.txt_team.setText(getTeamName(match));
-            holder.txt_date.setText(dateFormat.format(date));
+            if (date != null)
+                holder.txt_date.setText(dateFormat.format(date));
+            else
+                holder.txt_date.setText("");
             holder.txt_time.setText(match.getStatus().toStringValue());
 //            if (match.getResult() != null)
 //                holder.txt_final.setText(match.getResult());
@@ -201,12 +214,12 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private String getTeamShortName(int teamId) {
-        String shortName = "";
+        StringBuilder shortName = new StringBuilder();
         String name = TeamDAO.getTeam(teamId).getName();
         for (String part : name.split(" ")) {
-            shortName += part.charAt(0);
+            shortName.append(part.charAt(0));
         }
-        return shortName;
+        return shortName.toString();
     }
 
     private void createEvent(Match match) {

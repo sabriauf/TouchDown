@@ -24,7 +24,7 @@ public class AppConfig {
     public static final String EXPRESS_DEFAULT_LINK = "http://i.imgur.com/LzWjVb2.jpg"; //TODO - change it for our server
 
     public static final String APP_DOWNLOAD_LINK = "https://play.google.com/store/apps/details?id=lk.rc07.ten_years.touchdown&hl=en";
-    public static final String APP_PROMOTION_LINK = "http://usrawahada.xyz/touchdown/contents/toudown_banner.jpeg";
+//    public static final String APP_PROMOTION_LINK = "http://usrawahada.xyz/touchdown/contents/toudown_banner.jpeg";
     public static final String APP_INVITE_LINK = "https://fb.me/188721238305794";
 
     public static final int HOME_TEAM_ID = 1;

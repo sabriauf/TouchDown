@@ -31,11 +31,19 @@ import java.net.URLDecoder;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.MainActivity;
+import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
+import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
+import lk.rc07.ten_years.touchdown.data.PlayerTeamDAO;
+import lk.rc07.ten_years.touchdown.data.PointsDAO;
+import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
@@ -84,6 +92,14 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
             if (!remoteMessage.getData().containsKey(PARAM_PUSH_TITLE)) {
                 String title = remoteMessage.getData().get(PARAM_PUSH_TITLE);
                 if (title != null && title.equals(PARAM_SYNC_VALUE)) {
+                    DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));
+                    dbManager.openDatabase();
+                    clearData();
+                    dbManager.closeDatabase();
+
+                    getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE).edit().
+                            putLong(Constant.PREFERENCES_LAST_SYNC, AppConfig.DEFAULT_TIME_STAMP).apply();
+
                     MainActivity.mHandler.sendEmptyMessage(MainActivity.FORCE_SYNC);
                     return;
                 }
@@ -363,5 +379,17 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
+    }
+
+    private void clearData() {
+        PointsDAO.deleteAll();
+        PlayerPositionDAO.deleteAll();
+        PositionDAO.deleteAll();
+        PlayerDAO.deleteAll();
+        ScoreDAO.deleteAll();
+        TeamDAO.deleteAll();
+        MatchDAO.deleteAll();
+        GroupDAO.deleteAll();
+        PlayerTeamDAO.deleteAll();
     }
 }
