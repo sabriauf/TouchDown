@@ -2,6 +2,8 @@ package lk.rc07.ten_years.touchdown.adapters;
 
 import android.content.Context;
 import android.os.Message;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.bumptech.glide.Glide;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +34,6 @@ public class SummaryPlayerAdapter extends RecyclerView.Adapter<SummaryPlayerAdap
     //instances
     private Context context;
     private List<Scorer> players;
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
     private LayoutInflater layoutInflater;
 
     //primary data
@@ -46,14 +43,12 @@ public class SummaryPlayerAdapter extends RecyclerView.Adapter<SummaryPlayerAdap
         this.context = context;
         this.players = players;
 
-        this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, context, R.drawable.default_profile_pic);
-
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    @NonNull
     @Override
-    public SummaryPlayerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SummaryPlayerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.component_summary_player_row, parent, false);
         return new SummaryPlayerAdapter.ViewHolder(view);
     }
@@ -80,11 +75,11 @@ public class SummaryPlayerAdapter extends RecyclerView.Adapter<SummaryPlayerAdap
             }
         });
 
-        ImageAware imgAware = new ImageViewAware(holder.img_player);
         String img_link =scorer.getPlayer().getImg_url();
         if (!img_link.equals("") && !img_link.equals("/contents/players/")) {
             img_link = BuildConfig.DEFAULT_URL + img_link;
-            imageLoader.displayImage(img_link, imgAware, options);
+            Glide.with(context).load(img_link).placeholder(R.drawable.default_profile_pic)
+                    .into(holder.img_player);
         }
 
         holder.txt_name.setText(scorer.getPlayer().getName());
@@ -96,6 +91,7 @@ public class SummaryPlayerAdapter extends RecyclerView.Adapter<SummaryPlayerAdap
         HashMap<Score.Action, Integer> items = new HashMap<>();
         for (Score score : scores) {
             if (items.containsKey(score.getAction())) {
+                //noinspection ConstantConditions - Checked it above
                 int count = items.get(score.getAction());
                 items.put(score.getAction(), ++count);
             } else
@@ -144,9 +140,9 @@ public class SummaryPlayerAdapter extends RecyclerView.Adapter<SummaryPlayerAdap
 
         ViewHolder(View view) {
             super(view);
-            img_player = (ImageView) view.findViewById(R.id.img_summary_player);
-            txt_name = (TextView) view.findViewById(R.id.txt_summary_player_name);
-            layout_score = (LinearLayout) view.findViewById(R.id.layout_score_row);
+            img_player = view.findViewById(R.id.img_summary_player);
+            txt_name = view.findViewById(R.id.txt_summary_player_name);
+            layout_score = view.findViewById(R.id.layout_score_row);
         }
     }
 }

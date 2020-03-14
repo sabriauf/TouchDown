@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,10 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 import java.util.Locale;
@@ -42,19 +41,15 @@ public class PlayerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     //instances
     private Activity activity;
     private List<Object> players;
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
 
     public PlayerAdapter(Activity activity, List<Object> players) {
         this.activity = activity;
         this.players = players;
-
-        this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, activity, R.drawable.default_profile_pic);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(activity);
 
         if (viewType == VIEW_PLAYER) {
@@ -99,8 +94,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     if (!img_link.equals("/contents/players/")) {
                         img_link = BuildConfig.DEFAULT_URL + img_link;
                         holder.img_profile_pic.setImageDrawable(AppHandler.getDrawable(activity, R.drawable.default_profile_pic));
-                        ImageAware imgAware = new ImageViewAware(holder.img_profile_pic);
-                        imageLoader.displayImage(img_link, imgAware, options);
+                        Glide.with(activity).load(img_link).placeholder(R.drawable.default_profile_pic).into(holder.img_profile_pic);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();

@@ -12,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
-import lk.rc07.ten_years.touchdown.utils.AppHandler;
 import lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight;
 
 /**
@@ -37,10 +35,8 @@ public class BradbyExpressFragment extends Fragment {
 
         ImageViewAutoHeight img_bradex = view.findViewById(R.id.img_bardex);
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        DisplayImageOptions options = AppHandler.getImageOptionBestQuality();
-
-        imageLoader.displayImage(img_link, img_bradex, options);
+        Glide.with(view.getContext()).load(img_link).placeholder(R.drawable
+                .icon_book_placeholder).into(img_bradex);
 
         img_bradex.setOnClickListener(new View.OnClickListener() {
             @Override

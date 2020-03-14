@@ -3,6 +3,8 @@ package lk.rc07.ten_years.touchdown.adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 import java.util.Locale;
@@ -54,8 +55,6 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<Score> scores;
     private DBManager dbManager;
     private Match match;
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
 
     //primary data
     private long firstHalfTime = 0;
@@ -68,14 +67,12 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
 
-        this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, context.getApplicationContext(), R.drawable.default_profile_pic);
-
     }
 
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         switch (viewType) {
             case SCORE_VIEW_SCORE:
@@ -88,7 +85,8 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 view = LayoutInflater.from(context).inflate(R.layout.component_score_message, parent, false);
                 return new ScoreAdapter.MessageViewHolder(view);
         }
-        return null;
+        view = LayoutInflater.from(context).inflate(R.layout.component_score_topic_row, parent, false);
+        return new ScoreAdapter.TitleViewHolder(view);
     }
 
     private long getOffSetTime(long time) {
@@ -126,7 +124,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final Score score = scores.get(position);
 
         String playerName = "";
@@ -280,12 +278,12 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         ScoreViewHolder(View itemView) {
             super(itemView);
-            main_layout = (RelativeLayout) itemView.findViewById(R.id.main_layout);
-            txt_score_type = (TextView) itemView.findViewById(R.id.txt_score_tag);
-            txt_player_no_left = (TextView) itemView.findViewById(R.id.txt_player_no_left);
-            txt_player_name_left = (TextView) itemView.findViewById(R.id.txt_player_name_left);
-            txt_player_no_right = (TextView) itemView.findViewById(R.id.txt_player_no_right);
-            txt_player_name_right = (TextView) itemView.findViewById(R.id.txt_player_name_right);
+            main_layout = itemView.findViewById(R.id.main_layout);
+            txt_score_type = itemView.findViewById(R.id.txt_score_tag);
+            txt_player_no_left = itemView.findViewById(R.id.txt_player_no_left);
+            txt_player_name_left = itemView.findViewById(R.id.txt_player_name_left);
+            txt_player_no_right = itemView.findViewById(R.id.txt_player_no_right);
+            txt_player_name_right =  itemView.findViewById(R.id.txt_player_name_right);
         }
     }
 
@@ -294,7 +292,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         TitleViewHolder(View itemView) {
             super(itemView);
-            txt_title = (TextView) itemView.findViewById(R.id.txt_score_tag);
+            txt_title = itemView.findViewById(R.id.txt_score_tag);
         }
     }
 
@@ -305,9 +303,9 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         MessageViewHolder(View itemView) {
             super(itemView);
-            txt_title = (TextView) itemView.findViewById(R.id.txt_score_tag);
-            txt_time = (TextView) itemView.findViewById(R.id.txt_score_time);
-            img_score = (ImageView) itemView.findViewById(R.id.img_score);
+            txt_title = itemView.findViewById(R.id.txt_score_tag);
+            txt_time = itemView.findViewById(R.id.txt_score_time);
+            img_score = itemView.findViewById(R.id.img_score);
         }
     }
 
@@ -348,13 +346,13 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_alert_score_details);
 
-        ImageView img_profile = (ImageView) dialog.findViewById(R.id.img_alert_score_player);
-        ImageView img_score = (ImageView) dialog.findViewById(R.id.img_alert_score);
-        TextView txt_score = (TextView) dialog.findViewById(R.id.txt_alert_score_title);
-        TextView txt_time = (TextView) dialog.findViewById(R.id.txt_alert_score_time);
-        TextView txt_team = (TextView) dialog.findViewById(R.id.txt_alert_score_team);
-        TextView txt_player = (TextView) dialog.findViewById(R.id.txt_alert_score_player);
-        TextView txt_details = (TextView) dialog.findViewById(R.id.txt_alert_score_details);
+        ImageView img_profile = dialog.findViewById(R.id.img_alert_score_player);
+        ImageView img_score = dialog.findViewById(R.id.img_alert_score);
+        TextView txt_score = dialog.findViewById(R.id.txt_alert_score_title);
+        TextView txt_time = dialog.findViewById(R.id.txt_alert_score_time);
+        TextView txt_team = dialog.findViewById(R.id.txt_alert_score_team);
+        TextView txt_player = dialog.findViewById(R.id.txt_alert_score_player);
+        TextView txt_details = dialog.findViewById(R.id.txt_alert_score_details);
 
         dbManager.openDatabase();
         Team team = TeamDAO.getTeam(score.getTeamId());
@@ -362,10 +360,12 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         dbManager.closeDatabase();
 
         if (player != null && !player.getImg_url().equals("")) {
-            imageLoader.displayImage(BuildConfig.DEFAULT_URL + player.getImg_url(), img_profile, options);
+            Glide.with(context).load(BuildConfig.DEFAULT_URL + player.getImg_url())
+                    .placeholder(R.drawable.default_profile_pic).into(img_profile);
             txt_player.setText(player.getName());
         } else {
-            imageLoader.displayImage(BuildConfig.DEFAULT_URL + team.getLogo_url(), img_profile, options);
+            Glide.with(context).load(BuildConfig.DEFAULT_URL + team.getLogo_url())
+                    .placeholder(R.drawable.default_profile_pic).into(img_profile);
             txt_player.setVisibility(View.GONE);
         }
 

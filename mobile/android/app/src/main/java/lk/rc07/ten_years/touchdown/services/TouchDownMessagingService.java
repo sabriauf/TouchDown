@@ -89,7 +89,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (!remoteMessage.getData().containsKey(PARAM_PUSH_TITLE)) {
+            if (remoteMessage.getData().containsKey(PARAM_PUSH_TITLE)) {
                 String title = remoteMessage.getData().get(PARAM_PUSH_TITLE);
                 if (title != null && title.equals(PARAM_SYNC_VALUE)) {
                     DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(this));

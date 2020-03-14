@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.CalendarContract;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Spanned;
@@ -14,8 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -55,8 +55,6 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     //instances
     private Context context;
     private List<Match> matches;
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
     private DBManager dbManager;
 
     public FixtureAdapter(Context context, List<Match> matches) {
@@ -64,13 +62,11 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.matches = matches;
 
         dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
-
-        this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, context, R.drawable.icon_book_placeholder);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (viewType == VIEW_PENDING) {
             view = LayoutInflater.from(context).inflate(R.layout.component_fixture_row, parent, false);
@@ -82,7 +78,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         final Match match = matches.get(position);
 
         Date date = null;
@@ -182,7 +178,8 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             img_crest = holder.img_crest;
         }
 
-        imageLoader.displayImage(getOpponentCrest(match.getTeamTwo()), img_crest, options);
+        Glide.with(context).load(getOpponentCrest(match.getTeamTwo())).placeholder(R.drawable
+                .icon_book_placeholder).into(img_crest);
     }
 
     private String getMatchResult(String opponentTeam, int homeTotal, int opponentTotal) {

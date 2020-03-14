@@ -14,15 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import org.json.JSONException;
 
@@ -38,7 +36,6 @@ import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.ImageDAO;
 import lk.rc07.ten_years.touchdown.models.FBImage;
-import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
 /**
  * Created by Sabri on 4/11/2017. Match Image gallery
@@ -50,12 +47,10 @@ public class ImageFragment extends Fragment {
     private static final String FACEBOOK_IMAGE_LINK = "http://graph.facebook.com/%s/picture";
     private static final String FACEBOOK_ALBUM_LINK = "/%s/photos?limit=400";
     public static final String FACEBOOK_ALBUM_ID = "album_id";
-    public static final int FACEBOOK_LOGIN_REQUEST = 101;
+    private static final int FACEBOOK_LOGIN_REQUEST = 101;
 
     //instances
     private List<FBImageRow> images;
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
     private Activity activity;
 
     //views
@@ -71,9 +66,6 @@ public class ImageFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         parentView = view;
-
-        imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, getContext(), R.drawable.icon_book_placeholder);
 
         recycler_fixture = view.findViewById(R.id.recycler_images);
 
@@ -200,8 +192,9 @@ public class ImageFragment extends Fragment {
         //instances
         private boolean isLeft = false;
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             switch (viewType) {
                 case LEFT_VIEW:
@@ -214,29 +207,30 @@ public class ImageFragment extends Fragment {
                     view = LayoutInflater.from(getContext()).inflate(R.layout.component_image_landscape_row, parent, false);
                     return new ImageAdapter.ViewHolder(view);
             }
-            return null;
+            view = LayoutInflater.from(getContext()).inflate(R.layout.component_image_left_row, parent, false);
+            return new ImageAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
 
             ViewHolder holder = (ViewHolder) viewHolder;
             final int pos = holder.getAdapterPosition();
             FBImageRow row = getSortedImageRow(images.get(pos));
 
-            imageLoader.displayImage(String.format(Locale.getDefault(), FACEBOOK_IMAGE_LINK,
-                    row.images[0].getId()), new ImageViewAware(holder.img_one), options);
+            Glide.with(activity).load(String.format(Locale.getDefault(), FACEBOOK_IMAGE_LINK,
+                    row.images[0].getId())).placeholder(R.drawable.icon_book_placeholder).into(holder.img_one);
 
             if (row.images[1] != null) {
-                imageLoader.displayImage(String.format(Locale.getDefault(), FACEBOOK_IMAGE_LINK,
-                        row.images[1].getId()), new ImageViewAware(holder.img_two), options);
+                Glide.with(activity).load(String.format(Locale.getDefault(), FACEBOOK_IMAGE_LINK,
+                        row.images[1].getId())).placeholder(R.drawable.icon_book_placeholder).into(holder.img_two);
                 holder.img_two.setVisibility(View.VISIBLE);
             } else
                 holder.img_two.setVisibility(View.GONE);
 
             if (row.images[2] != null) {
-                imageLoader.displayImage(String.format(Locale.getDefault(), FACEBOOK_IMAGE_LINK,
-                        row.images[2].getId()), new ImageViewAware(holder.img_three), options);
+                Glide.with(activity).load(String.format(Locale.getDefault(), FACEBOOK_IMAGE_LINK,
+                        row.images[2].getId())).placeholder(R.drawable.icon_book_placeholder).into(holder.img_three);
                 holder.img_three.setVisibility(View.VISIBLE);
             } else
                 holder.img_three.setVisibility(View.GONE);
@@ -334,7 +328,7 @@ public class ImageFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         activity = getActivity();
     }

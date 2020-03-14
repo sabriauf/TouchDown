@@ -1,38 +1,18 @@
 package lk.rc07.ten_years.touchdown.utils;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
@@ -41,22 +21,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
-import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.MainActivity;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
-import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
-import lk.rc07.ten_years.touchdown.data.PlayerDAO;
-import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
-import lk.rc07.ten_years.touchdown.data.PointsDAO;
-import lk.rc07.ten_years.touchdown.data.PositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
-import lk.rc07.ten_years.touchdown.data.StaffDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
 import lk.rc07.ten_years.touchdown.models.Match;
@@ -74,7 +48,7 @@ public class AppHandler {
     private static final String SHARE_STRING_ENDED = "%s won by %d points against %s, final score %d-%d";
     private static final String SHARE_STRING_ENDED_DRAW = "%s vs %s match drawn, final score %d-%d";
 
-    public static HashMap<String, String> getHeaders(Context context) {
+    private static HashMap<String, String> getHeaders(Context context) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put(Constant.PARAM_AUTH_KEY, AppConfig.APPLICATION_AUTHENTICATION_KEY);
         headers.put(Constant.PARAM_PLATFORM, String.valueOf(Constant.PLATFORM_ANDROID));
@@ -87,22 +61,22 @@ public class AppHandler {
         return headers;
     }
 
-    public static DisplayImageOptions getImageOption(ImageLoader imageLoader, Context context, int resource) {
-        @SuppressWarnings("deprecation") DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(resource)
-                .cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.RGB_565)
-                .displayer(new SimpleBitmapDisplayer()).build();
-        if (!imageLoader.isInited()) {
-            ImageLoaderConfiguration imageConfig = new ImageLoaderConfiguration.Builder(context)
-                    .memoryCache(new WeakMemoryCache()).diskCacheExtraOptions(480, 320, null).threadPoolSize(5)
-                    .denyCacheImageMultipleSizesInMemory().build();
-            imageLoader.init(imageConfig);
-        }
-        return options;
-    }
-
-    public static DisplayImageOptions getImageOptionBestQuality() {
-        return new DisplayImageOptions.Builder().imageScaleType(ImageScaleType.NONE).bitmapConfig(Bitmap.Config.ARGB_8888).build();
-    }
+//    public static DisplayImageOptions getImageOption(ImageLoader imageLoader, Context context, int resource) {
+//        @SuppressWarnings("deprecation") DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnFail(resource)
+//                .cacheInMemory(true).cacheOnDisc(true).imageScaleType(ImageScaleType.EXACTLY).bitmapConfig(Bitmap.Config.RGB_565)
+//                .displayer(new SimpleBitmapDisplayer()).build();
+//        if (!imageLoader.isInited()) {
+//            ImageLoaderConfiguration imageConfig = new ImageLoaderConfiguration.Builder(context)
+//                    .memoryCache(new WeakMemoryCache()).diskCacheExtraOptions(480, 320, null).threadPoolSize(5)
+//                    .denyCacheImageMultipleSizesInMemory().build();
+//            imageLoader.init(imageConfig);
+//        }
+//        return options;
+//    }
+//
+//    public static DisplayImageOptions getImageOptionBestQuality() {
+//        return new DisplayImageOptions.Builder().imageScaleType(ImageScaleType.NONE).bitmapConfig(Bitmap.Config.ARGB_8888).build();
+//    }
 
     public static Drawable getDrawable(Context context, int resource) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -143,19 +117,17 @@ public class AppHandler {
             e.printStackTrace();
         }
 
-        Bitmap bm;
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bm = null;
+        FutureTarget<Bitmap> futureBitmap = Glide.with(context)
+                .asBitmap()
+                .load(link)
+                           .submit();
         try {
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.init(new ImageLoaderConfiguration.Builder(context)
-                    .memoryCache(new WeakMemoryCache()).threadPoolSize(10)
-                    .denyCacheImageMultipleSizesInMemory()
-                    .imageDownloader(new BaseImageDownloader(context)).build());
-            bm = imageLoader.loadImageSync(link);
-        } catch (Exception | Error e) {
+            bm = futureBitmap.get();
+        } catch (ExecutionException e) {
             e.printStackTrace();
-            bm = BitmapFactory.decodeResource(context.getResources(),
-                    R.mipmap.ic_launcher, options);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         return bm;
     }
@@ -280,82 +252,82 @@ public class AppHandler {
         return years;
     }
 
-    private static boolean requestPermission(Activity context) {
-        boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-        if (!hasPermission) {
-            ActivityCompat.requestPermissions(context,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    101);
-            return false;
-        }
-        return true;
-    }
+//    private static boolean requestPermission(Activity context) {
+//        boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+//        if (!hasPermission) {
+//            ActivityCompat.requestPermissions(context,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                    101);
+//            return false;
+//        }
+//        return true;
+//    }
 
-    public static void readData(final Activity activity) {
+//    public static void readData(final Activity activity) {
+//
+//        if(!requestPermission(activity))
+//            return;
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(activity));
+//                dbManager.openDatabase();
+//
+//                JSONObject jsonObject = new JSONObject();
+//                try {
+//                    jsonObject.put("groups", getListFromList(GroupDAO.getAllGroups()));
+//                    jsonObject.put("matches", getListFromList(MatchDAO.getAllMatches()));
+//                    jsonObject.put("players", getListFromList(PlayerDAO.getAllPlayer()));
+//                    jsonObject.put("playerPosition", getListFromList(PlayerPositionDAO.getAllPositions()));
+//                    jsonObject.put("points", getListFromList(PointsDAO.getAllPointTable()));
+//                    jsonObject.put("positions", getListFromList(PositionDAO.getAllPositions()));
+//                    jsonObject.put("scores", getListFromList(ScoreDAO.getAllScores()));
+//                    jsonObject.put("staffs", getListFromList(StaffDAO.getAll()));
+//                    jsonObject.put("teams", getListFromList(TeamDAO.getAllTeams()));
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                writeOnFile("database_backup.txt", jsonObject.toString());
+//
+//                dbManager.closeDatabase();
+//
+//            }
+//        }).start();
+//    }
 
-        if(!requestPermission(activity))
-            return;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                DBManager dbManager = DBManager.initializeInstance(DBHelper.getInstance(activity));
-                dbManager.openDatabase();
-
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("groups", getListFromList(GroupDAO.getAllGroups()));
-                    jsonObject.put("matches", getListFromList(MatchDAO.getAllMatches()));
-                    jsonObject.put("players", getListFromList(PlayerDAO.getAllPlayer()));
-                    jsonObject.put("playerPosition", getListFromList(PlayerPositionDAO.getAllPositions()));
-                    jsonObject.put("points", getListFromList(PointsDAO.getAllPointTable()));
-                    jsonObject.put("positions", getListFromList(PositionDAO.getAllPositions()));
-                    jsonObject.put("scores", getListFromList(ScoreDAO.getAllScores()));
-                    jsonObject.put("staffs", getListFromList(StaffDAO.getAll()));
-                    jsonObject.put("teams", getListFromList(TeamDAO.getAllTeams()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                writeOnFile("database_backup.txt", jsonObject.toString());
-
-                dbManager.closeDatabase();
-
-            }
-        }).start();
-    }
-
-    private static JSONArray getListFromList(List<?> list) {
-        try {
-            String jsonString = new Gson().toJson(list);
-            return new JSONArray(jsonString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new JSONArray();
-    }
-
-    private static void writeOnFile(String fileName, String data) {
-
-        File root = android.os.Environment.getExternalStorageDirectory();
-
-
-        File dir = new File(root.getAbsolutePath() + "/download");
-        dir.mkdirs();
-        File file = new File(dir, fileName);
-
-        try {
-            FileOutputStream f = new FileOutputStream(file);
-            PrintWriter pw = new PrintWriter(f);
-            pw.println(data);
-            pw.flush();
-            pw.close();
-            f.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private static JSONArray getListFromList(List<?> list) {
+//        try {
+//            String jsonString = new Gson().toJson(list);
+//            return new JSONArray(jsonString);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return new JSONArray();
+//    }
+//
+//    private static void writeOnFile(String fileName, String data) {
+//
+//        File root = android.os.Environment.getExternalStorageDirectory();
+//
+//
+//        File dir = new File(root.getAbsolutePath() + "/download");
+//        dir.mkdirs();
+//        File file = new File(dir, fileName);
+//
+//        try {
+//            FileOutputStream f = new FileOutputStream(file);
+//            PrintWriter pw = new PrintWriter(f);
+//            pw.println(data);
+//            pw.flush();
+//            pw.close();
+//            f.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

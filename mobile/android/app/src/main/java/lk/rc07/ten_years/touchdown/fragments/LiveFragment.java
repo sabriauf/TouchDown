@@ -6,6 +6,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -17,9 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -56,8 +55,6 @@ public class LiveFragment extends Fragment {
 
     //instances
     private ScoreAdapter adapter;
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
     private ViewHolder holder;
     private Handler timer;
     private LinearLayoutManager mLayoutManager;
@@ -74,9 +71,6 @@ public class LiveFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_live, container, false);
-
-        this.imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, getContext(), R.drawable.icon_book_placeholder);
 
         parentView = view;
 
@@ -331,8 +325,8 @@ public class LiveFragment extends Fragment {
         }
         holder.txt_score_two.setText(String.valueOf(rightScoreTotal));
         holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
-        imageLoader.displayImage(tOne.getLogo_url(), holder.img_team_one_logo, options);
-        imageLoader.displayImage(tTwo.getLogo_url(), holder.img_team_two_logo, options);
+        Glide.with(this).load(tOne.getLogo_url()).into(holder.img_team_one_logo);
+        Glide.with(this).load(tTwo.getLogo_url()).into(holder.img_team_two_logo);
         if (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF) {
             holder.txt_live.setVisibility(View.VISIBLE);
             setTimerFont(true);

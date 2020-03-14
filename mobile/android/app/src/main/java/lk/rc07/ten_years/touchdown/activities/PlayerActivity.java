@@ -22,6 +22,8 @@ public class PlayerActivity extends AppCompatActivity {
 
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        if(getIntent().getExtras() == null)
+            return;
         videoID = getIntent().getExtras().getString(EXTRAS_VIDEO_ID);
 
         YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager()

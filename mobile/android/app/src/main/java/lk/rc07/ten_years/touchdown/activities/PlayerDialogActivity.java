@@ -1,10 +1,13 @@
 package lk.rc07.ten_years.touchdown.activities;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -12,10 +15,11 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -66,10 +70,9 @@ public class PlayerDialogActivity extends AppCompatActivity {
         }
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        DisplayImageOptions options = AppHandler.getImageOption(imageLoader, getApplicationContext(), R.drawable.default_profile_pic);
-
-        Player player = getIntent().getExtras().getParcelable(EXTRA_PLAYER_OBJECT);
+        Player player = null;
+        if (getIntent().getExtras() != null)
+            player = getIntent().getExtras().getParcelable(EXTRA_PLAYER_OBJECT);
         String player_pos = String.format(Locale.getDefault(), "%02d", getIntent().getExtras().getInt(EXTRA_PLAYER_POSITION));
         int year = getIntent().getExtras().getInt(EXTRA_PLAYER_YEAR);
         int team = getIntent().getExtras().getInt(EXTRA_PLAYER_TEAM);
@@ -108,29 +111,23 @@ public class PlayerDialogActivity extends AppCompatActivity {
             profilePic = findViewById(R.id.img_player_pic);
 
             String img_link = BuildConfig.DEFAULT_URL + player.getImg_url();
-            imageLoader.displayImage(img_link, profilePic, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                }
 
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    profilePic.setImageDrawable(AppHandler.getDrawable(PlayerDialogActivity.this, R.drawable.default_profile_pic));
-                    scheduleStartPostponedTransition(view, PlayerDialogActivity.this);
-                }
+            Glide.with(this).load(img_link).placeholder(R.drawable.default_profile_pic)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            profilePic.setImageDrawable(AppHandler.getDrawable(PlayerDialogActivity.this, R.drawable.default_profile_pic));
+                            scheduleStartPostponedTransition(profilePic, PlayerDialogActivity.this);
+                            return false;
+                        }
 
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    profilePic.setImageBitmap(loadedImage);
-                    scheduleStartPostponedTransition(view, PlayerDialogActivity.this);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
-
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            profilePic.setImageDrawable(resource);
+                            scheduleStartPostponedTransition(profilePic, PlayerDialogActivity.this);
+                            return false;
+                        }
+                    }).into(profilePic);
         }
 
     }

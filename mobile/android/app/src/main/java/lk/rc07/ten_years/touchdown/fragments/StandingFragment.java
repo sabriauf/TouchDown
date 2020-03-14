@@ -178,13 +178,16 @@ public class StandingFragment extends Fragment {
     }
 
     private void loadSpinner(List<String> labels, Spinner spinner) {
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_item, labels);
+        Context context = getContext();
+        if(context != null) {
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context,
+                    android.R.layout.simple_spinner_item, labels);
 
-        dataAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            dataAdapter
+                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        spinner.setAdapter(dataAdapter);
+            spinner.setAdapter(dataAdapter);
+        }
     }
 
     private void
@@ -230,8 +233,8 @@ public class StandingFragment extends Fragment {
         tr1.addView(addTextView(String.valueOf(points.getPlayed() - (points.getWon() + points.getLost())), isRoyal,
                 Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
         tr1.addView(addTextView(String.valueOf(points.getLost()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(1));
-        tr1.addView(addTextView(String.valueOf(String.format(Locale.getDefault(), "%.1f",
-                points.getPoints())), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(2));
+        tr1.addView(addTextView(String.format(Locale.getDefault(), "%.1f",
+                points.getPoints()), isRoyal, Gravity.CENTER_HORIZONTAL), getLayoutParams(2));
 
         return tr1;
     }

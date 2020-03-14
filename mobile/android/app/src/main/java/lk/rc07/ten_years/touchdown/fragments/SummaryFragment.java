@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -34,7 +36,6 @@ import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Team;
-import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
 /**
  * Created by Sabri on 3/27/2017. Summary fragment
@@ -47,8 +48,6 @@ public class SummaryFragment extends Fragment {
     public static final int WHAT_PENALIZED_SIZE = 102;
 
     //instances
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
     private Match match;
     public static Handler handler;
     private FragmentActivity activity;
@@ -64,12 +63,9 @@ public class SummaryFragment extends Fragment {
 
         activity = getActivity();
 
-        imageLoader = ImageLoader.getInstance();
-        options = AppHandler.getImageOption(imageLoader, view.getContext(), R.drawable.icon_book_placeholder);
-
         handler = new Handler(new Handler.Callback() {
             @Override
-            public boolean handleMessage(Message message) {
+            public boolean handleMessage(@NonNull Message message) {
                 if (message.what == WHAT_SCORER_SIZE) {
                     if (recycler_scoreres != null) {
                         ViewGroup.LayoutParams params = recycler_scoreres.getLayoutParams();
@@ -87,13 +83,15 @@ public class SummaryFragment extends Fragment {
             }
         });
 
-        match = getArguments().getParcelable(MatchSummaryActivity.EXTRA_MATCH_OBJECT);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loadScoreBackground();
-            }
-        }).start();
+        if (getArguments() != null) {
+            match = getArguments().getParcelable(MatchSummaryActivity.EXTRA_MATCH_OBJECT);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    loadScoreBackground();
+                }
+            }).start();
+        }
 
         return view;
     }
@@ -159,25 +157,32 @@ public class SummaryFragment extends Fragment {
 
                 layout_score.findViewById(R.id.txt_match_time).setVisibility(View.GONE);
                 AppCompatTextView txt_league = view.findViewById(R.id.txt_league_name);
-                txt_league.setText(group.getLeagueName());
-                ((AppCompatTextView) view.findViewById(R.id.txt_round_name)).setText(group.getRoundName());
+                if (group != null) {
+                    txt_league.setText(group.getLeagueName());
+                    ((AppCompatTextView) view.findViewById(R.id.txt_round_name)).setText(group.getRoundName());
+                } else {
+                    txt_league.setText("");
+                    ((AppCompatTextView) view.findViewById(R.id.txt_round_name)).setText("");
+                }
 
                 View score_layout_home = layout_score.findViewById(R.id.layout_score_team_one);
                 View score_layout_oppo = layout_score.findViewById(R.id.layout_score_team_two);
                 ((TextView) score_layout_home.findViewById(R.id.txt_score)).setText(String.valueOf(score_left));
                 ((TextView) score_layout_oppo.findViewById(R.id.txt_score)).setText(String.valueOf(score_right));
 
-                imageLoader.displayImage(tOne.getLogo_url(), ((ImageView) score_layout_home.findViewById(R.id.img_college_crest)), options);
-                imageLoader.displayImage(tTwo.getLogo_url(), ((ImageView) score_layout_oppo.findViewById(R.id.img_college_crest)), options);
+                Glide.with(activity).load(tOne.getLogo_url()).placeholder(R.drawable.icon_book_placeholder)
+                        .into(((ImageView) score_layout_home.findViewById(R.id.img_college_crest)));
+                Glide.with(activity).load(tTwo.getLogo_url()).placeholder(R.drawable.icon_book_placeholder)
+                        .into(((ImageView) score_layout_oppo.findViewById(R.id.img_college_crest)));
             }
         });
     }
 
     private void setViews(Team tOne, Team tTwo) {
-        LinearLayout layout_scores = (LinearLayout) view.findViewById(R.id.layout_scores);
-        LinearLayout layout_penalties = (LinearLayout) view.findViewById(R.id.layout_penalties);
-        recycler_scoreres = (RecyclerView) view.findViewById(R.id.recycler_scoreres);
-        recycler_penalized = (RecyclerView) view.findViewById(R.id.recycler_penalized);
+        LinearLayout layout_scores = view.findViewById(R.id.layout_scores);
+        LinearLayout layout_penalties = view.findViewById(R.id.layout_penalties);
+        recycler_scoreres = view.findViewById(R.id.recycler_scoreres);
+        recycler_penalized = view.findViewById(R.id.recycler_penalized);
 
         DBManager dbManager = DBManager.initializeInstance(
                 DBHelper.getInstance(activity));
@@ -186,25 +191,27 @@ public class SummaryFragment extends Fragment {
         LayoutInflater layoutInflater = (LayoutInflater)
                 activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        //scores
-        layout_scores.addView(addScoreView(layoutInflater, layout_scores, tOne, tTwo, "GOALS", Score.Action.CONVERSION));
-        layout_scores.addView(addTryView(layoutInflater, layout_scores, tOne, tTwo));
-        layout_scores.addView(addScoreView(layoutInflater, layout_scores, tOne, tTwo, "Drop Goals",
-                Score.Action.DROP_GOAL));
-        layout_scores.addView(addScoreView(layoutInflater, layout_scores, tOne, tTwo, "Penalty Kicks",
-                Score.Action.PENALTY_KICK));
+        if (layoutInflater != null) {
+            //scores
+            layout_scores.addView(addScoreView(layoutInflater, layout_scores, tOne, tTwo, "GOALS", Score.Action.CONVERSION));
+            layout_scores.addView(addTryView(layoutInflater, layout_scores, tOne, tTwo));
+            layout_scores.addView(addScoreView(layoutInflater, layout_scores, tOne, tTwo, "Drop Goals",
+                    Score.Action.DROP_GOAL));
+            layout_scores.addView(addScoreView(layoutInflater, layout_scores, tOne, tTwo, "Penalty Kicks",
+                    Score.Action.PENALTY_KICK));
 
-        //penalties
-        layout_penalties.addView(addScoreView(layoutInflater, layout_penalties, tOne, tTwo, "Red Cards",
-                Score.Action.RED_CARD));
-        layout_penalties.addView(addScoreView(layoutInflater, layout_penalties, tOne, tTwo, "Yellow Cards",
-                Score.Action.YELLOW_CARD));
+            //penalties
+            layout_penalties.addView(addScoreView(layoutInflater, layout_penalties, tOne, tTwo, "Red Cards",
+                    Score.Action.RED_CARD));
+            layout_penalties.addView(addScoreView(layoutInflater, layout_penalties, tOne, tTwo, "Yellow Cards",
+                    Score.Action.YELLOW_CARD));
 
-        setRecyclerViews(recycler_scoreres, new SummaryPlayerAdapter(activity,
-                ScoreDAO.getScorers(match.getIdmatch(), AppConfig.HOME_TEAM_ID)));
+            setRecyclerViews(recycler_scoreres, new SummaryPlayerAdapter(activity,
+                    ScoreDAO.getScorers(match.getIdmatch(), AppConfig.HOME_TEAM_ID)));
 
-        setRecyclerViews(recycler_penalized, new SummaryPlayerAdapter(activity,
-                ScoreDAO.getPenalizedPlayers(match.getIdmatch(), AppConfig.HOME_TEAM_ID)));
+            setRecyclerViews(recycler_penalized, new SummaryPlayerAdapter(activity,
+                    ScoreDAO.getPenalizedPlayers(match.getIdmatch(), AppConfig.HOME_TEAM_ID)));
+        }
 
         dbManager.closeDatabase();
     }

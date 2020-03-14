@@ -18,7 +18,7 @@ public class AboutUsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about_us);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        TextView closeLayout = (TextView) findViewById(R.id.txt_close);
+        TextView closeLayout = findViewById(R.id.txt_close);
         closeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
