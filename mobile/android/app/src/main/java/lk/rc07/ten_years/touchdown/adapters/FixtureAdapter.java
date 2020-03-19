@@ -82,7 +82,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         final Match match = matches.get(position);
 
         Date date = null;
-        if (match.getMatchDate() != 0)
+        if (match.getMatchDate() != 0 && match.getStatus() != Match.Status.TBA)
             date = new Date(match.getMatchDate());
 
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
@@ -273,7 +273,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (matches.get(position).getStatus() != Match.Status.PENDING)
+        if (matches.get(position).getStatus() != Match.Status.PENDING && matches.get(position).getStatus() != Match.Status.TBA)
             return VIEW_RESULT;
         else
             return VIEW_PENDING;

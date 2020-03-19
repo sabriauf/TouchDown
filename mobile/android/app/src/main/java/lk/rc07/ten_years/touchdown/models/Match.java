@@ -76,11 +76,12 @@ public class Match implements Parcelable {
     }
 
     public enum Status {
-        PENDING, DONE, FULL_TIME, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF;
+        PENDING, DONE, FULL_TIME, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF, TBA;
 
         public String toStringValue() {
             switch (this) {
                 case PENDING:
+                case TBA:
                 case CANCELED:
                     return this.name();
                 case DONE:
