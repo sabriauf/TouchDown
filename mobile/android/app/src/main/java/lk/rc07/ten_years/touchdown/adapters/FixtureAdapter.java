@@ -1,5 +1,6 @@
 package lk.rc07.ten_years.touchdown.adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -118,12 +119,16 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.txt_venue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", match.getLatitude(), match.getLongitude(),
-                            match.getLatitude(), match.getLongitude(), match.getVenue());
-                    Uri gmmIntentUri = Uri.parse(uri);
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    context.startActivity(mapIntent);
+                    try {
+                        String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", match.getLatitude(), match.getLongitude(),
+                                match.getLatitude(), match.getLongitude(), match.getVenue());
+                        Uri gmmIntentUri = Uri.parse(uri);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        context.startActivity(mapIntent);
+                    } catch (ActivityNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             });
 
