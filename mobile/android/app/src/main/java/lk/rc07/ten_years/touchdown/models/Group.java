@@ -1,26 +1,33 @@
 package lk.rc07.ten_years.touchdown.models;
 
-import com.google.gson.annotations.SerializedName;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * Created by Sabri on 2/12/2017. Group Model
  */
-
+@Entity
 public class Group {
 
-    @SerializedName("idgroup")
-    private int groupId;
+    @PrimaryKey
+    @ColumnInfo(name = "group_id")
+    private int idgroup;
+    @ColumnInfo(name = "group_name")
     private String groupName;
+    @ColumnInfo(name = "group_league")
     private String leagueName;
+    @ColumnInfo(name = "group_round")
     private String roundName;
+    @ColumnInfo(name = "group_year")
     private int year;
 
-    public int getGroupId() {
-        return groupId;
+    public int getIdgroup() {
+        return idgroup;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setIdgroup(int idgroup) {
+        this.idgroup = idgroup;
     }
 
     public String getGroupName() {

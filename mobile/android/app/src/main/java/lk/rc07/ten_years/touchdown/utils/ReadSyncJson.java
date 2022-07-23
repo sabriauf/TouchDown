@@ -214,7 +214,8 @@ class ReadSyncJson {
         }
     }
 
-    private void savePlayers(Gson gson, String response) {
+    private boolean savePlayers(Gson gson, String response) {
+        boolean added = true;
         try {
             Type messageType = new TypeToken<List<Player>>() {
             }.getType();
@@ -222,10 +223,11 @@ class ReadSyncJson {
             List<Player> players = gson.fromJson(response, messageType);
 
             for (Player player : players)
-                PlayerDAO.addPlayer(player);
+                added  = PlayerDAO.addPlayer(player) && added;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return added;
     }
 
     private void savePlayerPos(Gson gson, String response) {

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+import java.util.SortedMap;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.MatchSummaryActivity;
@@ -18,8 +19,10 @@ import lk.rc07.ten_years.touchdown.adapters.ScoreAdapter;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
+import lk.rc07.ten_years.touchdown.models.GameTime;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
+import lk.rc07.ten_years.touchdown.utils.AppHandler;
 
 /**
  * Created by Sabri on 4/1/2017. fragment for timeline
@@ -43,8 +46,9 @@ public class TimelineFragment extends Fragment {
                         DBHelper.getInstance(getContext()));
                 dbManager.openDatabase();
                 List<Score> scores = ScoreDAO.getScores(match.getIdmatch());
+                SortedMap<Long, GameTime> gameTimes = AppHandler.getMatchGameTimes(match.getIdmatch());
                 dbManager.closeDatabase();
-                ScoreAdapter adapter = new ScoreAdapter(getContext(), scores, match);
+                ScoreAdapter adapter = new ScoreAdapter(getContext(), scores, match, gameTimes);
                 recyclerView.setAdapter(adapter);
             }
         }

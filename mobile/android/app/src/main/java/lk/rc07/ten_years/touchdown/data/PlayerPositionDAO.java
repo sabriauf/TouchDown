@@ -87,7 +87,7 @@ public class PlayerPositionDAO extends DBManager {
         // tables1 = PlayerTable P, PlayerPositionTable O
         String tables1 = String.format(Locale.getDefault(), TABLE_1, DBContact.PlayerTable.TABLE_NAME,
                 DBContact.PlayerPositionTable.TABLE_NAME);
-        
+
         // tables2 = PlayerPositionTable B inner join PlayerTeamTable A
         String tables2 = String.format(Locale.getDefault(), TABLE_2, DBContact.PlayerPositionTable.TABLE_NAME,
                 DBContact.PlayerTeamTable.TABLE_NAME);
@@ -110,12 +110,12 @@ public class PlayerPositionDAO extends DBManager {
         String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(matchId), String.valueOf(teamId)};
 
         /**
-            SELECT * from PlayerTable P, PlayerPositionTable O 
-            WHERE O.PlayerId = P.Id AND O.MatchId = <matchId> AND P.Id
-            IN (SELECT DISTINCT A.PlayerId from PlayerPositionTable B 
-                INNER JOIN PlayerTeamTable A 
-                WHERE A.PlayerId = B.PlayerId AND B.MatchId = <matchId> AND A.TeamId = <teamId>) 
-            ORDER BY PositionId ASC
+         SELECT * from PlayerTable P, PlayerPositionTable O
+         WHERE O.PlayerId = P.Id AND O.MatchId = <matchId> AND P.Id
+         IN (SELECT DISTINCT A.PlayerId from PlayerPositionTable B
+         INNER JOIN PlayerTeamTable A
+         WHERE A.PlayerId = B.PlayerId AND B.MatchId = <matchId> AND A.TeamId = <teamId>)
+         ORDER BY PositionId ASC
          */
         String rawQuery = String.format(Locale.getDefault(), QUERY, tables1, where_clause_1, select, tables2, where_clause_2, order);
 
@@ -236,7 +236,7 @@ public class PlayerPositionDAO extends DBManager {
     public static List<AdapterPlayer> getAdapterPlayers(int matchId) {
         List<AdapterPlayer> adapterPlayers = new ArrayList<>();
 
-        String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_MATCH_ID + " =?";
+        String WHERE_CLAUSE = DBContact.PlayerPositionTable.COLUMN_MATCH_ID + " =? ";
         String[] WHERE_ARGS = {String.valueOf(matchId)};
         String ORDER_BY = DBContact.PlayerPositionTable.COLUMN_POS_ID + " ASC";
 
@@ -246,7 +246,11 @@ public class PlayerPositionDAO extends DBManager {
         while (cursor.moveToNext()) {
             AdapterPlayer adapterPlayer = new AdapterPlayer();
             adapterPlayer.setPlayer(PlayerDAO.getPlayer(cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_PLAYER_ID))));
+            if (adapterPlayer.getPlayer() == null)
+                continue;
             adapterPlayer.setPosition(PositionDAO.getPosition(cursor.getInt(cursor.getColumnIndex(DBContact.PlayerPositionTable.COLUMN_POS_ID))));
+            if (adapterPlayer.getPosition() == null)
+                continue;
             adapterPlayers.add(adapterPlayer);
         }
         cursor.close();

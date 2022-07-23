@@ -96,17 +96,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:text="@string/live_update_from"
-                android:textColor="@android:color/black"
-                android:textSize="9sp"
-                app:layout_constraintBottom_toTopOf="@+id/img_murc"
-                app:layout_constraintEnd_toEndOf="@+id/img_murc"
-                app:layout_constraintStart_toStartOf="@+id/img_murc" />
+<!--            <TextView-->
+<!--                android:id="@+id/textView2"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom|end"-->
+<!--                android:text="@string/live_update_from"-->
+<!--                android:textColor="@android:color/black"-->
+<!--                android:textSize="9sp"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/img_murc"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/img_murc"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/img_murc" />-->
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_vertical_left"
@@ -115,30 +115,35 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent=".75" />
 
-            <lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight
-                android:id="@+id/img_murc"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/murc_logo"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/recycler_timeline"
-                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left" />
+<!--            <lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight-->
+<!--                android:id="@+id/img_murc"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_marginBottom="8dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:contentDescription="@string/app_name"-->
+<!--                android:src="@drawable/murc_logo"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/recycler_timeline"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/guideline_vertical_left" />-->
+
+<!--            <include-->
+<!--                android:id="@+id/include2"-->
+<!--                layout="@layout/component_comment_addview"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent" />-->
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fab_margin"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/textView2"
-                app:layout_constraintEnd_toEndOf="@+id/img_murc"
-                app:layout_constraintStart_toStartOf="@+id/img_murc"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/recycler_timeline"
                 app:srcCompat="@android:drawable/ic_menu_share" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

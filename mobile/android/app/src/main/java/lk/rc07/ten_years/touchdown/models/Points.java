@@ -1,13 +1,17 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Sabri on 12/15/2016. data model for Points
  */
-
+@Entity
 public class Points {
 
+    @PrimaryKey
     private int idPoint;
     private int teamId;
     private int played;

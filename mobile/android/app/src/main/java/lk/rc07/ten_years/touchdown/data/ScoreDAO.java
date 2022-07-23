@@ -31,7 +31,7 @@ public class ScoreDAO extends DBManager {
 
     public static boolean addScore(Score score) {
 
-        if(score.getAction() == null)
+        if (score.getAction() == null)
             return false;
 
         ContentValues values = new ContentValues();
@@ -63,16 +63,28 @@ public class ScoreDAO extends DBManager {
     }
 
     private static void updateMatchTime(Score score) {
+        Match.Status status;
         if (score.getAction() == Score.Action.START)
-            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.FIRST_HALF);
+            status = Match.Status.FIRST_HALF;
         else if (score.getAction() == Score.Action.SECOND_HALF)
-            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.SECOND_HALF);
+            status = Match.Status.SECOND_HALF;
         else if (score.getAction() == Score.Action.HALF_TIME)
-            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.HALF_TIME);
-        else {
-            MatchDAO.updateMatchStatus(score.getMatchid(), Match.Status.FULL_TIME);
+            status = Match.Status.HALF_TIME;
+        else if (score.getAction() == Score.Action.GAME_PAUSE)
+            status = Match.Status.GAME_PAUSE;
+        else if (score.getAction() == Score.Action.GAME_RESTART) {
+            ArrayList<Score> actions = ScoreDAO.getActionScore(score.getMatchid(), Score.Action.SECOND_HALF);
+            if (actions.size() == 0)
+                status = Match.Status.FIRST_HALF;
+            else
+                status = Match.Status.SECOND_HALF;
+        } else {
+            status = Match.Status.FULL_TIME;
             MatchDAO.updateMatchResult(score.getMatchid(), score.getDetails());
         }
+
+        MatchDAO.updateMatchStatus(score.getMatchid(), status);
+
     }
 
     public static ArrayList<Score> getScores(int matchId) {
@@ -113,6 +125,30 @@ public class ScoreDAO extends DBManager {
         String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(action)};
 
         Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, null);
+        while (cursor.moveToNext()) {
+            scores.add(cursorToScore(cursor));
+        }
+        cursor.close();
+        return scores;
+    }
+
+    public static ArrayList<Score> getAllGameTimes(int matchId) {
+        ArrayList<Score> scores = new ArrayList<>();
+
+        String WHERE_CLAUSE = DBContact.ScoreTable.COLUMN_MATCH + "=? and (" +
+                DBContact.ScoreTable.COLUMN_ACTION + "=? OR " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=? OR " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=? OR " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=? OR " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=? OR " +
+                DBContact.ScoreTable.COLUMN_ACTION + "=? )";
+        String[] WHERE_ARGS = {String.valueOf(matchId), String.valueOf(Score.Action.START),
+                String.valueOf(Score.Action.HALF_TIME), String.valueOf(Score.Action.SECOND_HALF),
+                String.valueOf(Score.Action.FULL_TIME), String.valueOf(Score.Action.GAME_PAUSE),
+                String.valueOf(Score.Action.GAME_RESTART)};
+        String orderBy = DBContact.ScoreTable.COLUMN_TIME + " ASC";
+
+        Cursor cursor = mDatabase.query(DBContact.ScoreTable.TABLE_NAME, null, WHERE_CLAUSE, WHERE_ARGS, null, null, orderBy);
         while (cursor.moveToNext()) {
             scores.add(cursorToScore(cursor));
         }
@@ -172,7 +208,7 @@ public class ScoreDAO extends DBManager {
 
     private static void addScoreToScorers(ArrayList<Scorer> scorers, Score score) {
         for (Scorer scorer : scorers) {
-            if(scorer != null && scorer.getPlayer() != null) {
+            if (scorer != null && scorer.getPlayer() != null) {
                 if (score.getPlayer() == scorer.getPlayer().getIdPlayer()) {
                     scorer.getScores().add(score);
                     return;

@@ -1,7 +1,12 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Staff {
 
+    @PrimaryKey
     private int id;
     private String position;
     private String name;

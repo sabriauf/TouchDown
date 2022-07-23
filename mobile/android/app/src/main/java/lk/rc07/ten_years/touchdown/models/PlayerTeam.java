@@ -1,11 +1,13 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import androidx.room.Entity;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Sabri on 2/25/2018. model for Player and team
  */
-
+@Entity(primaryKeys = {"teamId", "playerId"})
 public class PlayerTeam {
 
     @SerializedName("id_team")

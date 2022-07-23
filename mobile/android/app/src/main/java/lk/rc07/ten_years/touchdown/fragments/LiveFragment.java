@@ -1,31 +1,41 @@
 package lk.rc07.ten_years.touchdown.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import lk.rc07.ten_years.touchdown.R;
+import lk.rc07.ten_years.touchdown.activities.LoginActivity;
 import lk.rc07.ten_years.touchdown.adapters.ScoreAdapter;
 import lk.rc07.ten_years.touchdown.config.AppConfig;
 import lk.rc07.ten_years.touchdown.config.Constant;
@@ -35,12 +45,13 @@ import lk.rc07.ten_years.touchdown.data.GroupDAO;
 import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
+import lk.rc07.ten_years.touchdown.models.Comment;
+import lk.rc07.ten_years.touchdown.models.GameTime;
 import lk.rc07.ten_years.touchdown.models.Group;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 import lk.rc07.ten_years.touchdown.models.Team;
 import lk.rc07.ten_years.touchdown.utils.AppHandler;
-import lk.rc07.ten_years.touchdown.utils.ImageViewAutoHeight;
 import lk.rc07.ten_years.touchdown.utils.ScoreListener;
 import lk.rc07.ten_years.touchdown.utils.ScoreObserver;
 import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
@@ -51,6 +62,7 @@ import lk.rc07.ten_years.touchdown.utils.TimeFormatter;
 
 public class LiveFragment extends Fragment {
 
+    private static final int FACEBOOK_LOGIN_REQUEST = 201;
     private static final String DIGITAL_CLOCK_FONT = "fonts/digital_7.ttf";
 
     //instances
@@ -58,9 +70,11 @@ public class LiveFragment extends Fragment {
     private ViewHolder holder;
     private Handler timer;
     private LinearLayoutManager mLayoutManager;
+    private Context context;
+    private Comment comment = null;
+    private SortedMap<Long, GameTime> times;
 
     //primary data
-    private long matchStartTime = 0;
     private int leftScoreTotal = 0;
     private int rightScoreTotal = 0;
 
@@ -90,8 +104,24 @@ public class LiveFragment extends Fragment {
         loadScore.run();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FACEBOOK_LOGIN_REQUEST && AccessToken.getCurrentAccessToken() != null && comment != null) {
+                //TODO send comment
+            } else
+                comment = null;
+        }
+    }
 
-    Thread loadScore = new Thread(new Runnable() {
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    private final Thread loadScore = new Thread(new Runnable() {
         @Override
         public void run() {
             DBManager dbManager = DBManager.initializeInstance(
@@ -111,7 +141,8 @@ public class LiveFragment extends Fragment {
 
             //set matchStart time
             if (match != null) {
-                matchStartTime = AppHandler.getMatchStartTime(match);
+//                matchStartTime = AppHandler.getMatchStartTime(match);
+                times = AppHandler.getMatchGameTimes(match.getIdmatch());
                 calculateScore(match, scores);
 
                 tOne = TeamDAO.getTeam(match.getTeamOne());
@@ -126,12 +157,12 @@ public class LiveFragment extends Fragment {
             final Group finalGroup = group;
             final List<Score> temp_scores = scores;
             Activity activity = getActivity();
-            if(activity != null) {
+            if (activity != null) {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (match != null) {
-                            adapter = new ScoreAdapter(getContext(), temp_scores, match);
+                            adapter = new ScoreAdapter(getContext(), temp_scores, match, times);
                             recyclerView.setAdapter(adapter);
                             setData(parentView, match, finalGroup, teamOne, teamTwo);
                             if (temp_scores.size() > 0)
@@ -159,12 +190,16 @@ public class LiveFragment extends Fragment {
                     message += Constant.SHARE_APP_TAGS;
                     message += Constant.SHARE_APP_PROM + AppConfig.APP_DOWNLOAD_LINK;
 
-                    Log.d(LiveFragment.class.getSimpleName(), message);
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, message);
-                    sendIntent.setType("text/plain");
-                    startActivity(Intent.createChooser(sendIntent, "Share the score"));
+                    try {
+                        Log.d(LiveFragment.class.getSimpleName(), message);
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+                        sendIntent.setType("text/plain");
+                        startActivity(Intent.createChooser(sendIntent, "Share the score"));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
 
                     dbManager.closeDatabase();
                 }
@@ -185,28 +220,34 @@ public class LiveFragment extends Fragment {
     private void setData(View view, final Match match, Group group, Team tOne, Team tTwo) {
         holder = new ViewHolder(view);
 
-        holder.img_murc_logo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.MURC_WEB_LINK));
-                parentView.getContext().startActivity(intent);
-            }
-        });
+//        holder.img_murc_logo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.MURC_WEB_LINK));
+//                parentView.getContext().startActivity(intent);
+//            }
+//        });
 
         ScoreObserver.setScoreListener(new ScoreListener() {
             @Override
             public void OnNewScoreUpdate(Score score) {
                 if (match == null || score.getMatchid() != match.getIdmatch())
                     loadScore.run();
-                else
+                else {
+                    if (score.getActionType() == Score.WHAT_ACTION_TIME)
+                        AppHandler.addGameTimeObj(times, score);
                     updateScore(score, getUpdatedMatch(score, match));
+                }
             }
 
             @Override
             public void OnScoreUpdate(Score score) {
                 if (score != null && match != null && score.getMatchid() == match.getIdmatch()) {
-                    if (score.getAction() == Score.Action.START)
+                    if (score.getActionType() == Score.WHAT_ACTION_TIME) {
+                        AppHandler.removeGameTimeObj(times, score);
+                        AppHandler.addGameTimeObj(times, score);
                         setTimer(getUpdatedMatch(score, match));
+                    }
                     adapter.updateItem(score);
                     calculateScore(match, adapter.getScores());
                     holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
@@ -217,6 +258,8 @@ public class LiveFragment extends Fragment {
             @Override
             public void OnScoreRemove(Score score) {
                 if (score.getMatchid() == match.getIdmatch()) {
+                    if (score.getActionType() == Score.WHAT_ACTION_TIME)
+                        AppHandler.removeGameTimeObj(times, score);
                     adapter.removeItem(score);
                     calculateScore(match, adapter.getScores());
                     holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
@@ -226,7 +269,7 @@ public class LiveFragment extends Fragment {
 
             @Override
             public void OnMatchRemoved() {
-                matchStartTime = 0;
+                times = null;
                 loadScore.run();
             }
 
@@ -241,7 +284,47 @@ public class LiveFragment extends Fragment {
         setTimer(match);
 
         setShareAction(match);
+
+//        holder.img_send.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (holder.edt_comment.getText().toString().equals("")) {
+//                    holder.edt_comment.setError("Please add a comment");
+//                } else if (AccessToken.getCurrentAccessToken() == null) {
+//                    comment = createCommentObject(holder.edt_comment.getText().toString());
+//                    startActivityForResult(new Intent(getContext(), LoginActivity.class), FACEBOOK_LOGIN_REQUEST);
+//                } else {
+//                    Comment comment = createCommentObject(holder.edt_comment.getText().toString());
+//                    //TODO send comment
+//                    holder.edt_comment.setError(null);
+//                }
+//            }
+//        });
     }
+
+//    private Comment createCommentObject(String message) {
+//        DBManager dbManager = DBManager.initializeInstance(
+//                DBHelper.getInstance(getContext()));
+//        dbManager.openDatabase();
+//
+//        SharedPreferences sharedPref = context.getSharedPreferences(Constant.MY_PREFERENCES, Context.MODE_PRIVATE);
+//
+//        Match match = MatchDAO.getDisplayMatch();
+//
+//        if (match != null) {
+//            Comment comment = new Comment();
+//            comment.setComment(message);
+//            comment.setMatchId(match.getIdmatch());
+//            comment.setUserId(sharedPref.getString(Constant.SHEARED_PREFEREANCE_KEY_USER_ID, ""));
+//            comment.setUsername(sharedPref.getString(Constant.SHEARED_PREFEREANCE_KEY_USER_NAME, ""));
+//            comment.setTimestamp(Calendar.getInstance().getTimeInMillis());
+//
+//            dbManager.closeDatabase();
+//
+//            return comment;
+//        } else
+//            return null;
+//    }
 
     private Match getUpdatedMatch(Score score, Match match) {
         if (score.getActionType() == Score.WHAT_ACTION_TIME) {
@@ -258,18 +341,36 @@ public class LiveFragment extends Fragment {
         timer.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (match != null && (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF)
-                        && matchStartTime != 0) {
-                    if ((match.getStatus() == Match.Status.FIRST_HALF && System.currentTimeMillis() - matchStartTime > AppConfig.SECOND_HALF_START_TIME) ||
-                            (match.getStatus() == Match.Status.SECOND_HALF && System.currentTimeMillis() - matchStartTime > AppConfig.SECOND_HALF_START_TIME * 2))
+                long gameTime = getGameMilliseconds();
+                if (match != null && (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF
+                        || match.getStatus() == Match.Status.GAME_PAUSE) && times != null) {
+                    if (gameTime > AppConfig.SECOND_HALF_START_TIME * 2 || (gameTime > AppConfig.SECOND_HALF_START_TIME
+                            && match.getStatus() == Match.Status.FIRST_HALF))
                         holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.live_back));
+                    else if (match.getStatus() == Match.Status.GAME_PAUSE)
+                        holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.tab_background));
                     else
                         holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.timer_clock));
-                    holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
-                    timer.postDelayed(this, 1000);
+
+                    if (gameTime > 0) {
+                        holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), gameTime));
+                        timer.postDelayed(this, 1000);
+                    }
                 }
             }
         }, 1000);
+    }
+
+    private long getGameMilliseconds() {
+        if (times != null && times.size() > 0) {
+            GameTime gameTime = times.get(times.lastKey());
+            if (gameTime != null) {
+                long diff = gameTime.getType() == 1 ? System.currentTimeMillis() - gameTime.getRealTime() : 0;
+                return diff + gameTime.getRelativeTime();
+            }
+        }
+
+        return 0L;
     }
 
     private void updateScore(Score score, Match match) {
@@ -278,22 +379,14 @@ public class LiveFragment extends Fragment {
             mLayoutManager.scrollToPositionWithOffset(adapter.getItemCount() - 1, 0);
         switch (score.getAction()) {
             case START:
-                matchStartTime = score.getTime();
-                holder.txt_live.setVisibility(View.VISIBLE);
-                setTimerFont(true);
-                setTimer(match);
-                break;
-            case HALF_TIME:
-                matchStartTime = 0;
-                break;
             case SECOND_HALF:
-                matchStartTime = (score.getTime() - AppConfig.SECOND_HALF_START_TIME);
                 holder.txt_live.setVisibility(View.VISIBLE);
                 setTimerFont(true);
                 setTimer(match);
                 break;
             case FULL_TIME:
-                matchStartTime = 0;
+            case HALF_TIME:
+//                matchStartTime = 0;
                 break;
             default:
                 if (score.getTeamId() == match.getTeamOne())
@@ -327,14 +420,15 @@ public class LiveFragment extends Fragment {
         holder.txt_score_one.setText(String.valueOf(leftScoreTotal));
         Glide.with(this).load(tOne.getLogo_url()).into(holder.img_team_one_logo);
         Glide.with(this).load(tTwo.getLogo_url()).into(holder.img_team_two_logo);
-        if (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF) {
+        if (match.getStatus() == Match.Status.FIRST_HALF || match.getStatus() == Match.Status.SECOND_HALF
+                || match.getStatus() == Match.Status.GAME_PAUSE) {
             holder.txt_live.setVisibility(View.VISIBLE);
             setTimerFont(true);
-            holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), matchStartTime));
+            holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), getGameMilliseconds()));
         } else {
             holder.txt_live.setVisibility(View.GONE);
             setTimerFont(false);
-            matchStartTime = 0;
+            times = null;
             holder.txt_time.setText(getMatchString(match));
         }
     }
@@ -380,7 +474,7 @@ public class LiveFragment extends Fragment {
         }
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         AppCompatTextView txt_league;
         AppCompatTextView txt_round;
         AppCompatTextView txt_score_one;
@@ -389,7 +483,9 @@ public class LiveFragment extends Fragment {
         TextView txt_time;
         ImageView img_team_one_logo;
         ImageView img_team_two_logo;
-        ImageViewAutoHeight img_murc_logo;
+        //        EditText edt_comment;
+        //        ImageViewAutoHeight img_murc_logo;
+        ImageView img_send;
         FloatingActionButton fab_share;
 
         ViewHolder(View view) {
@@ -397,7 +493,9 @@ public class LiveFragment extends Fragment {
             txt_round = view.findViewById(R.id.txt_round_name);
             txt_live = view.findViewById(R.id.txt_live_notifier);
             txt_time = view.findViewById(R.id.txt_match_time);
-            img_murc_logo = view.findViewById(R.id.img_murc);
+//            img_murc_logo = view.findViewById(R.id.img_murc);
+//            edt_comment = view.findViewById(R.id.edt_user_comment_timeline);
+            img_send = view.findViewById(R.id.img_send_comment_timeline);
 
             View view_team_one = view.findViewById(R.id.layout_score_team_one);
             txt_score_one = view_team_one.findViewById(R.id.txt_score);
@@ -408,6 +506,8 @@ public class LiveFragment extends Fragment {
             img_team_two_logo = view_team_two.findViewById(R.id.img_college_crest);
 
             fab_share = view.findViewById(R.id.fab_share);
+
+//            edt_comment.clearFocus();
         }
     }
 }

@@ -1,9 +1,12 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 /**
  * Created by Sabri on 12/13/2016. data model for Score
  */
-
+@Entity
 public class Score {
 
     //constant
@@ -11,6 +14,7 @@ public class Score {
     public static final int WHAT_ACTION_EVENT = 2;
     public static final int WHAT_ACTION_TIME = 3;
 
+    @PrimaryKey
     private int idscore;
     private int matchid;
     private int teamId;
@@ -23,7 +27,7 @@ public class Score {
     public enum Action {
         START, HALF_TIME, SECOND_HALF, FULL_TIME,
         TRY, CONVERSION, DROP_GOAL, PENALTY_KICK, LINE_OUT,
-        YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM, MESSAGE;
+        YELLOW_CARD, RED_CARD, PENALTY, KNOCK_ON, SCRUM, MESSAGE, GAME_PAUSE, GAME_RESTART;
     }
 
     public int getIdscore() {
@@ -108,6 +112,10 @@ public class Score {
                 return "Penalty Kick";
             case LINE_OUT:
                 return "Line-out";
+            case GAME_PAUSE:
+                return "Stop play";
+            case GAME_RESTART:
+                return "Restart";
         }
         return "";
     }
@@ -118,6 +126,8 @@ public class Score {
             case HALF_TIME:
             case START:
             case SECOND_HALF:
+            case GAME_PAUSE:
+            case GAME_RESTART:
                 return WHAT_ACTION_TIME;
             case KNOCK_ON:
             case PENALTY:

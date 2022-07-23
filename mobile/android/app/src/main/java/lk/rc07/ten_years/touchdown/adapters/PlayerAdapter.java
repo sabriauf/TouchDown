@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +81,12 @@ public class PlayerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final AdapterPlayer adapterPlayer = (AdapterPlayer) players.get(pos);
 
             if (adapterPlayer != null) {
+
+                if(adapterPlayer.getPlayer() == null) {
+                    Log.d(PlayerAdapter.class.getSimpleName(), "Player missing in " + adapterPlayer.getPosition().getPosName());
+                    return;
+                }
+
                 if (adapterPlayer.getPlayer().getName().contains(" "))
                     holder.txt_player_name.setText(adapterPlayer.getPlayer().getName().split(" ")[0]);
                 else

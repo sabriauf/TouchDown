@@ -20,9 +20,15 @@
         app:showAsAction="collapseActionView" />
 
     <item
+        android:id="@+id/menu_share"
+        android:title="@string/share_app"
+        android:orderInCategory="14"
+        app:showAsAction="collapseActionView" />
+
+    <item
         android:id="@+id/menu_about"
         android:title="@string/about_us"
-        android:orderInCategory="14"
+        android:orderInCategory="15"
         app:showAsAction="collapseActionView" />
 
 </menu>

@@ -37,7 +37,7 @@ public class GroupDAO extends DBManager {
 
         ContentValues values = new ContentValues();
 
-        boolean isMatchAlreadyExist = checkIfGroupAvailable(group.getGroupId());
+        boolean isMatchAlreadyExist = checkIfGroupAvailable(group.getIdgroup());
 
         values.put(DBContact.GroupTable.COLUMN_NAME, group.getGroupName());
         values.put(DBContact.GroupTable.COLUMN_LEAGUE, group.getLeagueName());
@@ -45,12 +45,12 @@ public class GroupDAO extends DBManager {
         values.put(DBContact.GroupTable.COLUMN_YEAR, group.getYear());
 
         if (!isMatchAlreadyExist) {
-            values.put(DBContact.GroupTable.COLUMN_ID, group.getGroupId());
+            values.put(DBContact.GroupTable.COLUMN_ID, group.getIdgroup());
             return (mDatabase.insert(DBContact.GroupTable.TABLE_NAME, null, values) != -1);
 
         } else {
             String WHERE_CLAUSE = DBContact.GroupTable.COLUMN_ID + "=?";
-            String[] WHERE_ARGS = {String.valueOf(group.getGroupId())};
+            String[] WHERE_ARGS = {String.valueOf(group.getIdgroup())};
             return mDatabase.update(DBContact.GroupTable.TABLE_NAME, values, WHERE_CLAUSE, WHERE_ARGS) == 1;
         }
     }
@@ -124,7 +124,7 @@ public class GroupDAO extends DBManager {
 
     private static Group cursorToGroup(Cursor cursor) {
         Group group = new Group();
-        group.setGroupId(cursor.getInt(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_ID)));
+        group.setIdgroup(cursor.getInt(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_ID)));
         group.setGroupName(cursor.getString(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_NAME)));
         group.setLeagueName(cursor.getString(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_LEAGUE)));
         group.setRoundName(cursor.getString(cursor.getColumnIndex(DBContact.GroupTable.COLUMN_ROUND)));

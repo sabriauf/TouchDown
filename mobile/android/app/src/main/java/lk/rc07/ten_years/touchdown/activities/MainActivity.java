@@ -1,16 +1,22 @@
 package lk.rc07.ten_years.touchdown.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -261,6 +267,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.menu_sync:
                 syncData();
+                break;
+            case R.id.menu_share:
+                try {
+                    Intent intent1 = new Intent();
+                    intent1.setClassName("com.facebook.katana", "com.facebook.katana.activity.composer.ImplicitShareIntentHandler");
+                    intent1.setAction("android.intent.action.SEND");
+                    intent1.setType("text/plain");
+                    intent1.putExtra("android.intent.extra.TEXT", AppConfig.APP_DOWNLOAD_LINK);
+                    startActivity(intent1);
+                } catch (ActivityNotFoundException e) {
+                    // If we failed (not native FB app installed), try share through SEND
+                    String sharerUrl = "https://www.facebook.com/sharer/sharer.php?u=" + AppConfig.APP_DOWNLOAD_LINK;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(sharerUrl));
+                    startActivity(intent);
+                }
                 break;
             case R.id.menu_profile:
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));

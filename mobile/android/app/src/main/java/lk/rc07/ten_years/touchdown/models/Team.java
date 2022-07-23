@@ -1,11 +1,15 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 /**
  * Created by Sabri on 12/15/2016. data model for Team
  */
-
+@Entity
 public class Team {
 
+    @PrimaryKey
     private int idTeam;
     private String name;
     private String flag_url;

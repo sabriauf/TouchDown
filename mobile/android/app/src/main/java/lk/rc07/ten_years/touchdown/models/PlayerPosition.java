@@ -1,9 +1,11 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import androidx.room.Entity;
+
 /**
  * Created by Sabri on 12/24/2016. define players position model
  */
-
+@Entity(primaryKeys = {"idPlayer", "idMatch"})
 public class PlayerPosition {
 
     private int idPlayer;

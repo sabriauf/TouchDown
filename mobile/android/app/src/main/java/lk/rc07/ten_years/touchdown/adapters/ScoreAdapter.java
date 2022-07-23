@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.SortedMap;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
 import lk.rc07.ten_years.touchdown.R;
@@ -29,6 +31,7 @@ import lk.rc07.ten_years.touchdown.data.PlayerPositionDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.AdapterPlayer;
+import lk.rc07.ten_years.touchdown.models.GameTime;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Player;
 import lk.rc07.ten_years.touchdown.models.Score;
@@ -55,18 +58,15 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<Score> scores;
     private DBManager dbManager;
     private Match match;
+    private SortedMap<Long, GameTime> times;
 
-    //primary data
-    private long firstHalfTime = 0;
-    private long secondHalfTime = 0;
-
-    public ScoreAdapter(Context context, List<Score> scores, Match match) {
+    public ScoreAdapter(Context context, List<Score> scores, Match match, SortedMap<Long, GameTime> times) {
         this.context = context;
         this.scores = scores;
         this.match = match;
+        this.times = times;
 
         dbManager = DBManager.initializeInstance(DBHelper.getInstance(context));
-
     }
 
 
@@ -90,37 +90,23 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private long getOffSetTime(long time) {
-        setGameTimes();
-
-        if (time > secondHalfTime && secondHalfTime != 0) {
-            return time - secondHalfTime + AppConfig.SECOND_HALF_START_TIME;
-        } else if (firstHalfTime != 0) {
-            return time - firstHalfTime;
-        } else
-            return 0;
-    }
-
-    private void setGameTimes() {
-        if (firstHalfTime == 0 || secondHalfTime == 0) {
-            dbManager.openDatabase();
-            if (firstHalfTime == 0)
-                firstHalfTime = getGamePoint(Score.Action.START);
-            if (secondHalfTime == 0)
-                secondHalfTime = getGamePoint(Score.Action.SECOND_HALF);
-//            if (firstHalfTime != 0 && secondHalfTime != 0 && SECOND_HALF_START_TIME == 0) {
-//                long firstHalfEnd = getGamePoint(Score.Action.HALF_TIME);
-//                SECOND_HALF_START_TIME = secondHalfTime - firstHalfEnd;
-//            }
-            dbManager.closeDatabase();
+        GameTime prevGameTime = null;
+        for (long itTime : times.keySet()) {
+            GameTime gameTime = times.get(itTime);
+            if (gameTime != null) {
+                if (time <= gameTime.getRealTime()) {
+                    if (prevGameTime == null)
+                        return 0;
+                    return time - prevGameTime.getRealTime() + prevGameTime.getRelativeTime();
+                } else {
+                    prevGameTime = gameTime;
+                }
+            }
         }
-    }
-
-    private long getGamePoint(Score.Action point) {
-        List<Score> startScores = ScoreDAO.getActionScore(match.getIdmatch(), point);
-        if (startScores.size() > 0)
-            return startScores.get(0).getTime();
-        else
+        if (prevGameTime == null)
             return 0;
+        return time - prevGameTime.getRealTime() + prevGameTime.getRelativeTime();
+
     }
 
     @Override
@@ -173,11 +159,11 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             String message = getMessageString(score, playerName);
             messageViewHolder.txt_time.setText(time);
 
-            if(score.getAction() == Score.Action.RED_CARD) {
+            if (score.getAction() == Score.Action.RED_CARD) {
                 messageViewHolder.img_score.setVisibility(View.VISIBLE);
                 messageViewHolder.img_score.setImageDrawable(AppHandler.getDrawable(context, R.mipmap.red_card));
                 messageViewHolder.txt_title.setText(message);
-            } else if(score.getAction() == Score.Action.YELLOW_CARD) {
+            } else if (score.getAction() == Score.Action.YELLOW_CARD) {
                 messageViewHolder.img_score.setVisibility(View.VISIBLE);
                 messageViewHolder.img_score.setImageDrawable(AppHandler.getDrawable(context, R.mipmap.yellow_card));
                 messageViewHolder.txt_title.setText(message);
@@ -223,6 +209,8 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case HALF_TIME:
             case START:
             case SECOND_HALF:
+            case GAME_PAUSE:
+            case GAME_RESTART:
                 return SCORE_VIEW_TOPIC;
             case KNOCK_ON:
             case PENALTY:
@@ -283,7 +271,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             txt_player_no_left = itemView.findViewById(R.id.txt_player_no_left);
             txt_player_name_left = itemView.findViewById(R.id.txt_player_name_left);
             txt_player_no_right = itemView.findViewById(R.id.txt_player_no_right);
-            txt_player_name_right =  itemView.findViewById(R.id.txt_player_name_right);
+            txt_player_name_right = itemView.findViewById(R.id.txt_player_name_right);
         }
     }
 
@@ -310,11 +298,17 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void addItem(Score score) {
+        if (score.getActionType() == Score.WHAT_ACTION_TIME)
+            AppHandler.addGameTimeObj(times, score);
         scores.add(score);
         notifyItemInserted(scores.size() - 1);
     }
 
     public void updateItem(Score score) {
+        if (score.getActionType() == Score.WHAT_ACTION_TIME) {
+            AppHandler.removeGameTimeObj(times, score);
+            AppHandler.addGameTimeObj(times, score);
+        }
         for (int i = 0; i < scores.size(); i++) {
             Score score1 = scores.get(i);
             if (score1.getIdscore() == score.getIdscore()) {
@@ -326,6 +320,8 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void removeItem(Score score) {
+        if (score.getActionType() == Score.WHAT_ACTION_TIME)
+            AppHandler.removeGameTimeObj(times, score);
         for (int i = 0; i < scores.size(); i++) {
             Score score1 = scores.get(i);
             if (score1.getIdscore() == score.getIdscore()) {

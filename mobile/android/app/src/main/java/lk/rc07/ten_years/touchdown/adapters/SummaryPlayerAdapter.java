@@ -5,6 +5,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,14 +76,16 @@ public class SummaryPlayerAdapter extends RecyclerView.Adapter<SummaryPlayerAdap
             }
         });
 
-        String img_link =scorer.getPlayer().getImg_url();
-        if (!img_link.equals("") && !img_link.equals("/contents/players/")) {
-            img_link = BuildConfig.DEFAULT_URL + img_link;
-            Glide.with(context).load(img_link).placeholder(R.drawable.default_profile_pic)
-                    .into(holder.img_player);
-        }
+        if (scorer.getPlayer() != null) {
+            String img_link = scorer.getPlayer().getImg_url();
+            if (!img_link.equals("") && !img_link.equals("/contents/players/")) {
+                img_link = BuildConfig.DEFAULT_URL + img_link;
+                Glide.with(context).load(img_link).placeholder(R.drawable.default_profile_pic)
+                        .into(holder.img_player);
+            }
 
-        holder.txt_name.setText(scorer.getPlayer().getName());
+            holder.txt_name.setText(scorer.getPlayer().getName());
+        }
 
         createScoreView(scorer.getScores(), holder);
     }

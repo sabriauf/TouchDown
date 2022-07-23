@@ -3,15 +3,21 @@ package lk.rc07.ten_years.touchdown.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Sabri on 12/15/2016. data model of Match
  */
-
+@Entity
 public class Match implements Parcelable {
 
+    @PrimaryKey
     private int idmatch;
+    @ColumnInfo(name = "group_year")
     private int teamOne;
     private int teamTwo;
     private String venue;
@@ -76,25 +82,35 @@ public class Match implements Parcelable {
     }
 
     public enum Status {
-        PENDING, DONE, FULL_TIME, CALLED_OFF, CANCELED, HALF_TIME, FIRST_HALF, SECOND_HALF, TBA;
+        PENDING, DONE, FULL_TIME, CALLED_OFF, CANCELED, CANCELLED, HALF_TIME, FIRST_HALF, SECOND_HALF, GAME_PAUSE, TBA;
 
         public String toStringValue() {
             switch (this) {
                 case PENDING:
                 case TBA:
                 case CANCELED:
+                case CANCELLED:
                     return this.name();
                 case DONE:
                 case FULL_TIME:
                     return "Full Time";
                 case CALLED_OFF:
                     return "Called Off";
+
+
+
+
+
+
+
                 case HALF_TIME:
                     return "Half Time";
                 case FIRST_HALF:
                     return "First Half";
                 case SECOND_HALF:
                     return "Second Half";
+                case GAME_PAUSE:
+                    return "Stop play";
             }
             return "";
         }

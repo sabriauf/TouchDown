@@ -3,14 +3,18 @@ package lk.rc07.ten_years.touchdown.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.Date;
 
 /**
  * Created by Sabri on 12/15/2016. data model for Player
  */
-
+@Entity
 public class Player implements Parcelable{
 
+    @PrimaryKey
     private int idPlayer;
     private String name;
     private String img_url;

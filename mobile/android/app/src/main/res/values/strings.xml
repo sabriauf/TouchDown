@@ -12,7 +12,7 @@
     <string name="default_player_pos">18</string>
 
     <string name="google_calendar_api_key">959794019019-cnga03kchd5e95iln7d6mfebtmlqk907.apps.googleusercontent.com</string>
-    <string name="facebook_api_key">175608982950353</string>
+    <string name="facebook_api_key">1130455344173167</string>
 
     <string name="score">Score</string>
     <string name="time_12_05">Time - 12:05</string>
@@ -46,6 +46,7 @@
     <!-- menu items -->
     <string name="about_us">About Us</string>
     <string name="sync_now">Sync Now</string>
+    <string name="share_app">Share App</string>
     <string name="profile">Profile</string>
     <string name="invite">Invite Friends</string>
     <string name="tries">Tries</string>
@@ -61,5 +62,6 @@
     <string name="notification_messages">Messages</string>
     <string name="notification_live">Live Link</string>
     <string name="notification_score">Scores</string>
+    <string name="add_comment">Add comment...</string>
 
 </resources>

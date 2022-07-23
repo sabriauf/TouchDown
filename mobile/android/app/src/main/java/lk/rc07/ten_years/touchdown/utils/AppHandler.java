@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
+
 import androidx.core.content.ContextCompat;
+
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -21,6 +23,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import lk.rc07.ten_years.touchdown.BuildConfig;
@@ -33,6 +37,7 @@ import lk.rc07.ten_years.touchdown.data.MatchDAO;
 import lk.rc07.ten_years.touchdown.data.ScoreDAO;
 import lk.rc07.ten_years.touchdown.data.TeamDAO;
 import lk.rc07.ten_years.touchdown.models.DownloadMeta;
+import lk.rc07.ten_years.touchdown.models.GameTime;
 import lk.rc07.ten_years.touchdown.models.Match;
 import lk.rc07.ten_years.touchdown.models.Score;
 
@@ -121,7 +126,7 @@ public class AppHandler {
         FutureTarget<Bitmap> futureBitmap = Glide.with(context)
                 .asBitmap()
                 .load(link)
-                           .submit();
+                .submit();
         try {
             bm = futureBitmap.get();
         } catch (ExecutionException e) {
@@ -212,6 +217,74 @@ public class AppHandler {
                 return startScores.get(0).getTime();
         }
         return 0;
+    }
+
+    public static SortedMap<Long, GameTime> getMatchGameTimes(int matchId) {
+        SortedMap<Long, GameTime> times = new TreeMap<>();
+        List<Score> timeScores = ScoreDAO.getAllGameTimes(matchId);
+        long point = 0L;
+        long prevTime = 0L;
+        boolean prevStart = false;
+        for (Score time : timeScores) {
+            if (time.getAction() == Score.Action.SECOND_HALF) {
+                point = AppConfig.SECOND_HALF_START_TIME;
+                prevTime = time.getTime();
+            }
+
+            GameTime gameTime = createGameTime(time, prevTime, point, prevStart);
+            times.put(time.getTime(), gameTime);
+            prevTime = time.getTime();
+            point = gameTime.getRelativeTime();
+            prevStart = gameTime.getType() == 1;
+        }
+        return times;
+    }
+
+    private static GameTime createGameTime(Score score, long prevTime, long point, boolean prevStart) {
+
+        boolean start = score.getAction() == Score.Action.START ||
+                score.getAction() == Score.Action.SECOND_HALF ||
+                score.getAction() == Score.Action.GAME_RESTART;
+
+        GameTime gameTime = new GameTime();
+        gameTime.setScoreId(score.getIdscore());
+        gameTime.setName(score.getActionString());
+        gameTime.setRealTime(score.getTime());
+        gameTime.setRelativeTime((prevStart ? (score.getTime() - prevTime) : 0) + point);
+        gameTime.setType(start ? 1 : 0);
+        return gameTime;
+    }
+
+    public static void addGameTimeObj(SortedMap<Long, GameTime> times, Score score) {
+        GameTime gameTime;
+        long prevTime = 0;
+        long point = 0;
+        boolean prevStart = false;
+        if (times == null) {
+            times = new TreeMap<>();
+        } else if (times.size() > 0) {
+            GameTime lastGameTime = times.get(times.lastKey());
+            if (lastGameTime != null) {
+                prevTime = lastGameTime.getRealTime();
+                point = lastGameTime.getRelativeTime();
+                prevStart = lastGameTime.getType() == 1;
+            }
+        }
+
+        gameTime = AppHandler.createGameTime(score, prevTime, point, prevStart);
+        times.put(gameTime.getRealTime(), gameTime);
+    }
+
+    public static void removeGameTimeObj(SortedMap<Long, GameTime> times, Score score) {
+        for (long time : times.keySet()) {
+            GameTime gameTime = times.get(time);
+            if (gameTime != null) {
+                if (gameTime.getScoreId() == score.getIdscore()) {
+                    times.remove(time);
+                    break;
+                }
+            }
+        }
     }
 
     public static List<String> callSync(final Context context, final long time) {

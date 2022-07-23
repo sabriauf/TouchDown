@@ -51,6 +51,7 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final String LAST_RESULT = "Last match : %s";
     private static final String NEW_RESULT = " RC -<span style=\"color:#F2C311\"> %d : %d </span>- %s";
     private static final String RESULT_SUMMARY = " %s won by %d points.";
+    private static final String RESULT_PROGRESS = " %s leading by %d points.";
     private static final String TO_BE_ANNOUNCED = "TBA";
 
     //instances
@@ -165,7 +166,10 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 //            if (match.getResult() != null)
 //                holder.txt_final.setText(match.getResult());
 //            else
-            holder.txt_final.setText(getMatchResult(opponentTeam, homeTotal, opponentTotal));
+            if (match.getStatus() == Match.Status.FULL_TIME || match.getStatus() == Match.Status.DONE)
+                holder.txt_final.setText(getMatchResult(opponentTeam, homeTotal, opponentTotal, RESULT_SUMMARY));
+            else
+                holder.txt_final.setText(getMatchResult(opponentTeam, homeTotal, opponentTotal, RESULT_PROGRESS));
 
 
             holder.txt_result.setText(getResultString(opponentTeam, homeTotal, opponentTotal));
@@ -187,8 +191,8 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .icon_book_placeholder).into(img_crest);
     }
 
-    private String getMatchResult(String opponentTeam, int homeTotal, int opponentTotal) {
-        return String.format(Locale.getDefault(), RESULT_SUMMARY, homeTotal > opponentTotal ?
+    private String getMatchResult(String opponentTeam, int homeTotal, int opponentTotal, String message) {
+        return String.format(Locale.getDefault(), message, homeTotal > opponentTotal ?
                 "Royal" : opponentTeam, (homeTotal > opponentTotal) ? (homeTotal - opponentTotal) : (opponentTotal - homeTotal));
     }
 
@@ -278,7 +282,10 @@ public class FixtureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (matches.get(position).getStatus() != Match.Status.PENDING && matches.get(position).getStatus() != Match.Status.TBA)
+        if (matches.get(position).getStatus() != Match.Status.PENDING && matches.get(position).getStatus()
+                != Match.Status.TBA && matches.get(position).getStatus() != Match.Status.CALLED_OFF &&
+                matches.get(position).getStatus() != Match.Status.CANCELED && matches.get(position).getStatus()
+                != Match.Status.CANCELLED)
             return VIEW_RESULT;
         else
             return VIEW_PENDING;

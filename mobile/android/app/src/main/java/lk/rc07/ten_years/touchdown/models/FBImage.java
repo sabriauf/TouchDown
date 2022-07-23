@@ -1,12 +1,16 @@
 package lk.rc07.ten_years.touchdown.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 /**
  * Created by Sabri on 4/13/2017. facebook image object
  */
-
+@Entity
 public class FBImage {
 
     private String created_time;
+    @PrimaryKey
     private String id;
     private int width;
     private int height;
