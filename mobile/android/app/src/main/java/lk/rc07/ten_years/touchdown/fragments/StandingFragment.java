@@ -100,11 +100,12 @@ public class StandingFragment extends Fragment {
 
     private Spinner setSpinnerRow(View view, String title) {
         ((TextView) view.findViewById(R.id.spinner_title)).setText(title);
-        return (Spinner) view.findViewById(R.id.spinner);
+        return view.findViewById(R.id.spinner);
     }
 
     private void setLeagueSpinners() {
-        final List<String> leagues = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_LEAGUE);
+        String where = DBContact.GroupTable.COLUMN_LEAGUE + " NOT LIKE '%BRADBY%'";
+        final List<String> leagues = GroupDAO.getAllFromColumn(DBContact.GroupTable.COLUMN_LEAGUE, where);
         loadSpinner(leagues, spn_leagues);
 //        if (leagues.size() > 1)
         spn_leagues.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

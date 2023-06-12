@@ -67,16 +67,11 @@ public class GroupDAO extends DBManager {
     }
 
     public static List<String> getAllFromColumn(String column) {
-        List<String> values = new ArrayList<>();
-        String orderBy =  column + ORDER_DESC;
+        return getAllFromColumn(column, null);
+    }
 
-        Cursor cursor = mDatabase.query(true, DBContact.GroupTable.TABLE_NAME, new String[]{column}, null, null,
-                null, null, orderBy, null);
-        while (cursor.moveToNext()) {
-            values.add(cursor.getString(cursor.getColumnIndex(column)));
-        }
-        cursor.close();
-        return values;
+    public static List<String> getAllFromColumn(String column, String where) {
+        return getAllFromColumn(column, where, ORDER_DESC);
     }
 
     public static List<String> getAllFromColumn(String column, String where, String order) {
