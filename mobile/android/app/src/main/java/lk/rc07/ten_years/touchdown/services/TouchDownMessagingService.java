@@ -207,36 +207,47 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
         intent.putExtra(Constant.EXTRA_FRAGMENT_ID, data.fragment);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.FLAG_IMMUTABLE);
+//
+//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//
+//        NotificationCompat.Builder notificationBuilder;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            createChannel(this, topic, name);
+//            notificationBuilder = new NotificationCompat.Builder(this, topic);
+//        } else
+//            //noinspection deprecation
+//            notificationBuilder = new NotificationCompat.Builder(this);
+//
+//        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher).setSound(defaultSoundUri);
+//
+//        if (data.thumb != null && !data.thumb.equals(""))
+//            notificationBuilder.setLargeIcon(AppHandler.getImageBitmap(this, data.thumb));
+//
+//        setDefaultSmallView(notificationBuilder, data.title, data.message);
+//        if ((data.desc != null && !data.desc.equals("")) || (data.cover != null && !data.cover.equals("")))
+//            setDefaultBigView(this, notificationBuilder, data);
+//
+//
+//        notificationBuilder.setContentIntent(pendingIntent);
+//        notificationBuilder.setAutoCancel(true);
+//
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            notificationBuilder.setColor(getColor(R.color.colorAccent));
+//        }
+//        notificationManager.notify(data.id, notificationBuilder.build());
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        NotificationCompat.Builder notificationBuilder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel(this, topic, name);
-            notificationBuilder = new NotificationCompat.Builder(this, topic);
-        } else
-            //noinspection deprecation
-            notificationBuilder = new NotificationCompat.Builder(this);
-
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher).setSound(defaultSoundUri);
-
-        if (data.thumb != null && !data.thumb.equals(""))
-            notificationBuilder.setLargeIcon(AppHandler.getImageBitmap(this, data.thumb));
-
-        setDefaultSmallView(notificationBuilder, data.title, data.message);
-        if ((data.desc != null && !data.desc.equals("")) || (data.cover != null && !data.cover.equals("")))
-            setDefaultBigView(this, notificationBuilder, data);
-
-
-        notificationBuilder.setContentIntent(pendingIntent);
-        notificationBuilder.setAutoCancel(true);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, topic)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(data.title)
+                .setContentText(data.message)
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            notificationBuilder.setColor(getColor(R.color.colorAccent));
-        }
-        notificationManager.notify(data.id, notificationBuilder.build());
+
+        notificationManager.notify(data.id, builder.build());
     }
 
     @TargetApi(Build.VERSION_CODES.O)

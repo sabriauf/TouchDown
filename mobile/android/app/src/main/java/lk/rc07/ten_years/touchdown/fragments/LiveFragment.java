@@ -3,13 +3,11 @@ package lk.rc07.ten_years.touchdown.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.bumptech.glide.Glide;
-import com.facebook.AccessToken;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
@@ -108,10 +106,10 @@ public class LiveFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == FACEBOOK_LOGIN_REQUEST && AccessToken.getCurrentAccessToken() != null && comment != null) {
-                //TODO send comment
-            } else
-                comment = null;
+//            if (requestCode == FACEBOOK_LOGIN_REQUEST && AccessToken.getCurrentAccessToken() != null && comment != null) {
+//                //TODO send comment
+//            } else
+//                comment = null;
         }
     }
 
@@ -353,7 +351,7 @@ public class LiveFragment extends Fragment {
                         holder.txt_time.setTextColor(AppHandler.getColor(parentView.getContext(), R.color.timer_clock));
 
                     if (gameTime > 0) {
-                        holder.txt_time.setText(TimeFormatter.millisToGameTime(getContext(), gameTime));
+                        holder.txt_time.setText(TimeFormatter.getGameTimeString(gameTime));
                         timer.postDelayed(this, 1000);
                     }
                 }

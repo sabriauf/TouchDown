@@ -8,30 +8,20 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import lk.rc07.ten_years.touchdown.R;
 import lk.rc07.ten_years.touchdown.activities.ImageViewActivity;
-import lk.rc07.ten_years.touchdown.activities.LoginActivity;
 import lk.rc07.ten_years.touchdown.data.DBHelper;
 import lk.rc07.ten_years.touchdown.data.DBManager;
 import lk.rc07.ten_years.touchdown.data.ImageDAO;
@@ -83,14 +73,14 @@ public class ImageFragment extends Fragment {
             view.findViewById(R.id.txt_no_items).setVisibility(View.GONE);
             setAdapter();
         } else {
-            if (AccessToken.getCurrentAccessToken() != null)
+//            if (AccessToken.getCurrentAccessToken() != null)
                 if (albumId != null && !albumId.equals("")) {
                     view.findViewById(R.id.txt_no_items).setVisibility(View.GONE);
                     readAlbumPhotos(albumId);
                 } else
                     recycler_fixture.setVisibility(View.GONE);
-            else
-                startActivityForResult(new Intent(getContext(), LoginActivity.class), FACEBOOK_LOGIN_REQUEST);
+//            else
+//                startActivityForResult(new Intent(getContext(), LoginActivity.class), FACEBOOK_LOGIN_REQUEST);
         }
 
         return view;
@@ -101,54 +91,54 @@ public class ImageFragment extends Fragment {
         params.putBoolean("redirect", false);
         params.putString("fields", "id, created_time, width, height, name");
 
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                String.format(Locale.getDefault(), FACEBOOK_ALBUM_LINK, albumId),
-                params,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-                        if (response.getJSONObject() != null) {
-                            Log.d(ImageFragment.class.getSimpleName(), response.getJSONObject().toString());
-
-                            try {
-                                final String imgString = response.getJSONObject().getJSONArray("data").toString();
-
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Type messageType = new TypeToken<List<FBImage>>() {
-                                        }.getType();
-
-                                        List<FBImage> imagesList = new Gson().fromJson(imgString, messageType);
-                                        images = getImageRows(imagesList);
-
-                                        if (activity == null)
-                                            activity = getActivity();
-                                        if (activity != null)
-                                            activity.runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    setAdapter();
-                                                }
-                                            });
-
-                                        dbManager.openDatabase();
-                                        for (FBImage image : imagesList) {
-                                            image.setMatch(matchId);
-                                            ImageDAO.addImage(image);
-                                        }
-                                        dbManager.closeDatabase();
-                                    }
-                                }).start();
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-        ).executeAsync();
+//        new GraphRequest(
+//                AccessToken.getCurrentAccessToken(),
+//                String.format(Locale.getDefault(), FACEBOOK_ALBUM_LINK, albumId),
+//                params,
+//                HttpMethod.GET,
+//                new GraphRequest.Callback() {
+//                    public void onCompleted(GraphResponse response) {
+//                        if (response.getJSONObject() != null) {
+//                            Log.d(ImageFragment.class.getSimpleName(), response.getJSONObject().toString());
+//
+//                            try {
+//                                final String imgString = response.getJSONObject().getJSONArray("data").toString();
+//
+//                                new Thread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        Type messageType = new TypeToken<List<FBImage>>() {
+//                                        }.getType();
+//
+//                                        List<FBImage> imagesList = new Gson().fromJson(imgString, messageType);
+//                                        images = getImageRows(imagesList);
+//
+//                                        if (activity == null)
+//                                            activity = getActivity();
+//                                        if (activity != null)
+//                                            activity.runOnUiThread(new Runnable() {
+//                                                @Override
+//                                                public void run() {
+//                                                    setAdapter();
+//                                                }
+//                                            });
+//
+//                                        dbManager.openDatabase();
+//                                        for (FBImage image : imagesList) {
+//                                            image.setMatch(matchId);
+//                                            ImageDAO.addImage(image);
+//                                        }
+//                                        dbManager.closeDatabase();
+//                                    }
+//                                }).start();
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }
+//        ).executeAsync();
     }
 
     private List<FBImageRow> getImageRows(List<FBImage> imagesList) {

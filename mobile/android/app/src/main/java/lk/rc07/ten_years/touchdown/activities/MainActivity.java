@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.menu_profile:
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+//                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 break;
             default:
                 return super.onOptionsItemSelected(item);

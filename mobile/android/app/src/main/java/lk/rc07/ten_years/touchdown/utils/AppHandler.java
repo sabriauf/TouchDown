@@ -57,8 +57,8 @@ public class AppHandler {
         HashMap<String, String> headers = new HashMap<>();
         headers.put(Constant.PARAM_AUTH_KEY, AppConfig.APPLICATION_AUTHENTICATION_KEY);
         headers.put(Constant.PARAM_PLATFORM, String.valueOf(Constant.PLATFORM_ANDROID));
-        headers.put(Constant.PARAM_AUTH_DEVICE, Settings.Secure.getString(context.getContentResolver(),
-                Settings.Secure.ANDROID_ID));
+//        headers.put(Constant.PARAM_AUTH_DEVICE, Settings.Secure.getString(context.getContentResolver(),
+//                Settings.Secure.ANDROID_ID));
         headers.put(Constant.PARAM_AUTH_PACKAGE, context.getApplicationContext().getPackageName());
         headers.put(Constant.PARAM_AUTH_VERSION, String.valueOf(BuildConfig.VERSION_CODE));
         headers.put(Constant.PARAM_API_VERSION, String.valueOf(AppConfig.API_VERSION));
@@ -250,6 +250,8 @@ public class AppHandler {
         gameTime.setScoreId(score.getIdscore());
         gameTime.setName(score.getActionString());
         gameTime.setRealTime(score.getTime());
+//        if(point == 0)
+//            point = score.getTime();
         gameTime.setRelativeTime((prevStart ? (score.getTime() - prevTime) : 0) + point);
         gameTime.setType(start ? 1 : 0);
         return gameTime;
