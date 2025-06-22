@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
     buildToolsVersion '29.0.1'
     flavorDimensions "default"
     defaultConfig {
         applicationId "lk.rc07.ten_years.touchdown"
         minSdkVersion 16
-        targetSdkVersion 29
-        versionCode 36
-        versionName "1.2.7"
+        targetSdkVersion 33
+        versionCode 43
+        versionName "1.2.15"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "TouchDown-$versionCode")
@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'pub.devrel:easypermissions:0.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.facebook.android:facebook-android-sdk:4.33.0'
+    implementation 'com.facebook.android:facebook-android-sdk:12.3.0'
     testImplementation 'junit:junit:4.12'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'

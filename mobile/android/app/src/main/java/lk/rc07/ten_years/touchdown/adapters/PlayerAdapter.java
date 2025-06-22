@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,7 +79,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             PlayerViewHolder holder = (PlayerViewHolder) viewHolder;
             final AdapterPlayer adapterPlayer = (AdapterPlayer) players.get(pos);
 
-            if (adapterPlayer != null) {
+            if (adapterPlayer != null && adapterPlayer.getPlayer() != null) {
                 if (adapterPlayer.getPlayer().getName().contains(" "))
                     holder.txt_player_name.setText(adapterPlayer.getPlayer().getName().split(" ")[0]);
                 else
@@ -133,6 +134,9 @@ public class PlayerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                     }
                 });
+            } else {
+                holder.txt_player_name.setText("");
+                holder.txt_player_no.setText("00");
             }
         } else {
             StaffViewHolder holder = (StaffViewHolder) viewHolder;

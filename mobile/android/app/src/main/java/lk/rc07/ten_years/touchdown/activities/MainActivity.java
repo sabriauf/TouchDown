@@ -1,16 +1,32 @@
 package lk.rc07.ten_years.touchdown.activities;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +59,7 @@ import lk.rc07.ten_years.touchdown.utils.PageBuilder;
 public class MainActivity extends AppCompatActivity {
 
     //constants
-    private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "BradEx"};
+    private final String[] TAB_TITLES = {"LIVE", "FIXTURE", "POINTS", "TEAM", "News"};
     public static final int REFRESH_TABS = 1001;
     public static final int LIVE_STREAMING = 1002;
     public static final int FORCE_SYNC = 1003;
@@ -110,18 +126,43 @@ public class MainActivity extends AppCompatActivity {
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
             Toast.makeText(this, "Developer Build", Toast.LENGTH_LONG).show();
             FirebaseMessaging.getInstance().subscribeToTopic("test2");
-        } else {
-            FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.TOPIC);
-            FirebaseMessaging.getInstance().subscribeToTopic("Other_matches");
-            FirebaseMessaging.getInstance().subscribeToTopic("General");
-            FirebaseMessaging.getInstance().subscribeToTopic("settings");
         }
+        FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.TOPIC);
+        FirebaseMessaging.getInstance().subscribeToTopic("Other_matches");
+        FirebaseMessaging.getInstance().subscribeToTopic("General");
+        FirebaseMessaging.getInstance().subscribeToTopic("settings");
 
         syncData();
         readExtras(getIntent());
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkNotificationsPermission();
+        }
+
 //        AppHandler.readData(this);
     }
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+                @Override
+                public void onActivityResult(Boolean result) {
+                    if (result)
+                        Log.d(MainActivity.class.getSimpleName(), "Permission granted for notifications");
+                }
+            });
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void checkNotificationsPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED) {
+            Log.d(MainActivity.class.getSimpleName(), "Permission for notifications checked");
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            Log.d(MainActivity.class.getSimpleName(), "Permission for notifications been denied");
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        }
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {

@@ -215,20 +215,24 @@ class ReadSyncJson {
     }
 
     private void savePlayers(Gson gson, String response) {
+        int id = 0;
         try {
             Type messageType = new TypeToken<List<Player>>() {
             }.getType();
 
             List<Player> players = gson.fromJson(response, messageType);
 
-            for (Player player : players)
+            for (Player player : players) {
+                id = player.getIdPlayer();
                 PlayerDAO.addPlayer(player);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     private void savePlayerPos(Gson gson, String response) {
+        int id = 0;
         try {
             Type messageType = new TypeToken<List<PlayerPosition>>() {
             }.getType();

@@ -206,8 +206,8 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
         intent.putExtra(Constant.EXTRA_FRAGMENT_ID, data.fragment);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
@@ -312,6 +312,7 @@ public class TouchDownMessagingService extends FirebaseMessagingService {
 
         NotificationData(RemoteMessage remoteMessage) {
             try {
+//                remoteMessage.getData();
                 if (remoteMessage.getData().containsKey(PARAM_PUSH_SHOW) && remoteMessage.getData().get(PARAM_PUSH_SHOW).equals("false")) {
                     showNotification = false;
                 }
